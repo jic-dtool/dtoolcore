@@ -33,6 +33,21 @@ def tmp_dir_fixture(request):
 
 
 @pytest.fixture
+def tmp_dataset_fixture(request):
+    from dtoolcore import DataSet
+    d = tempfile.mkdtemp()
+
+    dataset_path = os.path.join(d, 'sample_data')
+    shutil.copytree(TEST_SAMPLE_DATASET, dataset_path)
+
+    @request.addfinalizer
+    def teardown():
+        shutil.rmtree(d)
+
+    return DataSet.from_path(dataset_path)
+
+
+@pytest.fixture
 def local_tmp_dir_fixture(request):
     d = tempfile.mkdtemp(dir=_HERE)
 
