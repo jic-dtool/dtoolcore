@@ -1,0 +1,55 @@
+{
+  "file_list": [
+    {
+      "mimetype": "image/png", 
+      "path": "actually_a_png.txt", 
+      "mtime": 1486734557.0, 
+      "hash": "290d3f1a902c452ce1c184ed793b1d6b83b59164", 
+      "size": 276
+    }, 
+    {
+      "mimetype": "text/plain", 
+      "path": "actually_a_text_file.jpg", 
+      "mtime": 1486734557.0, 
+      "hash": "089288cfda0c1eea5969758f3fa71131ffda3fca", 
+      "size": 22
+    }, 
+    {
+      "mimetype": "text/plain", 
+      "path": "another_file.txt", 
+      "mtime": 1486734557.0, 
+      "hash": "1d229271928d3f9e2bb0375bd6ce5db6c6d348d9", 
+      "size": 6
+    }, 
+    {
+      "mimetype": "inode/x-empty", 
+      "path": "empty_file", 
+      "mtime": 1486734557.0, 
+      "hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709", 
+      "size": 0
+    }, 
+    {
+      "mimetype": "application/octet-stream", 
+      "path": "random_bytes", 
+      "mtime": 1486734557.0, 
+      "hash": "b640cee82f798bb38a995b6bd30e8d71a12d7d7c", 
+      "size": 1024
+    }, 
+    {
+      "mimetype": "text/plain", 
+      "path": "real_text_file.txt", 
+      "mtime": 1486734557.0, 
+      "hash": "c827a1a1a61e734828f525ae7715d9c5be591496", 
+      "size": 18
+    }, 
+    {
+      "mimetype": "image/png", 
+      "path": "tiny.png", 
+      "mtime": 1486734557.0, 
+      "hash": "09648d19e11f0b20e5473594fc278afbede3c9a4", 
+      "size": 276
+    }
+  ], 
+  "dtool_version": "0.11.0", 
+  "hash_function": "shasum"
+}

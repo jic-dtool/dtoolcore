@@ -1,0 +1,15 @@
+---
+project_name: sample_data
+dataset_name: sample_data
+confidential: False
+personally_identifiable_information: False
+owners:
+  - name: Your Name
+    email: namey@example.com
+    username: namey
+creation_date: 2017-01-27
+# links:
+#  - http://doi.dx.org/your_doi
+#  - http://github.com/your_code_repository
+# budget_codes:
+#  - E.g. CCBS1H10S
