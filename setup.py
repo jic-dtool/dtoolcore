@@ -1,7 +1,8 @@
 from setuptools import setup
 
-url = ""
+
 version = "0.13.0"
+url = "https://github.com/JIC-CSB/dtoolcore"
 readme = open('README.rst').read()
 
 setup(name="dtoolcore",
@@ -13,9 +14,9 @@ setup(name="dtoolcore",
       author="Tjelvar Olsson",
       author_email="tjelvar.olsson@jic.ac.uk",
       url=url,
-      install_requires=[
-        "pyyaml",
-        "python-magic",
-      ],
       download_url="{}/tarball/{}".format(url, version),
+      install_requires=[
+          "pyyaml",
+          "python-magic",
+      ],
       license="MIT")
