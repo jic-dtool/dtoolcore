@@ -13,6 +13,9 @@ setup(name="dtoolcore",
       author="Tjelvar Olsson",
       author_email="tjelvar.olsson@jic.ac.uk",
       url=url,
-      install_requires=[],
+      install_requires=[
+        "pyyaml",
+        "python-magic",
+      ],
       download_url="{}/tarball/{}".format(url, version),
       license="MIT")
