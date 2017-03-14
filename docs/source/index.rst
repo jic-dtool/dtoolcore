@@ -8,5 +8,6 @@ Content
    :maxdepth: 2
 
    README
+   api
    CHANGELOG
    LICENSE

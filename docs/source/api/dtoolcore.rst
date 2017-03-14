@@ -1,0 +1,5 @@
+dtoolcore
+=========
+
+.. automodule:: dtoolcore
+   :members:
