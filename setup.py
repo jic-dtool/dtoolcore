@@ -1,7 +1,7 @@
 from setuptools import setup
 
 url = ""
-version = "0.1.0"
+version = "0.13.0"
 readme = open('README.rst').read()
 
 setup(name="dtoolcore",
