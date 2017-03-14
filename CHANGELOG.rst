@@ -31,3 +31,8 @@ Security
 ^^^^^^^^
 
 
+
+[0.13.0] - 2017-03-14
+---------------------
+
+Initial port of core API functionality from dtool.
