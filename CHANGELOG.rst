@@ -10,6 +10,10 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 Added
 ^^^^^
 
+- Exposed previously private :func:`dtoolcore.filehasher.hashsum` function
+  to enable clients to build their own md5sum/other hash algorithms to add
+  as overlays to datasets
+
 
 Changed
 ^^^^^^^
@@ -21,6 +25,10 @@ Deprecated
 
 Removed
 ^^^^^^^
+
+- Ability to use md5sum as the manifest hashing algorithm;
+  now clients will have to add these separately as overlays if required
+- :func:`dtoolcore.filehasher.md5sum` helper function
 
 
 Fixed
