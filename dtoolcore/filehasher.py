@@ -14,7 +14,12 @@ class FileHasher(object):
         return self.func(filename)
 
 
-def _hashsum(hasher, filename):
+def hashsum(hasher, filename):
+    """Helper function for creating hash functions.
+
+    See implementation of :func:`dtoolcore.filehasher.shasum`
+    for more usage details.
+    """
     BUF_SIZE = 65536
     with open(filename, 'rb') as f:
         buf = f.read(BUF_SIZE)
@@ -30,10 +35,5 @@ def shasum(filename):
     :param filename: path to file
     :returns: shasum of file
     """
-
-    # Tried using Mac native shasum. But this was slower.
-    # Maybe not surprising as shasum on Mac was a Perl script,
-    # i.e. not a compiled binary.
-
     hasher = hashlib.sha1()
-    return _hashsum(hasher, filename)
+    return hashsum(hasher, filename)
