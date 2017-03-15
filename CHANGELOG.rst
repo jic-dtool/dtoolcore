@@ -13,10 +13,13 @@ Added
 - Exposed previously private :func:`dtoolcore.filehasher.hashsum` function
   to enable clients to build their own md5sum/other hash algorithms to add
   as overlays to datasets
+- ``ignore_prefixes`` parameter to Manifest initialisation
 
 
 Changed
 ^^^^^^^
+
+- A dataset's manifest now ignores the ``.dtool`` directory and the dataset's readme
 
 
 Deprecated
