@@ -31,15 +31,15 @@ def test_manifest_functional(tmp_dir_fixture):  # NOQA
 
 def test_manifest_initialisation():
     from dtoolcore import Manifest, __version__
-    from dtoolcore.filehasher import md5sum
+    from dtoolcore.filehasher import shasum
 
     data_path = os.path.join(TEST_SAMPLE_DATASET, "data")
 
     manifest = Manifest(
-        abs_manifest_root=data_path, hash_func=md5sum)
+        abs_manifest_root=data_path, hash_func=shasum)
 
     assert manifest.abs_manifest_root == data_path
-    assert manifest.hash_generator.name == "md5sum"
+    assert manifest.hash_generator.name == "shasum"
 
     assert isinstance(manifest, dict)
     assert "file_list" in manifest
@@ -48,24 +48,24 @@ def test_manifest_initialisation():
 
     assert isinstance(manifest["file_list"], list)
     assert manifest["dtool_version"] == __version__
-    assert manifest["hash_function"] == "md5sum"
+    assert manifest["hash_function"] == "shasum"
 
     assert len(manifest["file_list"]) == 7
 
     hashes = [entry["hash"] for entry in manifest["file_list"]]
-    assert "cced2acdb7392ee8c13867f52f2a44b1" in hashes
+    assert "290d3f1a902c452ce1c184ed793b1d6b83b59164" in hashes
 
 
 def test_manifest_initialisation_with_trailing_slash():
     from dtoolcore import Manifest, __version__
-    from dtoolcore.filehasher import md5sum
+    from dtoolcore.filehasher import shasum
 
     data_path = os.path.join(TEST_SAMPLE_DATASET, "data/")
 
     manifest = Manifest(
-        abs_manifest_root=data_path, hash_func=md5sum)
+        abs_manifest_root=data_path, hash_func=shasum)
 
-    assert manifest.hash_generator.name == "md5sum"
+    assert manifest.hash_generator.name == "shasum"
 
     assert isinstance(manifest, dict)
     assert "file_list" in manifest
@@ -74,12 +74,12 @@ def test_manifest_initialisation_with_trailing_slash():
 
     assert isinstance(manifest["file_list"], list)
     assert manifest["dtool_version"] == __version__
-    assert manifest["hash_function"] == "md5sum"
+    assert manifest["hash_function"] == "shasum"
 
     assert len(manifest["file_list"]) == 7
 
     hashes = [entry["hash"] for entry in manifest["file_list"]]
-    assert "cced2acdb7392ee8c13867f52f2a44b1" in hashes
+    assert "290d3f1a902c452ce1c184ed793b1d6b83b59164" in hashes
 
 
 def test_regenerate_file_list(tmp_dir_fixture):  # NOQA
@@ -168,7 +168,7 @@ def test_manifest_mimetype_generation():
 
 def test_manifest_from_path(tmp_dir_fixture):  # NOQA
     from dtoolcore import Manifest
-    from dtoolcore.filehasher import md5sum
+    from dtoolcore.filehasher import shasum
 
     data_dir = os.path.join(tmp_dir_fixture, "data")
     os.mkdir(data_dir)
@@ -177,7 +177,7 @@ def test_manifest_from_path(tmp_dir_fixture):  # NOQA
     with open(test_file1, "w") as fh:
         fh.write("hello")
 
-    manifest = Manifest(data_dir, md5sum)
+    manifest = Manifest(data_dir, shasum)
     manifest_path = os.path.join(tmp_dir_fixture, "manifest.json")
     manifest.persist_to_path(manifest_path)
 
@@ -191,11 +191,11 @@ def test_manifest_from_path(tmp_dir_fixture):  # NOQA
     assert parsed_manifest == manifest
     assert isinstance(parsed_manifest, Manifest)
 
-    md5_hash_pre_regeneration = parsed_manifest["file_list"][0]["hash"]
+    shasum_hash_pre_regeneration = parsed_manifest["file_list"][0]["hash"]
     assert len(parsed_manifest["file_list"]) == 1
     parsed_manifest.regenerate_file_list()
     assert len(parsed_manifest["file_list"]) == 2
 
     hashes_post_regeneration = [i["hash"]
                                 for i in parsed_manifest["file_list"]]
-    assert md5_hash_pre_regeneration in hashes_post_regeneration
+    assert shasum_hash_pre_regeneration in hashes_post_regeneration

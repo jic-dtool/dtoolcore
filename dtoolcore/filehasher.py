@@ -37,19 +37,3 @@ def shasum(filename):
 
     hasher = hashlib.sha1()
     return _hashsum(hasher, filename)
-
-
-def md5sum(filename):
-    """Return hex digest of md5 hash of file.
-
-    :param filename: path to file
-    :returns: md5sum of file
-    """
-    hasher = hashlib.md5()
-    return _hashsum(hasher, filename)
-
-
-HASH_FUNCTIONS = {
-    "shasum": shasum,
-    "md5sum": md5sum,
-}

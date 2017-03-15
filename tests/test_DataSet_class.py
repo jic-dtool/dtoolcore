@@ -82,7 +82,7 @@ def test_dataset_persist_to_path(tmp_dir_fixture):  # NOQA
     assert os.path.isfile(expected_manifest_path)
 
 
-def test_dataset_persist_to_path_default_hash_func(tmp_dir_fixture):  # NOQA
+def test_dataset_persist_to_path_hash_function(tmp_dir_fixture):  # NOQA
     from dtoolcore import DataSet
 
     dataset = DataSet('my_dataset')
@@ -90,17 +90,6 @@ def test_dataset_persist_to_path_default_hash_func(tmp_dir_fixture):  # NOQA
 
     parsed_ds = DataSet.from_path(tmp_dir_fixture)
     assert parsed_ds.manifest["hash_function"] == "shasum"
-
-
-def test_dataset_persist_to_path_md5sum_hash_func(tmp_dir_fixture):  # NOQA
-    from dtoolcore import DataSet
-    from dtoolcore.filehasher import md5sum
-
-    dataset = DataSet('my_dataset')
-    dataset.persist_to_path(tmp_dir_fixture, md5sum)
-
-    parsed_ds = DataSet.from_path(tmp_dir_fixture)
-    assert parsed_ds.manifest["hash_function"] == "md5sum"
 
 
 def test_persist_to_path_updates_abs_readme_path(tmp_dir_fixture):  # NOQA

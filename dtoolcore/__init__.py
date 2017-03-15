@@ -31,7 +31,6 @@ import magic
 
 from dtoolcore.filehasher import (
     shasum,
-    HASH_FUNCTIONS,
     FileHasher,
 )
 
@@ -495,7 +494,6 @@ class Manifest(dict):
         """Return instance of :class:`dtool.Manifest` from disk."""
         with open(manifest_path) as fh:
             manifest_dict = json.load(fh)
-        hash_func = HASH_FUNCTIONS[manifest_dict["hash_function"]]
-        manifest = cls(data_directory, hash_func, generate_file_list=False)
+        manifest = cls(data_directory, shasum, generate_file_list=False)
         manifest.update(manifest_dict)
         return manifest
