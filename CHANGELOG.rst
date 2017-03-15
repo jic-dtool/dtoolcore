@@ -29,6 +29,8 @@ Deprecated
 Removed
 ^^^^^^^
 
+- ``mimetype`` from structural metadata stored in the manifest
+  now clients will have to add this separately as an overlay if required
 - Ability to use md5sum as the manifest hashing algorithm;
   now clients will have to add these separately as overlays if required
 - :func:`dtoolcore.filehasher.md5sum` helper function
