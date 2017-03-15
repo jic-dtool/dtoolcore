@@ -25,7 +25,6 @@ import os
 import json
 import uuid
 import getpass
-import fnmatch
 
 import yaml
 import magic
@@ -151,6 +150,7 @@ class DataSet(_DtoolObject):
             "manifest_root": data_directory}
         super(DataSet, self).__init__(specific_metadata)
         self._structural_metadata = {}
+        self._ignore_prefixes = [".dtool", self._admin_metadata["readme_path"]]
 
     @classmethod
     def from_path(cls, path):
@@ -177,9 +177,11 @@ class DataSet(_DtoolObject):
 
         # Remember to parse the structural metadata.
         abs_data_directory = os.path.join(path, dataset.data_directory)
+        ignore_prefixes = [".dtool", dataset._admin_metadata["readme_path"]]
         dataset._structural_metadata = Manifest.from_path(
             dataset._abs_manifest_path,
-            abs_data_directory)
+            abs_data_directory,
+            ignore_prefixes)
 
         return dataset
 
@@ -289,7 +291,8 @@ class DataSet(_DtoolObject):
 
         self._safe_create_readme()
 
-        self._structural_metadata = Manifest(data_directory)
+        self._structural_metadata = Manifest(
+            data_directory, ignore_prefixes=self._ignore_prefixes)
         self._structural_metadata.persist_to_path(self._abs_manifest_path)
 
         dtool_file_path = os.path.join(dtool_dir_path, 'dtool')
@@ -425,7 +428,12 @@ class Manifest(dict):
     """Class for managing structural metadata.
     """
 
-    def __init__(self, abs_manifest_root, ignore_prefixes=[], generate_file_list=True):
+    def __init__(
+        self,
+        abs_manifest_root,
+        ignore_prefixes=[],
+        generate_file_list=True
+    ):
         # Use abspath to avoid problems with trailing slashes and length
         self.abs_manifest_root = os.path.abspath(abs_manifest_root)
         self.ignore_prefixes = ignore_prefixes
@@ -452,9 +460,7 @@ class Manifest(dict):
                 relative_path = path[path_length:]
                 relative_path_list.append(relative_path)
 
-
         return relative_path_list
-
 
     def _ignore_prefixes_filter(self, rel_paths):
         to_keep = []
@@ -467,7 +473,6 @@ class Manifest(dict):
             if keep:
                 to_keep.append(rel_path)
         return to_keep
-
 
     def _file_metadata(self, path):
         """Return dictionary with file metadata.
@@ -510,10 +515,13 @@ class Manifest(dict):
             json.dump(self, fh, indent=2)
 
     @classmethod
-    def from_path(cls, manifest_path, data_directory):
+    def from_path(cls, manifest_path, data_directory, ignore_prefixes=[]):
         """Return instance of :class:`dtool.Manifest` from disk."""
         with open(manifest_path) as fh:
             manifest_dict = json.load(fh)
-        manifest = cls(data_directory, generate_file_list=False)
+        manifest = cls(
+            data_directory,
+            ignore_prefixes=ignore_prefixes,
+            generate_file_list=False)
         manifest.update(manifest_dict)
         return manifest

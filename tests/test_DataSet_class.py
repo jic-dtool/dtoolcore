@@ -218,10 +218,9 @@ def test_manifest_generation(chdir_fixture):  # NOQA
     keyed_by_path = {entry['path']: entry for entry in file_list}
 
     assert 'file_list' in manifest
-    assert len(manifest['file_list']) == 2
+    assert len(manifest['file_list']) == 1
     assert 'test_file.txt' in keyed_by_path
     assert keyed_by_path['test_file.txt']['size'] == 11
-    assert keyed_by_path['README.yml']['size'] == 29
 
 
 def test_item_path_from_hash(chdir_fixture):  # NOQA
@@ -423,3 +422,15 @@ def test_identifiers_property():
     assert len(dataset.identifiers) == 7
     real_text_file_hash = "c827a1a1a61e734828f525ae7715d9c5be591496"
     assert real_text_file_hash in dataset.identifiers
+
+
+def test_dataset_ignore_dtool_and_readme(tmp_dir_fixture):  # NOQA
+    from dtoolcore import DataSet
+    dataset = DataSet(name='my_dataset')
+    dataset.persist_to_path(tmp_dir_fixture)
+    dataset.update_manifest()
+    assert len(dataset.manifest["file_list"]) == 0
+
+    dataset_from_path = DataSet.from_path(tmp_dir_fixture)
+    dataset_from_path.update_manifest()
+    assert len(dataset_from_path.manifest["file_list"]) == 0

@@ -191,7 +191,7 @@ def test_manifest_from_path(tmp_dir_fixture):  # NOQA
     assert shasum_hash_pre_regeneration in hashes_post_regeneration
 
 
-def test_manifest_ignore_using_dtool_markup_scenario(tmp_dir_fixture):
+def test_manifest_ignore_using_dtool_markup_scenario(tmp_dir_fixture):  # NOQA
     from dtoolcore import Manifest
 
     data_path = os.path.join(TEST_SAMPLE_DATASET)
