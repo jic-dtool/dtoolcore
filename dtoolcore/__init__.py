@@ -27,7 +27,6 @@ import uuid
 import getpass
 
 import yaml
-import magic
 
 from dtoolcore.filehasher import (
     shasum,
@@ -482,15 +481,13 @@ class Manifest(dict):
         * hash
         * mtime (last modified time)
         * size
-        * mimetype
 
         :param path: path to file
         :returns: dictionary with file metadata
         """
         return dict(hash=self.hash_generator(path),
                     size=os.stat(path).st_size,
-                    mtime=os.stat(path).st_mtime,
-                    mimetype=magic.from_file(path, mime=True))
+                    mtime=os.stat(path).st_mtime)
 
     def regenerate_file_list(self):
         """Regenerate the file list from scratch."""

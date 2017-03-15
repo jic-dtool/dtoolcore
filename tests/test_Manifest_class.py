@@ -125,36 +125,10 @@ def test_file_metadata():
     manifest = Manifest(input_data_path)
 
     metadata = manifest._file_metadata(png_path)
-    expected_keys = ["hash", "size", "mtime", "mimetype"]
+    expected_keys = ["hash", "size", "mtime"]
     assert set(expected_keys) == set(metadata.keys())
     assert metadata["hash"] == "09648d19e11f0b20e5473594fc278afbede3c9a4"
     assert metadata["size"] == 276
-    assert metadata["mimetype"] == "image/png"
-
-
-def test_manifest_mimetype_generation():
-    from dtoolcore import Manifest
-
-    input_data_path = os.path.join(TEST_SAMPLE_DATASET, "data")
-    manifest = Manifest(input_data_path)
-
-    file_list = manifest["file_list"]
-
-    expected_mimetypes = {
-        'actually_a_png.txt': 'image/png',
-        'actually_a_text_file.jpg': 'text/plain',
-        'another_file.txt': 'text/plain',
-        'empty_file': 'inode/x-empty',
-        'random_bytes': 'application/octet-stream',
-        'real_text_file.txt': 'text/plain',
-        'tiny.png': 'image/png'
-    }
-
-    for file in file_list:
-        file_path = file['path']
-        actual = file['mimetype']
-        expected = expected_mimetypes[file_path]
-        assert expected == actual
 
 
 def test_manifest_from_path(tmp_dir_fixture):  # NOQA

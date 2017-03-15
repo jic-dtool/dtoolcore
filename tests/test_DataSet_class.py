@@ -257,7 +257,6 @@ def test_item_from_hash(chdir_fixture):  # NOQA
     assert item["hash"] == "7b502c3a1f48c8609ae212cdfb639dee39673f5e"
     assert "size" in item
     assert "path" in item
-    assert "mimetype" in item
 
     with pytest.raises(KeyError):
         dataset.item_from_hash("nonsense")

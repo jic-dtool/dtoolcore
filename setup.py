@@ -17,6 +17,5 @@ setup(name="dtoolcore",
       download_url="{}/tarball/{}".format(url, version),
       install_requires=[
           "pyyaml",
-          "python-magic",
       ],
       license="MIT")
