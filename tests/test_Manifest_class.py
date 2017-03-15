@@ -10,10 +10,9 @@ from . import TEST_SAMPLE_DATASET
 
 def test_manifest_functional(tmp_dir_fixture):  # NOQA
     from dtoolcore import Manifest
-    from dtoolcore.filehasher import shasum
 
     data_path = os.path.join(TEST_SAMPLE_DATASET, "data")
-    manifest = Manifest(data_path, shasum)
+    manifest = Manifest(data_path)
 
     hashes = [entry["hash"] for entry in manifest["file_list"]]
     assert "290d3f1a902c452ce1c184ed793b1d6b83b59164" in hashes
@@ -31,12 +30,10 @@ def test_manifest_functional(tmp_dir_fixture):  # NOQA
 
 def test_manifest_initialisation():
     from dtoolcore import Manifest, __version__
-    from dtoolcore.filehasher import shasum
 
     data_path = os.path.join(TEST_SAMPLE_DATASET, "data")
 
-    manifest = Manifest(
-        abs_manifest_root=data_path, hash_func=shasum)
+    manifest = Manifest(abs_manifest_root=data_path)
 
     assert manifest.abs_manifest_root == data_path
     assert manifest.hash_generator.name == "shasum"
@@ -58,12 +55,10 @@ def test_manifest_initialisation():
 
 def test_manifest_initialisation_with_trailing_slash():
     from dtoolcore import Manifest, __version__
-    from dtoolcore.filehasher import shasum
 
     data_path = os.path.join(TEST_SAMPLE_DATASET, "data/")
 
-    manifest = Manifest(
-        abs_manifest_root=data_path, hash_func=shasum)
+    manifest = Manifest(abs_manifest_root=data_path)
 
     assert manifest.hash_generator.name == "shasum"
 
@@ -84,13 +79,12 @@ def test_manifest_initialisation_with_trailing_slash():
 
 def test_regenerate_file_list(tmp_dir_fixture):  # NOQA
     from dtoolcore import Manifest
-    from dtoolcore.filehasher import shasum
 
     input_data_path = os.path.join(TEST_SAMPLE_DATASET, "data")
     output_data_path = os.path.join(tmp_dir_fixture, "data")
     shutil.copytree(input_data_path, output_data_path)
 
-    manifest = Manifest(output_data_path, shasum)
+    manifest = Manifest(output_data_path)
     assert len(manifest["file_list"]) == 7
 
     # Remove all the files from the manifest root directory.
@@ -104,9 +98,8 @@ def test_regenerate_file_list(tmp_dir_fixture):  # NOQA
 def test_persist_to_path(tmp_dir_fixture):  # NOQA
 
     from dtoolcore import Manifest, __version__
-    from dtoolcore.filehasher import shasum
 
-    manifest = Manifest(tmp_dir_fixture, shasum)
+    manifest = Manifest(tmp_dir_fixture)
 
     output_fpath = os.path.join(tmp_dir_fixture, "manifest.json")
     assert not os.path.isfile(output_fpath)
@@ -125,12 +118,11 @@ def test_persist_to_path(tmp_dir_fixture):  # NOQA
 def test_file_metadata():
 
     from dtoolcore import Manifest
-    from dtoolcore.filehasher import shasum
 
     input_data_path = os.path.join(TEST_SAMPLE_DATASET, "data")
     png_path = os.path.join(input_data_path, 'tiny.png')
 
-    manifest = Manifest(input_data_path, shasum)
+    manifest = Manifest(input_data_path)
 
     metadata = manifest._file_metadata(png_path)
     expected_keys = ["hash", "size", "mtime", "mimetype"]
@@ -142,10 +134,9 @@ def test_file_metadata():
 
 def test_manifest_mimetype_generation():
     from dtoolcore import Manifest
-    from dtoolcore.filehasher import shasum
 
     input_data_path = os.path.join(TEST_SAMPLE_DATASET, "data")
-    manifest = Manifest(input_data_path, shasum)
+    manifest = Manifest(input_data_path)
 
     file_list = manifest["file_list"]
 
@@ -168,7 +159,6 @@ def test_manifest_mimetype_generation():
 
 def test_manifest_from_path(tmp_dir_fixture):  # NOQA
     from dtoolcore import Manifest
-    from dtoolcore.filehasher import shasum
 
     data_dir = os.path.join(tmp_dir_fixture, "data")
     os.mkdir(data_dir)
@@ -177,7 +167,7 @@ def test_manifest_from_path(tmp_dir_fixture):  # NOQA
     with open(test_file1, "w") as fh:
         fh.write("hello")
 
-    manifest = Manifest(data_dir, shasum)
+    manifest = Manifest(data_dir)
     manifest_path = os.path.join(tmp_dir_fixture, "manifest.json")
     manifest.persist_to_path(manifest_path)
 

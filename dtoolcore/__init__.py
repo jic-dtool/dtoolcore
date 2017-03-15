@@ -423,10 +423,10 @@ class Collection(_DtoolObject):
 class Manifest(dict):
     """Class for managing structural metadata."""
 
-    def __init__(self, abs_manifest_root, hash_func, generate_file_list=True):
+    def __init__(self, abs_manifest_root, generate_file_list=True):
         # Use abspath to avoid problems with trailing slashes and length
         self.abs_manifest_root = os.path.abspath(abs_manifest_root)
-        self.hash_generator = FileHasher(hash_func)
+        self.hash_generator = FileHasher(shasum)
         self["file_list"] = []
         self["dtool_version"] = __version__
         self["hash_function"] = self.hash_generator.name
@@ -494,6 +494,6 @@ class Manifest(dict):
         """Return instance of :class:`dtool.Manifest` from disk."""
         with open(manifest_path) as fh:
             manifest_dict = json.load(fh)
-        manifest = cls(data_directory, shasum, generate_file_list=False)
+        manifest = cls(data_directory, generate_file_list=False)
         manifest.update(manifest_dict)
         return manifest
