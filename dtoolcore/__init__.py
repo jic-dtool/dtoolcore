@@ -25,6 +25,7 @@ import os
 import json
 import uuid
 import getpass
+import fnmatch
 
 import yaml
 import magic
@@ -421,11 +422,13 @@ class Collection(_DtoolObject):
 
 
 class Manifest(dict):
-    """Class for managing structural metadata."""
+    """Class for managing structural metadata.
+    """
 
-    def __init__(self, abs_manifest_root, generate_file_list=True):
+    def __init__(self, abs_manifest_root, ignore_prefixes=[], generate_file_list=True):
         # Use abspath to avoid problems with trailing slashes and length
         self.abs_manifest_root = os.path.abspath(abs_manifest_root)
+        self.ignore_prefixes = ignore_prefixes
         self.hash_generator = FileHasher(shasum)
         self["file_list"] = []
         self["dtool_version"] = __version__
@@ -445,10 +448,26 @@ class Manifest(dict):
 
         for dirpath, dirnames, filenames in os.walk(path):
             for fn in filenames:
-                relative_path = os.path.join(dirpath, fn)
-                relative_path_list.append(relative_path[path_length:])
+                path = os.path.join(dirpath, fn)
+                relative_path = path[path_length:]
+                relative_path_list.append(relative_path)
+
 
         return relative_path_list
+
+
+    def _ignore_prefixes_filter(self, rel_paths):
+        to_keep = []
+        for rel_path in rel_paths:
+            keep = True
+            for prefix in self.ignore_prefixes:
+                if rel_path.startswith(prefix):
+                    keep = False
+                    break
+            if keep:
+                to_keep.append(rel_path)
+        return to_keep
+
 
     def _file_metadata(self, path):
         """Return dictionary with file metadata.
@@ -471,9 +490,10 @@ class Manifest(dict):
     def regenerate_file_list(self):
         """Regenerate the file list from scratch."""
         rel_paths = self._generate_relative_paths()
+        rel_paths_to_keep = self._ignore_prefixes_filter(rel_paths)
 
         file_list = []
-        for filename in rel_paths:
+        for filename in rel_paths_to_keep:
             fq_filename = os.path.join(self.abs_manifest_root, filename)
             entry = self._file_metadata(fq_filename)
             entry['path'] = filename
