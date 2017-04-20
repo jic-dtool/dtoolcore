@@ -31,10 +31,10 @@ def test_special_mimetype_overlay_behaviour(tmp_dataset_fixture):  # NOQA
     for identifier in my_mimetype_overlay:
         my_mimetype_overlay[identifier] = "application/nonsense"
 
-    actual_mimetype = my_dataset.overlays["mimetype"][item_hash]
-
+    actual_mimetype = my_dataset.access_overlays()["mimetype"][item_hash]
     assert actual_mimetype == "application/octet-stream"
 
     my_dataset.persist_overlay(name="mimetype", overlay=my_mimetype_overlay)
 
-    assert my_dataset.overlays["mimetype"][item_hash] == "application/nonsense"
+    actual_mimetype = my_dataset.access_overlays()["mimetype"][item_hash]
+    assert actual_mimetype == "application/nonsense"

@@ -18,7 +18,7 @@ def test_annotation_overlay_functional(tmp_dataset_fixture):  # NOQA
 
     my_dataset.persist_overlay(name="geo_locations", overlay=my_overlay)
 
-    result = my_dataset.overlays["geo_locations"][item_hash]
+    result = my_dataset.access_overlays()["geo_locations"][item_hash]
 
     assert result == {"latitude": 57.4, "longitude": 0.3}
 
@@ -50,7 +50,7 @@ def test_non_existing_overlay_directory(tmp_dataset_fixture):  # NOQA
     if os.path.isdir(overlays_dir):
         os.rmdir(overlays_dir)
 
-    overlays = tmp_dataset_fixture.overlays
+    overlays = tmp_dataset_fixture.access_overlays()
 
     for overlay in ["path", "hash", "size", "mtime", "mimetype"]:
         assert overlay in overlays
@@ -102,10 +102,11 @@ def test_overlay_access(tmp_dataset_fixture):  # NOQA
 
     tmp_dataset_fixture.persist_overlay("test", overlay_content)
 
-    assert isinstance(tmp_dataset_fixture.overlays["test"], dict)
+    assert isinstance(tmp_dataset_fixture.access_overlays()["test"], dict)
 
     item_hash = "b640cee82f798bb38a995b6bd30e8d71a12d7d7c"
-    assert tmp_dataset_fixture.overlays["test"][item_hash]["property_a"] == 3
+    overlays = tmp_dataset_fixture.access_overlays()
+    assert overlays["test"][item_hash]["property_a"] == 3
 
 
 def test_persist_overlay_replaces(tmp_dataset_fixture):  # NOQA
@@ -121,17 +122,19 @@ def test_persist_overlay_replaces(tmp_dataset_fixture):  # NOQA
 
     tmp_dataset_fixture.persist_overlay("test", overlay_content)
 
-    overlay = tmp_dataset_fixture.overlays["test"]
+    overlay = tmp_dataset_fixture.access_overlays()["test"]
 
     overlay[item_hash]["property_a"] = 5
 
-    assert tmp_dataset_fixture.overlays["test"][item_hash]["property_a"] == 3
+    overlays = tmp_dataset_fixture.access_overlays()
+    assert overlays["test"][item_hash]["property_a"] == 3
 
     with pytest.raises(IOError):
         tmp_dataset_fixture.persist_overlay("test", overlay)
 
     tmp_dataset_fixture.persist_overlay("test", overlay, overwrite=True)
-    assert tmp_dataset_fixture.overlays["test"][item_hash]["property_a"] == 5
+    overlays = tmp_dataset_fixture.access_overlays()
+    assert overlays["test"][item_hash]["property_a"] == 5
 
 
 def test_persist_overlay_with_reserved_name_raises_error(tmp_dataset_fixture):  # NOQA
@@ -151,4 +154,4 @@ def test_persist_overlay_with_reserved_name_raises_error(tmp_dataset_fixture):  
 def test_access_read_only_overlay(tmp_dataset_fixture):  # NOQA
 
     for overlay_name in ["path", "hash", "size", "mtime"]:
-        assert tmp_dataset_fixture.overlays[overlay_name]
+        assert tmp_dataset_fixture.access_overlays()[overlay_name]

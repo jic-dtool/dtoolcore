@@ -363,8 +363,15 @@ class DataSet(_DtoolObject):
         with open(overlay_path, "w") as fh:
             json.dump(overlay, fh, indent=2)
 
-    @property
-    def overlays(self):
+    def access_overlays(self):
+        """Return a dictionary containing all of the overlays, including
+        manifest information presented as an overlay.
+
+        This is an expensive operation since it involves reading all overlays
+        and the manifest from disk.
+
+        :returns: dictionary of overlays
+        """
 
         file_list = self.manifest["file_list"]
 
