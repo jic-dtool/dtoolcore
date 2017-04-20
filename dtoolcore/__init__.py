@@ -26,6 +26,8 @@ import json
 import uuid
 import getpass
 
+from collections import defaultdict
+
 import yaml
 
 from dtoolcore.filehasher import (
@@ -34,6 +36,7 @@ from dtoolcore.filehasher import (
 )
 
 __version__ = "0.13.0"
+
 
 # admin/administrative metadata - .dtool/dtool
 # descriptive metadata - README.yml
@@ -138,6 +141,8 @@ class _DtoolObject(object):
 
 class DataSet(_DtoolObject):
     """Class for representing datasets."""
+
+    _reserved_overlay_names = ["hash", "path", "size", "mtime"]
 
     def __init__(self, name, data_directory='.'):
         specific_metadata = {
@@ -338,6 +343,10 @@ class DataSet(_DtoolObject):
         :param overwrite: bool replace overlay if already present
         :raises: IOError if overlay already exists and overwrite is False
         """
+
+        if name in DataSet._reserved_overlay_names:
+            raise(KeyError("Read only overlay name: {}".format(name)))
+
         overlay_fname = name + ".json"
         overlay_path = os.path.join(self._abs_overlays_path, overlay_fname)
 
@@ -357,7 +366,27 @@ class DataSet(_DtoolObject):
     @property
     def overlays(self):
 
-        overlays = {}
+        file_list = self.manifest["file_list"]
+
+        # Pre 0.13.0 datasets will have mimetype in the manifest file_list.
+        # Post 0.13.0, clients will create this as a separate overlay.
+        # Therefore we need to handle file_lists which may or may not have a
+        # mimetype key
+        overlays = defaultdict(dict)
+
+        for entry in file_list:
+            item_hash = entry["hash"]
+            for key, value in entry.items():
+                overlays[key][item_hash] = value
+
+        # Prevent further access of non-existing overlays.
+        overlays.default_factory = None
+
+        # This shouldn't happen since the overlay directory should be created
+        # when the DataSet is persisted, however some programs (e.g. git) won't
+        # keep empty directories, so we might lose it.
+        if not os.path.isdir(self._abs_overlays_path):
+            return overlays
 
         for filename in os.listdir(self._abs_overlays_path):
             base, ext = os.path.splitext(filename)

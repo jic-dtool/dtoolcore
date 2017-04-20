@@ -37,6 +37,25 @@ def test_empty_overlay(tmp_dataset_fixture):  # NOQA
     assert list(actual_overlay.values())[0] == {}
 
 
+def test_non_existing_overlay_directory(tmp_dataset_fixture):  # NOQA
+    # Because git does not store empty directories, we can end up with datasets
+    # with no .dtool/overlays directory (also with datasets with very early
+    # dtool versions). We need to test we handle this correctly.
+
+    overlays_dir = os.path.join(
+        tmp_dataset_fixture._abs_path,
+        ".dtool",
+        "overlays")
+
+    if os.path.isdir(overlays_dir):
+        os.rmdir(overlays_dir)
+
+    overlays = tmp_dataset_fixture.overlays
+
+    for overlay in ["path", "hash", "size", "mtime", "mimetype"]:
+        assert overlay in overlays
+
+
 def test_persist_overlay(tmp_dataset_fixture):  # NOQA
 
     expected_path = os.path.join(
@@ -71,6 +90,7 @@ def test_persist_multiple_overlays(tmp_dataset_fixture):  # NOQA
     assert os.path.isfile(expected_second_path)
 
 
+# def test_v
 def test_overlay_access(tmp_dataset_fixture):  # NOQA
 
     overlay_content = {
@@ -112,3 +132,23 @@ def test_persist_overlay_replaces(tmp_dataset_fixture):  # NOQA
 
     tmp_dataset_fixture.persist_overlay("test", overlay, overwrite=True)
     assert tmp_dataset_fixture.overlays["test"][item_hash]["property_a"] == 5
+
+
+def test_persist_overlay_with_reserved_name_raises_error(tmp_dataset_fixture):  # NOQA
+
+    overlay_content = {
+        "b640cee82f798bb38a995b6bd30e8d71a12d7d7c": {
+            "property_a": 3,
+            "property_b": 4
+        }
+    }
+
+    for overlay_name in ["path", "hash", "size", "mtime"]:
+        with pytest.raises(KeyError):
+            tmp_dataset_fixture.persist_overlay(overlay_name, overlay_content)
+
+
+def test_access_read_only_overlay(tmp_dataset_fixture):  # NOQA
+
+    for overlay_name in ["path", "hash", "size", "mtime"]:
+        assert tmp_dataset_fixture.overlays[overlay_name]
