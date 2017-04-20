@@ -19,6 +19,7 @@ Added
 Changed
 ^^^^^^^
 
+- Overlays now include information from manifest
 - A dataset's manifest now ignores the ``.dtool`` directory and the dataset's readme
 
 
@@ -39,6 +40,8 @@ Removed
 Fixed
 ^^^^^
 
+- Empty .dtool/overlays directory no longer raises error when accessing
+  overlays
 
 Security
 ^^^^^^^^
