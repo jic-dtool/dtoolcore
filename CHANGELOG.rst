@@ -19,6 +19,7 @@ Added
 Changed
 ^^^^^^^
 
+- ``DataSet.overlays`` property now ``DataSet.access_overlays()`` function
 - Overlays now include information from manifest
 - A dataset's manifest now ignores the ``.dtool`` directory and the dataset's readme
 
