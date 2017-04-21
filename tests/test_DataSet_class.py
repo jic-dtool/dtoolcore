@@ -223,7 +223,7 @@ def test_manifest_generation(chdir_fixture):  # NOQA
     assert keyed_by_path['test_file.txt']['size'] == 11
 
 
-def test_item_path_from_hash(chdir_fixture):  # NOQA
+def test_abspath_from_identifier(chdir_fixture):  # NOQA
     from dtoolcore import DataSet
 
     dataset = DataSet('my_dataset')
@@ -234,15 +234,15 @@ def test_item_path_from_hash(chdir_fixture):  # NOQA
     dataset.persist_to_path('.')
 
     expected_path = os.path.abspath('test_file.txt')
-    actual_path = dataset.item_path_from_hash(
+    actual_path = dataset.abspath_from_identifier(
         "7b502c3a1f48c8609ae212cdfb639dee39673f5e")
     assert actual_path == expected_path
 
     with pytest.raises(KeyError):
-        dataset.item_path_from_hash("nonsense")
+        dataset.abspath_from_identifier("nonsense")
 
 
-def test_item_from_hash(chdir_fixture):  # NOQA
+def test_item_from_identifier(chdir_fixture):  # NOQA
     from dtoolcore import DataSet
 
     dataset = DataSet('my_dataset')
@@ -252,17 +252,17 @@ def test_item_from_hash(chdir_fixture):  # NOQA
 
     dataset.persist_to_path('.')
 
-    item = dataset.item_from_hash(
+    item = dataset.item_from_identifier(
         "7b502c3a1f48c8609ae212cdfb639dee39673f5e")
     assert item["hash"] == "7b502c3a1f48c8609ae212cdfb639dee39673f5e"
     assert "size" in item
     assert "path" in item
 
     with pytest.raises(KeyError):
-        dataset.item_from_hash("nonsense")
+        dataset.item_from_identifier("nonsense")
 
 
-def test_item_path_from_hash_with_different_datadir(chdir_fixture):  # NOQA
+def test_abspath_from_identifier_with_different_datadir(chdir_fixture):  # NOQA
     from dtoolcore import DataSet
 
     dataset = DataSet('my_dataset', "crazy")
@@ -275,7 +275,7 @@ def test_item_path_from_hash_with_different_datadir(chdir_fixture):  # NOQA
     dataset.update_manifest()
 
     expected_path = os.path.abspath(fpath)
-    actual_path = dataset.item_path_from_hash(
+    actual_path = dataset.abspath_from_identifier(
         "7b502c3a1f48c8609ae212cdfb639dee39673f5e")
     assert actual_path == expected_path
 

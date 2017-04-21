@@ -19,6 +19,8 @@ Added
 Changed
 ^^^^^^^
 
+- ``DataSet.item_from_hash()`` now ``DataSet.item_from_identifier()``
+- ``DataSet.item_path_from_hash()`` now ``DataSet.abspath_from_identifier()``
 - ``DataSet.overlays`` property now ``DataSet.access_overlays()`` function
 - Overlays now include information from manifest
 - A dataset's manifest now ignores the ``.dtool`` directory and the dataset's readme

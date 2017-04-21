@@ -303,24 +303,24 @@ class DataSet(_DtoolObject):
         with open(dtool_file_path, 'w') as fh:
             json.dump(self._admin_metadata, fh)
 
-    def item_from_hash(self, hash_str):
-        """Return an item of a dataset based on it's hash.
+    def item_from_identifier(self, identifier):
+        """Return an item of a dataset based on it's identifier.
 
-        :param hash_str: dataset item identifier as a hash string
+        :param identifier: dataset item identifier
         :returns: dataset item as a dictionary
         """
         for item in self.manifest["file_list"]:
-            if item["hash"] == hash_str:
+            if item["hash"] == identifier:
                 return item
         raise(KeyError("File hash not in dataset"))
 
-    def item_path_from_hash(self, hash_str):
-        """Return absolute path of a dataset item based on it's hash.
+    def abspath_from_identifier(self, identifier):
+        """Return absolute path of a dataset item based on it's identifier.
 
-        :param hash_str: dataset item identifier as a hash string
+        :param identifier: dataset item identifier
         :returns: absolute path to dataset item
         """
-        item = self.item_from_hash(hash_str)
+        item = self.item_from_identifier(identifier)
         return os.path.abspath(os.path.join(
             self._abs_path,
             self._admin_metadata["manifest_root"],
