@@ -10,6 +10,33 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 Added
 ^^^^^
 
+
+Changed
+^^^^^^^
+
+
+Deprecated
+^^^^^^^^^^
+
+
+Removed
+^^^^^^^
+
+
+Fixed
+^^^^^
+
+
+Security
+^^^^^^^^
+
+
+[0.14.0] - 2017-04-24
+---------------------
+
+Added
+^^^^^
+
 - Exposed previously private :func:`dtoolcore.filehasher.hashsum` function
   to enable clients to build their own md5sum/other hash algorithms to add
   as overlays to datasets
@@ -24,10 +51,6 @@ Changed
 - ``DataSet.overlays`` property now ``DataSet.access_overlays()`` function
 - Overlays now include information from manifest
 - A dataset's manifest now ignores the ``.dtool`` directory and the dataset's readme
-
-
-Deprecated
-^^^^^^^^^^
 
 
 Removed
@@ -45,10 +68,6 @@ Fixed
 
 - Empty .dtool/overlays directory no longer raises error when accessing
   overlays
-
-Security
-^^^^^^^^
-
 
 
 [0.13.0] - 2017-03-14
