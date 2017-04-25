@@ -35,7 +35,7 @@ from dtoolcore.filehasher import (
     FileHasher,
 )
 
-__version__ = "0.14.0"
+__version__ = "0.15.0"
 
 
 # admin/administrative metadata - .dtool/dtool
