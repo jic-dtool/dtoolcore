@@ -24,7 +24,6 @@ The dtool annotation creates three types of metadata:
 import os
 import json
 import uuid
-import getpass
 
 from collections import defaultdict
 

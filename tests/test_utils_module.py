@@ -43,4 +43,3 @@ def test_getuser():
     dtoolcore.utils.cross_platform_getuser = MagicMock(return_value="user1")
     assert dtoolcore.utils.getuser() == "user1"
     assert dtoolcore.utils.cross_platform_getuser.called_once()
-
