@@ -10,7 +10,7 @@ Manage scientific data sets
    :target: https://travis-ci.org/JIC-CSB/dtoolcore
    :alt: Travis CI build status (Linux)
 
-.. image:: https://ci.appveyor.com/api/projects/status/cbv7ecvl8rb251xt/branch/master?svg=true)
+.. image:: https://ci.appveyor.com/api/projects/status/cbv7ecvl8rb251xt/branch/master?svg=true
    :target: https://ci.appveyor.com/project/tjelvar-olsson/dtoolcore/branch/master
    :alt: AppVeyor CI build status (Windows)
 
