@@ -30,6 +30,7 @@ from collections import defaultdict
 
 import yaml
 
+import dtoolcore.utils
 from dtoolcore.filehasher import (
     shasum,
     FileHasher,
@@ -150,7 +151,7 @@ class DataSet(_DtoolObject):
             "name": name,
             "manifest_path": os.path.join(".dtool", "manifest.json"),
             "overlays_path": os.path.join(".dtool", "overlays"),
-            "creator_username": getpass.getuser(),
+            "creator_username": dtoolcore.utils.getuser(),
             "manifest_root": data_directory}
         super(DataSet, self).__init__(specific_metadata)
         self._structural_metadata = {}
