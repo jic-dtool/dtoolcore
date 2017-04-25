@@ -4,6 +4,7 @@ CHANGELOG
 This project uses `semantic versioning <http://semver.org/>`_.
 This change log uses principles from `keep a changelog <http://keepachangelog.com/>`_.
 
+
 [Unreleased]
 ------------
 
@@ -27,12 +28,29 @@ Fixed
 ^^^^^
 
 
+
 Security
 ^^^^^^^^
 
 
+[0.15.0] - 2017-04-25
+---------------------
+
+Added
+^^^^^
+
+- ``dtoolcore.utils.getuser()`` function to make it more robust on windows
+
+Fixed
+^^^^^
+
+- Issue when USERNAME not in environment on windows
+- Issues with tests not working on windows
+
+
 [0.14.0] - 2017-04-24
 ---------------------
+
 
 Added
 ^^^^^
