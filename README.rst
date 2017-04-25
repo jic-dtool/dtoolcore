@@ -27,6 +27,20 @@ Manage scientific data sets
 - PyPI: https://pypi.python.org/pypi/dtoolcore
 - Free software: MIT License
 
+Features
+--------
+
+- Core API for adding different types of metadata to files on disk
+- Automatic generation of structural metadata
+- Programmatic discovery and access of items in a dataset
+- Structural metadata includes hash, size and modification time for
+  subsequent integrity checks
+- Ability to annotate individual files with arbitrary metadata
+- Metadata stored on disk as plain text files, i.e. datasets
+  generated using this API can be accessed without special tools
+- Cross-platform: Linux, Mac and Windows are all supported
+- Works with Python 2.7, 3.5 and 3.6
+
 Overview
 --------
 
@@ -36,11 +50,3 @@ It aims to help in three areas:
 1. Adding structure and meta data to your project and files
 2. Providing programmatic discovery of your data
 3. Verifying the integrity of your data
-
-
-Design philosophy
------------------
-
-The dtoolcore API produces outputs that can be understood without access to the
-API. This is important as it is likely that the outputs of tool built
-using this API are likely to outlive the tools themselves.
