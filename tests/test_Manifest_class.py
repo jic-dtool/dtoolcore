@@ -169,5 +169,9 @@ def test_manifest_ignore_using_dtool_markup_scenario(tmp_dir_fixture):  # NOQA
     from dtoolcore import Manifest
 
     data_path = os.path.join(TEST_SAMPLE_DATASET)
-    manifest = Manifest(data_path, ignore_prefixes=[".dtool/", "README.yml"])
+    ignore_prefixes = [
+        ".dtool{}".format(os.sep),
+        "README.yml",
+    ]
+    manifest = Manifest(data_path, ignore_prefixes=ignore_prefixes)
     assert len(manifest["file_list"]) == 7
