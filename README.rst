@@ -7,7 +7,12 @@ Manage scientific data sets
    :alt: PyPi package
 
 .. image:: https://travis-ci.org/JIC-CSB/dtoolcore.svg?branch=master
-    :target: https://travis-ci.org/JIC-CSB/dtoolcore
+   :target: https://travis-ci.org/JIC-CSB/dtoolcore
+   :alt: Travis CI build status (Linux)
+
+.. image:: https://ci.appveyor.com/api/projects/status/cbv7ecvl8rb251xt/branch/master?svg=true)
+   :target: https://ci.appveyor.com/project/tjelvar-olsson/dtoolcore/branch/master
+   :alt: AppVeyor CI build status (Windows)
 
 .. image:: https://codecov.io/github/JIC-CSB/dtoolcore/coverage.svg?branch=master
    :target: https://codecov.io/github/JIC-CSB/dtoolcore?branch=master
