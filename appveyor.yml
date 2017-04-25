@@ -2,9 +2,11 @@ build: false
 
 environment:
   matrix:
-    - PYTHON: "C:\\Python27"
+    - PYTHON: "C:\\Python27" 
+    - TOX_ENV: "py27"
 
     - PYTHON: "C:\\Python35"
+    - TOX_ENV: "py35"
 
 
 init:
@@ -14,4 +16,4 @@ install:
   - "%PYTHON%/Scripts/pip.exe install tox"
 
 test_script:
-  - "%PYTHON%/Scripts/tox"
+  - "%PYTHON%/Scripts/tox -e %TOX_ENV%"
