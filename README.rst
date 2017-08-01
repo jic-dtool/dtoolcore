@@ -40,6 +40,7 @@ Features
   generated using this API can be accessed without special tools
 - Cross-platform: Linux, Mac and Windows are all supported
 - Works with Python 2.7, 3.5 and 3.6
+- No external dependencies
 
 Overview
 --------
