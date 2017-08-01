@@ -11,6 +11,7 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 Added
 ^^^^^
 
+- DataSet.raw_descriptive_metadata added; it returns the content of the descriptive_metadata file (``README.yml``)
 
 Changed
 ^^^^^^^
@@ -22,6 +23,9 @@ Deprecated
 
 Removed
 ^^^^^^^
+
+- *API breaking change*: DataSet.descriptive_metadata no longer exists
+- Removed dependency on PyYAML
 
 
 Fixed

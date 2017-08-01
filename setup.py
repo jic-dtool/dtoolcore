@@ -15,7 +15,5 @@ setup(name="dtoolcore",
       author_email="tjelvar.olsson@jic.ac.uk",
       url=url,
       download_url="{}/tarball/{}".format(url, version),
-      install_requires=[
-          "pyyaml",
-      ],
+      install_requires=[],
       license="MIT")

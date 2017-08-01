@@ -27,8 +27,6 @@ import uuid
 
 from collections import defaultdict
 
-import yaml
-
 import dtoolcore.utils
 from dtoolcore.filehasher import (
     shasum,
@@ -73,26 +71,15 @@ class _DtoolObject(object):
         return dtool_object
 
     @property
-    def descriptive_metadata(self):
-        """Return descriptive metadata as a dictionary.
+    def raw_descriptive_metadata(self):
+        """Return content of descriptive metadata file.
 
-        Read in from README.yml dynamically. Returns empty dictionary
-        if file does not exist or is empty.
-
-        Current implementation will return list if README.yml contains
-        list as top level data structure.
+        Return empty string if file does not exist.
         """
-        content = {}
-        parent = self._filesystem_parent
-        if parent is not None:
-            content.update(parent.descriptive_metadata)  # (Magic) recursion.
-
-        if self.abs_readme_path is not None:
-            with open(self.abs_readme_path) as fh:
-                local_content = yaml.load(fh)
-                if local_content:
-                    content.update(local_content)
-        return content
+        if self.abs_readme_path is None:
+            return ""
+        with open(self.abs_readme_path) as fh:
+            return fh.read()
 
     def __eq__(self, other):
         return self._admin_metadata == other._admin_metadata

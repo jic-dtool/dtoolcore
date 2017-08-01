@@ -50,15 +50,16 @@ def test_multiple_persist_to_path_raises(tmp_dir_fixture):  # NOQA
 def test_decriptive_metadata_property(tmp_dir_fixture):  # NOQA
     from dtoolcore import Collection
     collection = Collection()
-    assert collection.descriptive_metadata == {}
+    assert collection.raw_descriptive_metadata == ""
 
     collection.persist_to_path(tmp_dir_fixture)
-    assert collection.descriptive_metadata == {}
+    assert collection.raw_descriptive_metadata == ""
 
     with open(collection.abs_readme_path, "w") as fh:
         fh.write("---\n")
         fh.write("project: my_project\n")
-    assert collection.descriptive_metadata == {"project": "my_project"}
+    assert collection.raw_descriptive_metadata ==  \
+        open(collection.abs_readme_path, "r").read()
 
 
 def test_equality():
