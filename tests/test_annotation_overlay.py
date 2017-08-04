@@ -52,7 +52,7 @@ def test_non_existing_overlay_directory(tmp_dataset_fixture):  # NOQA
 
     overlays = tmp_dataset_fixture.access_overlays()
 
-    for overlay in ["path", "hash", "size", "mtime", "mimetype"]:
+    for overlay in ["path", "hash", "size", "mtime"]:
         assert overlay in overlays
 
 
