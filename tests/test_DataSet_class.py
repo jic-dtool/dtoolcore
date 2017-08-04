@@ -5,6 +5,8 @@ import json
 
 import pytest
 
+from dtoolcore.utils import sha1_hexdigest
+
 from . import tmp_dir_fixture  # NOQA
 from . import chdir_fixture  # NOQA
 from . import TEST_SAMPLE_DATASET
@@ -214,28 +216,28 @@ def test_manifest_generation(chdir_fixture):  # NOQA
     with open(expected_manifest_path) as fh:
         manifest = json.load(fh)
 
-    file_list = manifest['file_list']
-    keyed_by_path = {entry['path']: entry for entry in file_list}
-
-    assert 'file_list' in manifest
-    assert len(manifest['file_list']) == 1
-    assert 'test_file.txt' in keyed_by_path
-    assert keyed_by_path['test_file.txt']['size'] == 11
+    assert 'items' in manifest
+    assert len(manifest['items']) == 1
+    identifier = sha1_hexdigest('test_file.txt')
+    assert identifier in manifest['items']
+    assert manifest['items'][identifier]['size'] == 11
 
 
 def test_abspath_from_identifier(chdir_fixture):  # NOQA
     from dtoolcore import DataSet
 
+    filename = 'test_file.txt'
+
     dataset = DataSet('my_dataset')
 
-    with open('test_file.txt', 'w') as fh:
+    with open(filename, 'w') as fh:
         fh.write('Hello world')
 
     dataset.persist_to_path('.')
 
-    expected_path = os.path.abspath('test_file.txt')
-    actual_path = dataset.abspath_from_identifier(
-        "7b502c3a1f48c8609ae212cdfb639dee39673f5e")
+    expected_path = os.path.abspath(filename)
+    identifier = sha1_hexdigest(filename)
+    actual_path = dataset.abspath_from_identifier(identifier)
     assert actual_path == expected_path
 
     with pytest.raises(KeyError):
@@ -252,8 +254,8 @@ def test_item_from_identifier(chdir_fixture):  # NOQA
 
     dataset.persist_to_path('.')
 
-    item = dataset.item_from_identifier(
-        "7b502c3a1f48c8609ae212cdfb639dee39673f5e")
+    identifier = sha1_hexdigest('test_file.txt')
+    item = dataset.item_from_identifier(identifier)
     assert item["hash"] == "7b502c3a1f48c8609ae212cdfb639dee39673f5e"
     assert "size" in item
     assert "path" in item
@@ -275,8 +277,8 @@ def test_abspath_from_identifier_with_different_datadir(chdir_fixture):  # NOQA
     dataset.update_manifest()
 
     expected_path = os.path.abspath(fpath)
-    actual_path = dataset.abspath_from_identifier(
-        "7b502c3a1f48c8609ae212cdfb639dee39673f5e")
+    identifier = sha1_hexdigest('test_file.txt')
+    actual_path = dataset.abspath_from_identifier(identifier)
     assert actual_path == expected_path
 
 
@@ -320,7 +322,7 @@ def test_dataset_from_path_issue_with_manifest_datadirectory_being_relative(tmp_
 
     dataset_again = DataSet.from_path(tmp_dir_fixture)
     dataset_again.update_manifest()
-    assert len(dataset_again._structural_metadata["file_list"]) == 1
+    assert len(dataset_again._structural_metadata["items"]) == 1
 
 
 def test_dataset_from_path_raises_if_no_dtool_file(tmp_dir_fixture):  # NOQA
@@ -370,8 +372,8 @@ def test_manifest_property(tmp_dir_fixture):  # NOQA
     assert dataset.manifest == {}
 
     dataset.persist_to_path(tmp_dir_fixture)
-    assert 'file_list' in dataset.manifest
-    assert dataset.manifest['file_list'] == []
+    assert 'items' in dataset.manifest
+    assert dataset.manifest['items'] == {}
 
 
 def test_update_manifest(tmp_dir_fixture):  # NOQA
@@ -387,7 +389,7 @@ def test_update_manifest(tmp_dir_fixture):  # NOQA
 
     dataset.update_manifest()
 
-    assert len(dataset.manifest['file_list']) == 1
+    assert len(dataset.manifest['items']) == 1
 
 
 def test_update_manifest_does_nothing_if_not_persisted():
@@ -420,9 +422,7 @@ def test_identifiers_property():
     dataset = DataSet.from_path(TEST_SAMPLE_DATASET)
     assert isinstance(dataset.identifiers, list)
     assert len(dataset.identifiers) == 7
-    second_rel_path = dataset.manifest["file_list"][1]["path"]
-    from dtoolcore.utils import sha1_hexdigest
-    second_identifier = sha1_hexdigest(second_rel_path)
+    second_identifier = sha1_hexdigest('empty_file')
     assert second_identifier in dataset.identifiers
 
 
@@ -431,8 +431,8 @@ def test_dataset_ignore_dtool_and_readme(tmp_dir_fixture):  # NOQA
     dataset = DataSet(name='my_dataset')
     dataset.persist_to_path(tmp_dir_fixture)
     dataset.update_manifest()
-    assert len(dataset.manifest["file_list"]) == 0
+    assert len(dataset.manifest["items"]) == 0
 
     dataset_from_path = DataSet.from_path(tmp_dir_fixture)
     dataset_from_path.update_manifest()
-    assert len(dataset_from_path.manifest["file_list"]) == 0
+    assert len(dataset_from_path.manifest["items"]) == 0

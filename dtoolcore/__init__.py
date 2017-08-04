@@ -28,6 +28,7 @@ import uuid
 from collections import defaultdict
 
 import dtoolcore.utils
+from dtoolcore.utils import sha1_hexdigest
 from dtoolcore.filehasher import (
     shasum,
     FileHasher,
@@ -179,9 +180,7 @@ class DataSet(_DtoolObject):
     @property
     def identifiers(self):
         """Return list of dataset item identifiers."""
-        file_list = self.manifest["file_list"]
-        return [dtoolcore.utils.sha1_hexdigest(item['path'])
-                for item in file_list]
+        return self.manifest["items"].keys()
 
     @property
     def name(self):
@@ -297,10 +296,7 @@ class DataSet(_DtoolObject):
         :param identifier: dataset item identifier
         :returns: dataset item as a dictionary
         """
-        for item in self.manifest["file_list"]:
-            if item["hash"] == identifier:
-                return item
-        raise(KeyError("File hash not in dataset"))
+        return self.manifest["items"][identifier]
 
     def abspath_from_identifier(self, identifier):
         """Return absolute path of a dataset item based on it's identifier.
@@ -316,12 +312,10 @@ class DataSet(_DtoolObject):
 
     def empty_overlay(self):
         """Return an empty annotation overlay as a dictionary whose keys are
-        the hashes of items in the DataSet and whose values are empty
+        the identifiers of items in the DataSet and whose values are empty
         dictionaries."""
 
-        file_list = self.manifest["file_list"]
-
-        return {entry['hash']: dict() for entry in file_list}
+        return {k: dict() for k in self.manifest["items"].keys()}
 
     def persist_overlay(self, name, overlay, overwrite=False):
         """Write the overlay to disk.
@@ -361,18 +355,15 @@ class DataSet(_DtoolObject):
         :returns: dictionary of overlays
         """
 
-        file_list = self.manifest["file_list"]
-
         # Pre 0.13.0 datasets will have mimetype in the manifest file_list.
         # Post 0.13.0, clients will create this as a separate overlay.
         # Therefore we need to handle file_lists which may or may not have a
         # mimetype key
         overlays = defaultdict(dict)
 
-        for entry in file_list:
-            item_hash = entry["hash"]
+        for identifier, entry in self.manifest["items"].items():
             for key, value in entry.items():
-                overlays[key][item_hash] = value
+                overlays[key][identifier] = value
 
         # Prevent further access of non-existing overlays.
         overlays.default_factory = None
@@ -461,7 +452,7 @@ class Manifest(dict):
         self.abs_manifest_root = os.path.abspath(abs_manifest_root)
         self.ignore_prefixes = ignore_prefixes
         self.hash_generator = FileHasher(shasum)
-        self["file_list"] = []
+        self["items"] = {}
         self["dtool_version"] = __version__
         self["hash_function"] = self.hash_generator.name
         if generate_file_list:
@@ -518,14 +509,15 @@ class Manifest(dict):
         rel_paths = self._generate_relative_paths()
         rel_paths_to_keep = self._ignore_prefixes_filter(rel_paths)
 
-        file_list = []
+        items = {}
         for filename in rel_paths_to_keep:
             fq_filename = os.path.join(self.abs_manifest_root, filename)
             entry = self._file_metadata(fq_filename)
             entry['path'] = filename
-            file_list.append(entry)
+            identifier = sha1_hexdigest(filename)
+            items[identifier] = entry
 
-        self["file_list"] = file_list
+        self["items"] = items
 
     def persist_to_path(self, path):
         """Write the manifest to disk.
