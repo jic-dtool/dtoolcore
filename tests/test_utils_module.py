@@ -6,6 +6,13 @@ except ImportError:
     from mock import MagicMock
 
 
+def test_sha1_hexdigest():
+    from dtoolcore.utils import sha1_hexdigest
+    string = "Test me"
+
+    assert sha1_hexdigest(string) == "9940674fb235beddae40df565cbfc688b824b362"
+
+
 def test_cross_platform_getuser_windows_and_no_username_env_var():
     from dtoolcore.utils import cross_platform_getuser
     import getpass

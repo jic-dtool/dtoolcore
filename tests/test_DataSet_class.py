@@ -417,13 +417,13 @@ def test_decriptive_metadata_property(tmp_dir_fixture):  # NOQA
 
 def test_identifiers_property():
     from dtoolcore import DataSet
-    import hashlib
     dataset = DataSet.from_path(TEST_SAMPLE_DATASET)
     assert isinstance(dataset.identifiers, list)
     assert len(dataset.identifiers) == 7
     second_rel_path = dataset.manifest["file_list"][1]["path"]
-    second_idenfier = hashlib.sha1(b"{}".format(second_rel_path)).hexdigest()
-    assert second_idenfier in dataset.identifiers
+    from dtoolcore.utils import sha1_hexdigest
+    second_identifier = sha1_hexdigest(second_rel_path)
+    assert second_identifier in dataset.identifiers
 
 
 def test_dataset_ignore_dtool_and_readme(tmp_dir_fixture):  # NOQA
