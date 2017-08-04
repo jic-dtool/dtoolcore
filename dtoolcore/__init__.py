@@ -24,6 +24,7 @@ The dtool annotation creates three types of metadata:
 import os
 import json
 import uuid
+import hashlib
 
 from collections import defaultdict
 
@@ -180,7 +181,8 @@ class DataSet(_DtoolObject):
     def identifiers(self):
         """Return list of dataset item identifiers."""
         file_list = self.manifest["file_list"]
-        return [item["hash"] for item in file_list]
+        return [hashlib.sha1(b"{}".format(item["path"])).hexdigest()
+                for item in file_list]
 
     @property
     def name(self):

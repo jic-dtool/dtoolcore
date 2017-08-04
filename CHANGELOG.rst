@@ -16,6 +16,9 @@ Added
 Changed
 ^^^^^^^
 
+- Updated dataset item identifier from file content sha1sum to relative file
+  path sha1sum
+
 
 Deprecated
 ^^^^^^^^^^
