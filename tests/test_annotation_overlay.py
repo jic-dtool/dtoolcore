@@ -4,6 +4,8 @@ import os
 
 import pytest
 
+from dtoolcore.utils import sha1_hexdigest
+
 from . import tmp_dataset_fixture  # NOQA
 
 
@@ -12,13 +14,13 @@ def test_annotation_overlay_functional(tmp_dataset_fixture):  # NOQA
     my_dataset = tmp_dataset_fixture
     my_overlay = my_dataset.empty_overlay()
 
-    item_hash = "b640cee82f798bb38a995b6bd30e8d71a12d7d7c"
-    my_overlay[item_hash]["latitude"] = 57.4
-    my_overlay[item_hash]["longitude"] = 0.3
+    identifier = sha1_hexdigest('empty_file')
+    my_overlay[identifier]["latitude"] = 57.4
+    my_overlay[identifier]["longitude"] = 0.3
 
     my_dataset.persist_overlay(name="geo_locations", overlay=my_overlay)
 
-    result = my_dataset.access_overlays()["geo_locations"][item_hash]
+    result = my_dataset.access_overlays()["geo_locations"][identifier]
 
     assert result == {"latitude": 57.4, "longitude": 0.3}
 
@@ -31,7 +33,8 @@ def test_empty_overlay(tmp_dataset_fixture):  # NOQA
 
     assert len(actual_overlay) == 7
 
-    assert "b640cee82f798bb38a995b6bd30e8d71a12d7d7c" in actual_overlay
+    identifier = sha1_hexdigest('empty_file')
+    assert identifier in actual_overlay
 
     # NB: python3 dict.values() returns a view, not a list
     assert list(actual_overlay.values())[0] == {}
@@ -90,11 +93,12 @@ def test_persist_multiple_overlays(tmp_dataset_fixture):  # NOQA
     assert os.path.isfile(expected_second_path)
 
 
-# def test_v
 def test_overlay_access(tmp_dataset_fixture):  # NOQA
 
+    identifier = sha1_hexdigest('empty_file')
+
     overlay_content = {
-        "b640cee82f798bb38a995b6bd30e8d71a12d7d7c": {
+        identifier: {
             "property_a": 3,
             "property_b": 4
         }
@@ -104,17 +108,16 @@ def test_overlay_access(tmp_dataset_fixture):  # NOQA
 
     assert isinstance(tmp_dataset_fixture.access_overlays()["test"], dict)
 
-    item_hash = "b640cee82f798bb38a995b6bd30e8d71a12d7d7c"
     overlays = tmp_dataset_fixture.access_overlays()
-    assert overlays["test"][item_hash]["property_a"] == 3
+    assert overlays["test"][identifier]["property_a"] == 3
 
 
 def test_persist_overlay_replaces(tmp_dataset_fixture):  # NOQA
 
-    item_hash = "b640cee82f798bb38a995b6bd30e8d71a12d7d7c"
+    identifier = sha1_hexdigest('empty_file')
 
     overlay_content = {
-        item_hash: {
+        identifier: {
             "property_a": 3,
             "property_b": 4
         }
@@ -124,23 +127,25 @@ def test_persist_overlay_replaces(tmp_dataset_fixture):  # NOQA
 
     overlay = tmp_dataset_fixture.access_overlays()["test"]
 
-    overlay[item_hash]["property_a"] = 5
+    overlay[identifier]["property_a"] = 5
 
     overlays = tmp_dataset_fixture.access_overlays()
-    assert overlays["test"][item_hash]["property_a"] == 3
+    assert overlays["test"][identifier]["property_a"] == 3
 
     with pytest.raises(IOError):
         tmp_dataset_fixture.persist_overlay("test", overlay)
 
     tmp_dataset_fixture.persist_overlay("test", overlay, overwrite=True)
     overlays = tmp_dataset_fixture.access_overlays()
-    assert overlays["test"][item_hash]["property_a"] == 5
+    assert overlays["test"][identifier]["property_a"] == 5
 
 
 def test_persist_overlay_with_reserved_name_raises_error(tmp_dataset_fixture):  # NOQA
 
+    identifier = sha1_hexdigest('empty_file')
+
     overlay_content = {
-        "b640cee82f798bb38a995b6bd30e8d71a12d7d7c": {
+        identifier: {
             "property_a": 3,
             "property_b": 4
         }

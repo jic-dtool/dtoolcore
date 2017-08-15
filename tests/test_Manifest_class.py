@@ -4,6 +4,8 @@ import os
 import json
 import shutil
 
+from dtoolcore.utils import sha1_hexdigest
+
 from . import tmp_dir_fixture  # NOQA
 from . import TEST_SAMPLE_DATASET
 
@@ -14,8 +16,9 @@ def test_manifest_functional(tmp_dir_fixture):  # NOQA
     data_path = os.path.join(TEST_SAMPLE_DATASET, "data")
     manifest = Manifest(data_path)
 
-    hashes = [entry["hash"] for entry in manifest["file_list"]]
-    assert "290d3f1a902c452ce1c184ed793b1d6b83b59164" in hashes
+    identifiers = manifest["items"].keys()
+
+    assert sha1_hexdigest('empty_file') in identifiers
 
     output_fpath = os.path.join(tmp_dir_fixture, "manifest.json")
     assert not os.path.isfile(output_fpath)
@@ -39,17 +42,17 @@ def test_manifest_initialisation():
     assert manifest.hash_generator.name == "shasum"
 
     assert isinstance(manifest, dict)
-    assert "file_list" in manifest
+    assert "items" in manifest
     assert "dtool_version" in manifest
     assert "hash_function" in manifest
 
-    assert isinstance(manifest["file_list"], list)
+    assert isinstance(manifest["items"], dict)
     assert manifest["dtool_version"] == __version__
     assert manifest["hash_function"] == "shasum"
 
-    assert len(manifest["file_list"]) == 7
+    assert len(manifest["items"]) == 7
 
-    hashes = [entry["hash"] for entry in manifest["file_list"]]
+    hashes = [entry["hash"] for entry in manifest["items"].values()]
     assert "290d3f1a902c452ce1c184ed793b1d6b83b59164" in hashes
 
 
@@ -63,17 +66,17 @@ def test_manifest_initialisation_with_trailing_slash():
     assert manifest.hash_generator.name == "shasum"
 
     assert isinstance(manifest, dict)
-    assert "file_list" in manifest
+    assert "items" in manifest
     assert "dtool_version" in manifest
     assert "hash_function" in manifest
 
-    assert isinstance(manifest["file_list"], list)
+    assert isinstance(manifest["items"], dict)
     assert manifest["dtool_version"] == __version__
     assert manifest["hash_function"] == "shasum"
 
-    assert len(manifest["file_list"]) == 7
+    assert len(manifest["items"]) == 7
 
-    hashes = [entry["hash"] for entry in manifest["file_list"]]
+    hashes = [entry["hash"] for entry in manifest["items"].values()]
     assert "290d3f1a902c452ce1c184ed793b1d6b83b59164" in hashes
 
 
@@ -85,14 +88,14 @@ def test_regenerate_file_list(tmp_dir_fixture):  # NOQA
     shutil.copytree(input_data_path, output_data_path)
 
     manifest = Manifest(output_data_path)
-    assert len(manifest["file_list"]) == 7
+    assert len(manifest["items"]) == 7
 
     # Remove all the files from the manifest root directory.
     shutil.rmtree(output_data_path)
     os.mkdir(output_data_path)
 
     manifest.regenerate_file_list()
-    assert len(manifest["file_list"]) == 0
+    assert len(manifest["items"]) == 0
 
 
 def test_persist_to_path(tmp_dir_fixture):  # NOQA
@@ -112,7 +115,7 @@ def test_persist_to_path(tmp_dir_fixture):  # NOQA
 
     assert manifest_from_json["dtool_version"] == __version__
     assert manifest_from_json["hash_function"] == "shasum"
-    assert len(manifest_from_json["file_list"]) == 0
+    assert len(manifest_from_json["items"]) == 0
 
 
 def test_file_metadata():
@@ -155,14 +158,9 @@ def test_manifest_from_path(tmp_dir_fixture):  # NOQA
     assert parsed_manifest == manifest
     assert isinstance(parsed_manifest, Manifest)
 
-    shasum_hash_pre_regeneration = parsed_manifest["file_list"][0]["hash"]
-    assert len(parsed_manifest["file_list"]) == 1
+    assert len(parsed_manifest["items"]) == 1
     parsed_manifest.regenerate_file_list()
-    assert len(parsed_manifest["file_list"]) == 2
-
-    hashes_post_regeneration = [i["hash"]
-                                for i in parsed_manifest["file_list"]]
-    assert shasum_hash_pre_regeneration in hashes_post_regeneration
+    assert len(parsed_manifest["items"]) == 2
 
 
 def test_manifest_ignore_using_dtool_markup_scenario(tmp_dir_fixture):  # NOQA
@@ -174,4 +172,4 @@ def test_manifest_ignore_using_dtool_markup_scenario(tmp_dir_fixture):  # NOQA
         "README.yml",
     ]
     manifest = Manifest(data_path, ignore_prefixes=ignore_prefixes)
-    assert len(manifest["file_list"]) == 7
+    assert len(manifest["items"]) == 7

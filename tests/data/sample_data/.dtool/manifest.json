@@ -1,48 +1,48 @@
 {
   "hash_function": "shasum", 
-  "file_list": [
-    {
-      "path": "actually_a_png.txt", 
-      "mtime": 1489507563.0, 
-      "hash": "290d3f1a902c452ce1c184ed793b1d6b83b59164", 
-      "size": 276
-    }, 
-    {
-      "path": "actually_a_text_file.jpg", 
-      "mtime": 1489507563.0, 
-      "hash": "089288cfda0c1eea5969758f3fa71131ffda3fca", 
-      "size": 22
-    }, 
-    {
-      "path": "another_file.txt", 
-      "mtime": 1489507563.0, 
-      "hash": "1d229271928d3f9e2bb0375bd6ce5db6c6d348d9", 
-      "size": 6
-    }, 
-    {
-      "path": "empty_file", 
-      "mtime": 1489507563.0, 
-      "hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709", 
-      "size": 0
-    }, 
-    {
-      "path": "random_bytes", 
-      "mtime": 1489507563.0, 
-      "hash": "b640cee82f798bb38a995b6bd30e8d71a12d7d7c", 
-      "size": 1024
-    }, 
-    {
+  "items": {
+    "1c10766c4a29536bc648260f456202091e2f57b4": {
       "path": "real_text_file.txt", 
-      "mtime": 1489507563.0, 
+      "mtime": 1492683510.0, 
       "hash": "c827a1a1a61e734828f525ae7715d9c5be591496", 
       "size": 18
     }, 
-    {
+    "fbcc24bed36128535a263b74b2e138d7cc43e90c": {
+      "path": "random_bytes", 
+      "mtime": 1492683510.0, 
+      "hash": "b640cee82f798bb38a995b6bd30e8d71a12d7d7c", 
+      "size": 1024
+    }, 
+    "9ca330a84f3dbbdd457a860b5e3c21c917743dd6": {
+      "path": "empty_file", 
+      "mtime": 1492683510.0, 
+      "hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709", 
+      "size": 0
+    }, 
+    "3dce23b901709a24cfbb974b70c1ef132af10a67": {
+      "path": "actually_a_png.txt", 
+      "mtime": 1492683510.0, 
+      "hash": "290d3f1a902c452ce1c184ed793b1d6b83b59164", 
+      "size": 276
+    }, 
+    "42f43f49b74ef7f901010965aae71170c9fd3ef6": {
+      "path": "another_file.txt", 
+      "mtime": 1492683510.0, 
+      "hash": "1d229271928d3f9e2bb0375bd6ce5db6c6d348d9", 
+      "size": 6
+    }, 
+    "ab069337b0f86cdad899d57e8de63d5b2b680c85": {
+      "path": "actually_a_text_file.jpg", 
+      "mtime": 1492683510.0, 
+      "hash": "089288cfda0c1eea5969758f3fa71131ffda3fca", 
+      "size": 22
+    }, 
+    "b55ae3fbe6081eb2ed4ed2c4ea316dbeb943ea2c": {
       "path": "tiny.png", 
-      "mtime": 1489507563.0, 
+      "mtime": 1492683510.0, 
       "hash": "09648d19e11f0b20e5473594fc278afbede3c9a4", 
       "size": 276
     }
-  ], 
+  }, 
   "dtool_version": "0.11.0"
 }
