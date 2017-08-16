@@ -5,6 +5,7 @@ import os
 import pytest
 
 from . import tmp_dir_fixture  # NOQA
+from . import TEST_SAMPLE_DATASET
 
 
 def test_initialise():
@@ -56,3 +57,25 @@ def test_store_and_retrieve_admin_metadata(tmp_dir_fixture):
     storage_broker_2 = DiskStorageBroker(destination_path)
     retrieved_admin_metadata = storage_broker_2.get_admin_metadata()
     assert retrieved_admin_metadata == admin_metadata
+
+
+def test_put_item(tmp_dir_fixture):
+
+    from dtoolcore.storage_broker import DiskStorageBroker
+
+    destination_path = os.path.join(tmp_dir_fixture, 'my_proto_dataset')
+    storage_broker = DiskStorageBroker(destination_path)
+
+    storage_broker.create_structure()
+
+    input_file_path = os.path.join(TEST_SAMPLE_DATASET, 'data', 'tiny.png')
+
+    storage_broker.put_item(
+        fpath=input_file_path,
+        relpath='tiny.png'
+    )
+
+    handles = list(storage_broker.iter_item_handles())
+
+    assert 'tiny.png' in handles
+

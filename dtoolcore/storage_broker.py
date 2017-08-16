@@ -2,6 +2,9 @@
 
 import os
 import json
+import shutil
+
+from dtoolcore.utils import mkdir_parents
 
 
 class StorageBrokerOSError(OSError):
@@ -17,6 +20,8 @@ class DiskStorageBroker(object):
         self._abspath = os.path.abspath(path)
         self._dtool_abspath = os.path.join(self._abspath, '.dtool')
         self._admin_metadata_fpath = os.path.join(self._dtool_abspath, 'dtool')
+
+        self._data_abspath = os.path.join(self._abspath, 'data')
 
     def create_structure(self):
         """Create necessary structure to hold ProtoDataset or DataSet."""
@@ -42,3 +47,27 @@ class DiskStorageBroker(object):
 
         with open(self._admin_metadata_fpath) as fh:
             return json.load(fh)
+
+    def put_item(self, fpath, relpath):
+        """Store item with contents from fpath at relpath."""
+
+        dest_path = os.path.join(self._data_abspath, relpath)
+
+        dirname = os.path.dirname(dest_path)
+
+        mkdir_parents(dirname)
+
+        shutil.copyfile(fpath, dest_path)
+
+    def iter_item_handles(self):
+        """Return iterator over item handles."""
+
+        path = self._data_abspath
+        path_length = len(path) + 1
+
+        for dirpath, dirnames, filenames in os.walk(path):
+            for fn in filenames:
+                path = os.path.join(dirpath, fn)
+                relative_path = path[path_length:]
+                yield relative_path
+
