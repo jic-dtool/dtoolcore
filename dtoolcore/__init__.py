@@ -180,7 +180,7 @@ class DataSet(_DtoolObject):
     @property
     def identifiers(self):
         """Return list of dataset item identifiers."""
-        return self.manifest["items"].keys()
+        return list(self.manifest["items"].keys())
 
     @property
     def name(self):
