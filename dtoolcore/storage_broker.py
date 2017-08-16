@@ -70,4 +70,3 @@ class DiskStorageBroker(object):
                 path = os.path.join(dirpath, fn)
                 relative_path = path[path_length:]
                 yield relative_path
-

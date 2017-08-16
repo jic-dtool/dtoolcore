@@ -47,4 +47,3 @@ def mkdir_parents(path):
             pass
         else:
             raise
-

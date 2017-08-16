@@ -13,7 +13,7 @@ def test_initialise():
     from dtoolcore.storage_broker import DiskStorageBroker
 
     path = '/a/path'
-    storage_broker = DiskStorageBroker(path=path)
+    storage_broker = DiskStorageBroker(path=path)  # NOQA
 
 
 def test_create_structure(tmp_dir_fixture):  # NOQA
@@ -42,7 +42,7 @@ def test_create_structure(tmp_dir_fixture):  # NOQA
         storage_broker.create_structure()
 
 
-def test_store_and_retrieve_admin_metadata(tmp_dir_fixture):
+def test_store_and_retrieve_admin_metadata(tmp_dir_fixture):  # NOQA
 
     from dtoolcore.storage_broker import DiskStorageBroker
 
@@ -59,7 +59,7 @@ def test_store_and_retrieve_admin_metadata(tmp_dir_fixture):
     assert retrieved_admin_metadata == admin_metadata
 
 
-def test_put_item(tmp_dir_fixture):
+def test_put_item(tmp_dir_fixture):  # NOQA
 
     from dtoolcore.storage_broker import DiskStorageBroker
 
@@ -78,4 +78,3 @@ def test_put_item(tmp_dir_fixture):
     handles = list(storage_broker.iter_item_handles())
 
     assert 'tiny.png' in handles
-
