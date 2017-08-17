@@ -155,3 +155,46 @@ def test_item_properties(tmp_dir_fixture):  # NOQA
 
     # Check relpath property
     assert item_properties['relpath'] == 'tiny.png'
+
+
+def test_store_and_retrieve_item_metadata(tmp_dir_fixture):  # NOQA
+    from dtoolcore.storage_broker import DiskStorageBroker
+
+    destination_path = os.path.join(tmp_dir_fixture, 'my_proto_dataset')
+    storage_broker = DiskStorageBroker(destination_path)
+
+    storage_broker.create_structure()
+
+    input_file_path = os.path.join(TEST_SAMPLE_DATASET, 'data', 'tiny.png')
+
+    storage_broker.put_item(
+        fpath=input_file_path,
+        relpath='tiny.png'
+    )
+
+    handles = list(storage_broker.iter_item_handles())
+
+    handle = handles[0]
+
+    # Here we add two set of metadata with different keys
+    storage_broker.add_item_metadata(
+        handle=handle,
+        key='foo',
+        value='bar'
+    )
+    storage_broker.add_item_metadata(
+        handle=handle,
+        key='key',
+        value={'subkey': 'subval',
+               'morekey': 'moreval'}
+    )
+
+    # Test metadata retrieval (we get back both sets of metadata)
+    metadata = storage_broker.get_item_metadata(handle)
+    assert metadata == {
+        'foo': 'bar',
+        'key': {
+                    'subkey': 'subval',
+                    'morekey': 'moreval'
+        }
+    }
