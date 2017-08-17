@@ -1,6 +1,8 @@
 """Tests for disk storage broker."""
 
 import os
+import pytz
+import datetime
 
 import pytest
 
@@ -95,3 +97,48 @@ def test_store_and_retrieve_manifest(tmp_dir_fixture):  # NOQA
     retrieved_manifest = storage_broker.get_manifest()
 
     assert retrieved_manifest == manifest
+
+
+def test_item_properties(tmp_dir_fixture):  # NOQA
+    from dtoolcore.storage_broker import DiskStorageBroker
+
+    destination_path = os.path.join(tmp_dir_fixture, 'my_proto_dataset')
+    storage_broker = DiskStorageBroker(destination_path)
+
+    storage_broker.create_structure()
+
+    input_file_path = os.path.join(TEST_SAMPLE_DATASET, 'data', 'tiny.png')
+
+    storage_broker.put_item(
+        fpath=input_file_path,
+        relpath='tiny.png'
+    )
+
+    handles = list(storage_broker.iter_item_handles())
+
+    handle = handles[0]
+
+    item_properties = storage_broker.item_properties(handle)
+
+    # Check size_in_bytes property
+    assert item_properties['size_in_bytes'] == 276
+
+    # Check timestamp property
+    assert 'utc_timestamp' in item_properties
+
+    time_from_item = datetime.datetime.fromtimestamp(
+        float(item_properties['utc_timestamp']),
+        tz=pytz.UTC
+    )
+    time_delta = datetime.datetime.now(tz=pytz.UTC) - time_from_item
+    assert time_delta.days == 0
+    assert time_delta.seconds < 20
+
+    # Check hash property
+    from dtoolcore.filehasher import md5sum
+    expected_hash = md5sum(input_file_path)
+
+    assert item_properties['hash'] == expected_hash
+
+    # Check relpath property
+    assert item_properties['relpath'] == 'tiny.png'

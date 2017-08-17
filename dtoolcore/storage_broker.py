@@ -3,8 +3,10 @@
 import os
 import json
 import shutil
+import datetime
 
 from dtoolcore.utils import mkdir_parents
+from dtoolcore.filehasher import md5sum
 
 
 class StorageBrokerOSError(OSError):
@@ -86,3 +88,17 @@ class DiskStorageBroker(object):
 
         with open(self._manifest_abspath) as fh:
             return json.load(fh)
+
+    def item_properties(self, handle):
+        """Return properties of the item with the given handle."""
+
+        fpath = os.path.join(self._data_abspath, handle)
+
+        properties = {
+            'size_in_bytes': os.stat(fpath).st_size,
+            'utc_timestamp': os.stat(fpath).st_mtime,
+            'hash': md5sum(fpath),
+            'relpath': handle
+        }
+
+        return properties
