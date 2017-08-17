@@ -22,6 +22,10 @@ class DiskStorageBroker(object):
         self._admin_metadata_fpath = os.path.join(self._dtool_abspath, 'dtool')
 
         self._data_abspath = os.path.join(self._abspath, 'data')
+        self._manifest_abspath = os.path.join(
+            self._dtool_abspath,
+            'manifest.json'
+        )
 
     def create_structure(self):
         """Create necessary structure to hold ProtoDataset or DataSet."""
@@ -33,11 +37,11 @@ class DiskStorageBroker(object):
 
         os.mkdir(self._abspath)
 
-    def store_admin_metadata(self, admin_metadata):
-        """Store the admin metadata by writing to disk."""
-
         if not os.path.isdir(self._dtool_abspath):
             os.mkdir(self._dtool_abspath)
+
+    def store_admin_metadata(self, admin_metadata):
+        """Store the admin metadata by writing to disk."""
 
         with open(self._admin_metadata_fpath, 'w') as fh:
             json.dump(admin_metadata, fh)
@@ -70,3 +74,15 @@ class DiskStorageBroker(object):
                 path = os.path.join(dirpath, fn)
                 relative_path = path[path_length:]
                 yield relative_path
+
+    def store_manifest(self, manifest_contents):
+        """Store the given manifest contents so we can retrieve it later."""
+
+        with open(self._manifest_abspath, 'w') as fh:
+            json.dump(manifest_contents, fh)
+
+    def get_manifest(self):
+        """Retrieve the manifest contents."""
+
+        with open(self._manifest_abspath) as fh:
+            return json.load(fh)

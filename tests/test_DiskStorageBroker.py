@@ -78,3 +78,20 @@ def test_put_item(tmp_dir_fixture):  # NOQA
     handles = list(storage_broker.iter_item_handles())
 
     assert 'tiny.png' in handles
+
+
+def test_store_and_retrieve_manifest(tmp_dir_fixture):  # NOQA
+    from dtoolcore.storage_broker import DiskStorageBroker
+
+    destination_path = os.path.join(tmp_dir_fixture, 'my_proto_dataset')
+    storage_broker = DiskStorageBroker(destination_path)
+
+    storage_broker.create_structure()
+
+    manifest = {'a': 'b', 'c': [1, 2, 3]}
+
+    storage_broker.store_manifest(manifest)
+
+    retrieved_manifest = storage_broker.get_manifest()
+
+    assert retrieved_manifest == manifest
