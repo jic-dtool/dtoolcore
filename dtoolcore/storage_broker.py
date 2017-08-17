@@ -28,6 +28,10 @@ class DiskStorageBroker(object):
             self._dtool_abspath,
             'manifest.json'
         )
+        self._readme_abspath = os.path.join(
+            self._abspath,
+            'README.yml'
+        )
 
     def create_structure(self):
         """Create necessary structure to hold ProtoDataset or DataSet."""
@@ -102,3 +106,16 @@ class DiskStorageBroker(object):
         }
 
         return properties
+
+    def store_readme(self, readme_contents):
+        """Store readme contents. It is up to the caller to ensure that the
+        contents are valid YAML."""
+
+        with open(self._readme_abspath, 'w') as fh:
+            fh.write(readme_contents)
+
+    def get_readme_contents(self):
+        """Return contents of the readme file as a string."""
+
+        with open(self._readme_abspath) as fh:
+            return fh.read()

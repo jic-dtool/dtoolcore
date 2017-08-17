@@ -44,6 +44,19 @@ def test_create_structure(tmp_dir_fixture):  # NOQA
         storage_broker.create_structure()
 
 
+def test_store_and_retrieve_readme(tmp_dir_fixture):  # NOQA
+
+    from dtoolcore.storage_broker import DiskStorageBroker
+
+    destination_path = os.path.join(tmp_dir_fixture, 'my_proto_dataset')
+    storage_broker = DiskStorageBroker(destination_path)
+
+    storage_broker.create_structure()
+
+    storage_broker.store_readme('Hello world')
+    assert storage_broker.get_readme_contents() == 'Hello world'
+
+
 def test_store_and_retrieve_admin_metadata(tmp_dir_fixture):  # NOQA
 
     from dtoolcore.storage_broker import DiskStorageBroker
