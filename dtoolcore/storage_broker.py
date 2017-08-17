@@ -157,6 +157,9 @@ class DiskStorageBroker(object):
     def get_item_metadata(self, handle):
         """Return dictionary with all metadata associated with handle."""
 
+        if not os.path.isdir(self._metadata_fragments_abspath):
+            return {}
+
         prefix = self._handle_to_fragment_absprefixpath(handle)
 
         def list_abspaths(dirname):
