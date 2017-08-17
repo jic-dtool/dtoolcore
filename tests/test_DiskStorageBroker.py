@@ -165,16 +165,7 @@ def test_store_and_retrieve_item_metadata(tmp_dir_fixture):  # NOQA
 
     storage_broker.create_structure()
 
-    input_file_path = os.path.join(TEST_SAMPLE_DATASET, 'data', 'tiny.png')
-
-    storage_broker.put_item(
-        fpath=input_file_path,
-        relpath='tiny.png'
-    )
-
-    handles = list(storage_broker.iter_item_handles())
-
-    handle = handles[0]
+    handle = 'dummy'
 
     # Here we add two set of metadata with different keys
     storage_broker.add_item_metadata(
@@ -198,3 +189,23 @@ def test_store_and_retrieve_item_metadata(tmp_dir_fixture):  # NOQA
                     'morekey': 'moreval'
         }
     }
+
+
+def test_store_and_retrieve_item_metadata(tmp_dir_fixture):  # NOQA
+    from dtoolcore.storage_broker import DiskStorageBroker
+
+    destination_path = os.path.join(tmp_dir_fixture, 'my_proto_dataset')
+    storage_broker = DiskStorageBroker(destination_path)
+
+    storage_broker.create_structure()
+
+    example_overlay = {
+        'abcdef': 1,
+        'ghijkl': 2
+    }
+
+    storage_broker.store_overlay(example_overlay, 'example')
+
+    retrieved_overlay = storage_broker.get_overlay('example')
+
+    assert example_overlay == retrieved_overlay

@@ -39,6 +39,10 @@ class DiskStorageBroker(object):
             self._dtool_abspath,
             'tmp_fragments'
         )
+        self._overlays_abspath = os.path.join(
+            self._dtool_abspath,
+            'overlays'
+        )
 
     def create_structure(self):
         """Create necessary structure to hold ProtoDataset or DataSet."""
@@ -52,6 +56,9 @@ class DiskStorageBroker(object):
 
         if not os.path.isdir(self._dtool_abspath):
             os.mkdir(self._dtool_abspath)
+
+        if not os.path.isdir(self._overlays_abspath):
+            os.mkdir(self._overlays_abspath)
 
     def store_admin_metadata(self, admin_metadata):
         """Store the admin metadata by writing to disk."""
@@ -171,5 +178,20 @@ class DiskStorageBroker(object):
             metadata[key] = value
 
         return metadata
+
+    def store_overlay(self, overlay, overlay_name):
+
+        fpath = os.path.join(self._overlays_abspath, overlay_name + '.json')
+
+        with open(fpath, 'w') as fh:
+            json.dump(overlay, fh)
+
+    def get_overlay(self, overlay_name):
+
+        fpath = os.path.join(self._overlays_abspath, overlay_name + '.json')
+
+        with open(fpath) as fh:
+            return json.load(fh)
+
 
     # def get_item_abspath(self):
