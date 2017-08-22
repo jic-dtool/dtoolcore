@@ -97,10 +97,7 @@ class ProtoDataSet(object):
 
     @property
     def readme_content(self):
-
-        return self._storage_broker.get_text(
-            self._admin_metadata["readme_path"]
-        )
+        return self._storage_broker.get_readme_contents()
 
     def freeze(self):
 

@@ -43,8 +43,8 @@ def test_creation_and_reading(tmp_dir_fixture):  # NOQA
     # Test put/get README content
     assert proto_dataset.readme_content == ""
     proto_dataset = ProtoDataSet.from_uri(dest_path)
-#   proto_dataset.put_readme("Hello world!")
-#   assert proto_dataset.readme_content == "Hello world!"
+    proto_dataset.put_readme("Hello world!")
+    assert proto_dataset.readme_content == "Hello world!"
 
 #   # Test putting a local file
 #   local_file_path = os.path.join(sample_data_path, 'tiny.png')

@@ -197,10 +197,4 @@ class DiskStorageBroker(object):
         with open(fpath) as fh:
             return json.load(fh)
 
-    def get_text(self, fpath):
-        if not os.path.isfile(fpath):
-            return ""
-        with open(fpath) as fh:
-            return fpath.read()
-
     # def get_item_abspath(self):
