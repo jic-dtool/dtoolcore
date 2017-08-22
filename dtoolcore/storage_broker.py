@@ -183,7 +183,7 @@ class DiskStorageBroker(object):
 
         return metadata
 
-    def store_overlay(self, overlay, overlay_name):
+    def store_overlay(self, overlay_name, overlay):
 
         fpath = os.path.join(self._overlays_abspath, overlay_name + '.json')
 

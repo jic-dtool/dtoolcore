@@ -204,7 +204,10 @@ def test_store_and_retrieve_item_metadata(tmp_dir_fixture):  # NOQA
         'ghijkl': 2
     }
 
-    storage_broker.store_overlay(example_overlay, 'example')
+    storage_broker.store_overlay(
+        overlay_name="example",
+        overlay=example_overlay
+    )
 
     retrieved_overlay = storage_broker.get_overlay('example')
 
