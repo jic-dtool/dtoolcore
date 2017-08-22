@@ -115,7 +115,7 @@ class ProtoDataSet(object):
                 all_user_metadata[k][identifier] = v
 
         for overlay_name, overlay in all_user_metadata.items():
-            self._storage_broker.store_overlay(overlay_name, overlay)
+            self._storage_broker.put_overlay(overlay_name, overlay)
 
         now_timestamp = datetime.datetime.utcnow().strftime("%s")
         metadata_update = {

@@ -81,4 +81,4 @@ class DataSet(object):
         if set(self.identifiers) != set(overlay.keys()):
             raise ValueError("Overlay keys must be dataset identifiers")
 
-        self._storage_broker.store_overlay(overlay_name, overlay)
+        self._storage_broker.put_overlay(overlay_name, overlay)

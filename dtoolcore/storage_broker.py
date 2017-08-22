@@ -61,7 +61,8 @@ class DiskStorageBroker(object):
         with open(self._readme_abspath) as fh:
             return fh.read()
 
-    def store_overlay(self, overlay_name, overlay):
+    def put_overlay(self, overlay_name, overlay):
+        """Store the overlay by writing it to disk."""
 
         fpath = os.path.join(self._overlays_abspath, overlay_name + '.json')
         with open(fpath, 'w') as fh:
