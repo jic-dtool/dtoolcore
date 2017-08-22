@@ -65,7 +65,8 @@ class DataSet(object):
         """Return absolute path at which item contents can be accessed."""
         return self._storage_broker.get_item_abspath(identifier)
 
-    def access_overlay(self, overlay_name):
+    def get_overlay(self, overlay_name):
+        """Return overlay as a dictionary."""
 
         return self._storage_broker.get_overlay(overlay_name)
 
