@@ -59,7 +59,7 @@ def test_proto_dataset_freeze_functional(tmp_dir_fixture):  # NOQA
             filename[0]
         )
 
-    proto_dataset.put_readme('Hello world!')
+    proto_dataset.put_readme(content='Hello world!')
 
     # We shouldn't be able to load this as a DataSet
     with pytest.raises(TypeError):

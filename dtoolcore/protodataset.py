@@ -91,9 +91,9 @@ class ProtoDataSet(object):
             relpath
         )
 
-    def put_readme(self, contents):
+    def put_readme(self, content):
 
-        self._storage_broker.put_readme(contents)
+        self._storage_broker.put_readme(content)
 
     def get_readme_content(self):
         return self._storage_broker.get_readme_content()
