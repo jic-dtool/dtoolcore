@@ -121,7 +121,7 @@ class DiskStorageBroker(object):
         with open(self._manifest_abspath, 'w') as fh:
             json.dump(manifest_contents, fh)
 
-    def store_readme(self, readme_contents):
+    def put_readme(self, readme_contents):
         """Store readme contents. It is up to the caller to ensure that the
         contents are valid YAML."""
 

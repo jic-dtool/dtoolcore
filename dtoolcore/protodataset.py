@@ -93,7 +93,7 @@ class ProtoDataSet(object):
 
     def put_readme(self, contents):
 
-        self._storage_broker.store_readme(contents)
+        self._storage_broker.put_readme(contents)
 
     @property
     def readme_content(self):
