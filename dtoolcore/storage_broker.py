@@ -61,7 +61,7 @@ class DiskStorageBroker(object):
         if not os.path.isdir(self._overlays_abspath):
             os.mkdir(self._overlays_abspath)
 
-    def store_admin_metadata(self, admin_metadata):
+    def put_admin_metadata(self, admin_metadata):
         """Store the admin metadata by writing to disk."""
 
         with open(self._admin_metadata_fpath, 'w') as fh:

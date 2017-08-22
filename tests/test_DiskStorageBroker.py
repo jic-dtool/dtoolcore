@@ -67,7 +67,7 @@ def test_store_and_retrieve_admin_metadata(tmp_dir_fixture):  # NOQA
     storage_broker.create_structure()
 
     admin_metadata = {'hello': 'world'}
-    storage_broker.store_admin_metadata(admin_metadata)
+    storage_broker.put_admin_metadata(admin_metadata)
 
     storage_broker_2 = DiskStorageBroker(destination_path)
     retrieved_admin_metadata = storage_broker_2.get_admin_metadata()

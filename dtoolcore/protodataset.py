@@ -37,7 +37,7 @@ class ProtoDataSet(object):
         proto_dataset._storage_broker = DiskStorageBroker(uri)
 
         proto_dataset._storage_broker.create_structure()
-        proto_dataset._storage_broker.store_admin_metadata(
+        proto_dataset._storage_broker.put_admin_metadata(
             proto_dataset._admin_metadata
         )
 
@@ -124,7 +124,7 @@ class ProtoDataSet(object):
         }
 
         self._admin_metadata.update(metadata_update)
-        self._storage_broker.store_admin_metadata(self._admin_metadata)
+        self._storage_broker.put_admin_metadata(self._admin_metadata)
 
         self._storage_broker.post_freeze_hook()
 
