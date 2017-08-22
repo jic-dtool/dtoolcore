@@ -80,7 +80,7 @@ def test_proto_dataset_freeze_functional(tmp_dir_fixture):  # NOQA
     assert set(dataset.identifiers) == set(expected_identifiers)
 
     # Test readme contents
-#   assert dataset.readme_content == "Hello world!"
+    assert dataset.readme_content == "Hello world!"
 
 #   # Test item
 #   expected_identifier = sha1_hexdigest('tiny.png')
