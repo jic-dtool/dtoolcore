@@ -31,6 +31,79 @@ def test_basic_workflow(tmp_dir_fixture):  # NOQA
     assert expected_identifier in dataset.identifiers
     assert len(dataset.identifiers) == 1
 
+
+def test_proto_dataset_freeze_functional():
+
+#   from dtool_azure import AzureProtoDataSet, AzureDataSet
+
+#   sample_data_path = os.path.join(TEST_SAMPLE_DATASET_PATH, 'data')
+
+#   proto_dataset = AzureProtoDataSet.create("func_test_dataset_freeze")
+#   uuid = proto_dataset.uuid
+
+#   with tmp_azure_container(uuid):
+
+#       filenames = ['tiny.png', 'actually_a_png.txt', 'another_file.txt']
+#       for filename in filenames:
+#           local_file_path = os.path.join(sample_data_path, filename)
+#           proto_dataset.put_item(local_file_path, filename)
+#           expected_identifier = sha1_hexdigest(filename)
+#           proto_dataset.add_item_metadata(
+#               expected_identifier,
+#               'namelen',
+#               len(filename)
+#           )
+#           proto_dataset.add_item_metadata(
+#               expected_identifier,
+#               'firstletter',
+#               filename[0]
+#           )
+
+#       proto_dataset.put_readme('Hello world!')
+
+#       # We shouldn't be able to load this as a DataSet
+#       with pytest.raises(TypeError):
+#           AzureDataSet.from_uri(uuid)
+
+#       proto_dataset.freeze()
+
+#       # Now we shouln't be able to load as a ProtoDataSet
+#       with pytest.raises(TypeError):
+#           AzureProtoDataSet.from_uri(uuid)
+
+#       # But we can as a DataSet
+#       dataset = AzureDataSet.from_uri(uuid)
+#       assert dataset.name == 'func_test_dataset_freeze'
+
+#       # Test identifiers
+#       expected_identifiers = map(sha1_hexdigest, filenames)
+#       assert set(dataset.identifiers) == set(expected_identifiers)
+
+#       # Test readme contents
+#       assert dataset.readme_content == "Hello world!"
+
+#       # Test item
+#       expected_identifier = sha1_hexdigest('tiny.png')
+#       item_properties = dataset.item_properties(expected_identifier)
+#       assert item_properties['path'] == 'tiny.png'
+#       assert item_properties['size'] == 276
+#       assert item_properties['md5sum'] == 'dc73192d2f81d7009ce5a1ee7bad5755'
+
+#       # Test accessing item
+#       expected_identifier = sha1_hexdigest('another_file.txt')
+#       fpath = dataset.item_contents_abspath(expected_identifier)
+
+#       with open(fpath) as fh:
+#           contents = fh.read()
+
+#       assert contents == "Hello\n"
+
+#       # Test overlays have been created properly
+#       namelen_overlay = dataset.access_overlay('namelen')
+#       expected_identifier = sha1_hexdigest('another_file.txt')
+#       assert namelen_overlay[expected_identifier] == len('another_file.txt')
+
+
 def test_creation_and_reading(tmp_dir_fixture):  # NOQA
     from dtoolcore.protodataset import ProtoDataSet
 
