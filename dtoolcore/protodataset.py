@@ -74,7 +74,7 @@ class ProtoDataSet(object):
         items = {
             generate_identifier(handle):
                 self._storage_broker.item_properties(handle)
-            for handle in self._iterhandles()
+            for handle in self._storage_broker.iter_item_handles()
         }
 
         manifest = {
@@ -108,7 +108,7 @@ class ProtoDataSet(object):
         self._storage_broker.put_manifest(manifest)
 
         all_user_metadata = defaultdict(dict)
-        for handle in self._iterhandles():
+        for handle in self._storage_broker.iter_item_handles():
             identifier = generate_identifier(handle)
             item_metadata = self._storage_broker.get_item_metadata(handle)
             for k, v in item_metadata.items():
@@ -127,7 +127,3 @@ class ProtoDataSet(object):
         self._storage_broker.put_admin_metadata(self._admin_metadata)
 
         self._storage_broker.post_freeze_hook()
-
-    def _iterhandles(self):
-
-        return self._storage_broker.iter_item_handles()

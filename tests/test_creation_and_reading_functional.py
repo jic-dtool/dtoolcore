@@ -132,7 +132,7 @@ def test_creation_and_reading(tmp_dir_fixture):  # NOQA
     handle = "tiny.png"
     local_file_path = os.path.join(sample_data_path, 'tiny.png')
     proto_dataset.put_item(local_file_path, handle)
-    assert handle in list(proto_dataset._iterhandles())
+    assert handle in list(proto_dataset._storage_broker.iter_item_handles())
 
     # Test properties of that file
     item_properties = proto_dataset._storage_broker.item_properties(handle)
