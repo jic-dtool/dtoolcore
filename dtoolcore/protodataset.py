@@ -109,6 +109,7 @@ class ProtoDataSet(object):
 
         all_user_metadata = defaultdict(dict)
         for handle in self._iterhandles():
+            identifier = generate_identifier(handle)
             item_metadata = self._storage_broker.get_item_metadata(handle)
             for k, v in item_metadata.items():
                 all_user_metadata[k][identifier] = v

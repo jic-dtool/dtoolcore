@@ -64,7 +64,7 @@ def test_proto_dataset_freeze_functional(tmp_dir_fixture):  # NOQA
     with pytest.raises(TypeError):
         DataSet.from_uri(dest_path)
 
-#   proto_dataset.freeze()
+    proto_dataset.freeze()
 
 #   # Now we shouln't be able to load as a ProtoDataSet
 #   with pytest.raises(TypeError):
