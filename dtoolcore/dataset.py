@@ -68,7 +68,7 @@ class DataSet(object):
 
     def access_overlay(self, overlay_name):
 
-        return self._storage_broker.access_overlay(overlay_name)
+        return self._storage_broker.get_overlay(overlay_name)
 
     def put_overlay(self, overlay_name, overlay):
         """Store the given overlay so that it is accessible by the given name.

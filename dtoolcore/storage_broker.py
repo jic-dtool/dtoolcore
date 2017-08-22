@@ -202,11 +202,3 @@ class DiskStorageBroker(object):
         item = manifest["items"][identifier]
         item_abspath = os.path.join(self._data_abspath, item["relpath"])
         return item_abspath
-
-    def access_overlay(self, overlay_name):
-        overlay_abspath = os.path.join(
-            self._overlays_abspath,
-            overlay_name + ".json"
-        )
-        with open(overlay_abspath) as fh:
-            return json.load(fh)
