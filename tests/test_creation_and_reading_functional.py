@@ -1,6 +1,9 @@
 """Functional tests for creation and reading of a disk based DataSet."""
 
 import os
+import datetime
+
+import pytz
 
 from . import tmp_dir_fixture  # NOQA
 from . import TEST_SAMPLE_DATASET
@@ -46,27 +49,28 @@ def test_creation_and_reading(tmp_dir_fixture):  # NOQA
     proto_dataset.put_readme("Hello world!")
     assert proto_dataset.readme_content == "Hello world!"
 
-#   # Test putting a local file
-#   local_file_path = os.path.join(sample_data_path, 'tiny.png')
-#   actual_identifier = proto_dataset.put_item(local_file_path, 'tiny.png')
-#   expected_identifier = sha1_hexdigest('tiny.png')
-#   assert actual_identifier == expected_identifier
-#   assert expected_identifier in list(proto_dataset._iteridentifiers())
+    # Test putting a local file
+    handle = "tiny.png"
+    local_file_path = os.path.join(sample_data_path, 'tiny.png')
+    proto_dataset.put_item(local_file_path, handle)
+    assert handle in list(proto_dataset._iterhandles())
 
-#   # Test properties of that file
-#   item_properties = proto_dataset._item_properties(expected_identifier)
-#   assert item_properties['path'] == 'tiny.png'
-#   assert item_properties['size'] == 276
-#   assert item_properties['md5sum'] == 'dc73192d2f81d7009ce5a1ee7bad5755'
-#   time_from_item = datetime.datetime.fromtimestamp(
-#       float(item_properties['mtime'])
-#   )
-#   time_delta = datetime.datetime.utcnow() - time_from_item
-#   assert time_delta.days == 0
-#   assert time_delta.seconds < 20
+    # Test properties of that file
+    item_properties = proto_dataset._item_properties(handle)
+    assert item_properties['relpath'] == 'tiny.png'
+    assert item_properties['size_in_bytes'] == 276
+    assert item_properties['hash'] == 'dc73192d2f81d7009ce5a1ee7bad5755'
+    assert 'utc_timestamp' in item_properties
+    time_from_item = datetime.datetime.fromtimestamp(
+        float(item_properties['utc_timestamp']),
+        tz=pytz.UTC
+    )
+    time_delta = datetime.datetime.now(tz=pytz.UTC) - time_from_item
+    assert time_delta.days == 0
+    assert time_delta.seconds < 20
 
 #   # Add metadata
-#   proto_dataset.add_item_metadata(expected_identifier, 'foo', 'bar')
+#   proto_dataset.add_item_metadata(handle, 'foo', 'bar')
 #   proto_dataset.add_item_metadata(
 #       expected_identifier,
 #       'key',
