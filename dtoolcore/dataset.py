@@ -64,8 +64,7 @@ class DataSet(object):
 
     def item_contents_abspath(self, identifier):
         """Return absolute path at which item contents can be accessed."""
-
-        raise Exception("Not implemented.")
+        return self._storage_broker.get_item_abspath(identifier)
 
     def access_overlay(self, overlay_name):
 

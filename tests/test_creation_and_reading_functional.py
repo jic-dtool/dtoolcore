@@ -89,14 +89,14 @@ def test_proto_dataset_freeze_functional(tmp_dir_fixture):  # NOQA
     assert item_properties['size_in_bytes'] == 276
     assert item_properties['hash'] == 'dc73192d2f81d7009ce5a1ee7bad5755'
 
-#   # Test accessing item
-#   expected_identifier = generate_identifier('another_file.txt')
-#   fpath = dataset.item_contents_abspath(expected_identifier)
+    # Test accessing item
+    expected_identifier = generate_identifier('another_file.txt')
+    fpath = dataset.item_contents_abspath(expected_identifier)
 
-#   with open(fpath) as fh:
-#       contents = fh.read()
+    with open(fpath) as fh:
+        contents = fh.read()
 
-#   assert contents == "Hello\n"
+    assert contents == "Hello\n"
 
 #   # Test overlays have been created properly
 #   namelen_overlay = dataset.access_overlay('namelen')

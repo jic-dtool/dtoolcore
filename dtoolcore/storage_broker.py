@@ -197,4 +197,9 @@ class DiskStorageBroker(object):
         with open(fpath) as fh:
             return json.load(fh)
 
-    # def get_item_abspath(self):
+    def get_item_abspath(self, identifier):
+        manifest = self.get_manifest()
+        item = manifest["items"][identifier]
+        item_abspath = os.path.join(self._data_abspath, item["relpath"])
+        return item_abspath
+
