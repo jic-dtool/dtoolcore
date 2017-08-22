@@ -78,15 +78,15 @@ def test_creation_and_reading(tmp_dir_fixture):  # NOQA
          'morekey': 'moreval'}
     )
 
-#   # Test metadata retrieval
-#   metadata = proto_dataset._item_metadata(expected_identifier)
-#   assert metadata == {
-#       'foo': 'bar',
-#       'key': {
-#                   'subkey': 'subval',
-#                   'morekey': 'moreval'
-#       }
-#   }
+    # Test metadata retrieval
+    metadata = proto_dataset._storage_broker.get_item_metadata(handle)
+    assert metadata == {
+        'foo': 'bar',
+        'key': {
+                    'subkey': 'subval',
+                    'morekey': 'moreval'
+        }
+    }
 
 #   # Add another item and test manifest
 #   from dtool_azure import __version__
