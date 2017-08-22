@@ -45,6 +45,19 @@ class ProtoDataSet(object):
 
         return proto_dataset
 
+    @classmethod
+    def from_uri(cls, uri):
+        storage_broker = DiskStorageBroker(uri)
+        admin_metadata = storage_broker.get_admin_metadata()
+        if admin_metadata["type"] != "protodataset":
+            raise(TypeError("{} is not a ProtoDataSet".format(uri)))
+        proto_dataset = cls(
+            name=None,
+            admin_metadata=admin_metadata
+        )
+        proto_dataset._storage_broker = storage_broker
+        return proto_dataset
+
     @property
     def uuid(self):
         """Return the proto dataset's UUID."""
