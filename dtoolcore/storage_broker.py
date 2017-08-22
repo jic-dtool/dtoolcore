@@ -3,7 +3,6 @@
 import os
 import json
 import shutil
-import datetime
 
 from dtoolcore.utils import (
     mkdir_parents,
@@ -195,6 +194,5 @@ class DiskStorageBroker(object):
 
         with open(fpath) as fh:
             return json.load(fh)
-
 
     # def get_item_abspath(self):

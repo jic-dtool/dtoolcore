@@ -6,7 +6,7 @@ from . import tmp_dir_fixture  # NOQA
 from . import TEST_SAMPLE_DATASET
 
 
-def test_basic_workflow(tmp_dir_fixture):
+def test_basic_workflow(tmp_dir_fixture):  # NOQA
 
     from dtoolcore.protodataset import ProtoDataSet
     from dtoolcore.dataset import DataSet
