@@ -71,11 +71,11 @@ class ProtoDataSet(object):
     def _generate_manifest(self):
         """Return manifest generated from knowledge about contents."""
 
-        items = {
-            generate_identifier(handle):
-                self._storage_broker.item_properties(handle)
-            for handle in self._storage_broker.iter_item_handles()
-        }
+        items = dict()
+        for handle in self._storage_broker.iter_item_handles():
+            key = generate_identifier(handle)
+            value = self._storage_broker.item_properties(handle)
+            items[key] = value
 
         manifest = {
             "items": items,
