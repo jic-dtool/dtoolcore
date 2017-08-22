@@ -43,9 +43,12 @@ def test_creation_and_reading(tmp_dir_fixture):  # NOQA
 
     assert proto_dataset.name == "func_test_dataset"
 
-    # Test put/get README content
-    assert proto_dataset.readme_content == ""
+    # Test reading from URI.
     proto_dataset = ProtoDataSet.from_uri(dest_path)
+    assert proto_dataset.name == "func_test_dataset"
+
+    # Test get/put readme.
+    assert proto_dataset.readme_content == ""
     proto_dataset.put_readme("Hello world!")
     assert proto_dataset.readme_content == "Hello world!"
 
