@@ -49,7 +49,7 @@ class DataSet(object):
 
     @property
     def readme_content(self):
-        return self._storage_broker.get_readme_contents()
+        return self._storage_broker.get_readme_content()
 
     @property
     def name(self):

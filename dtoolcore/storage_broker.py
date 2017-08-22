@@ -55,8 +55,8 @@ class DiskStorageBroker(object):
         with open(self._admin_metadata_fpath) as fh:
             return json.load(fh)
 
-    def get_readme_contents(self):
-        """Return contents of the readme file as a string."""
+    def get_readme_content(self):
+        """Return content of the readme file as a string."""
 
         with open(self._readme_abspath) as fh:
             return fh.read()

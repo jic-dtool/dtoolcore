@@ -54,7 +54,7 @@ def test_store_and_retrieve_readme(tmp_dir_fixture):  # NOQA
     storage_broker.create_structure()
 
     storage_broker.put_readme('Hello world')
-    assert storage_broker.get_readme_contents() == 'Hello world'
+    assert storage_broker.get_readme_content() == 'Hello world'
 
 
 def test_store_and_retrieve_admin_metadata(tmp_dir_fixture):  # NOQA
