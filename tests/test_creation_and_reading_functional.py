@@ -10,7 +10,7 @@ def test_basic_workflow(tmp_dir_fixture):  # NOQA
 
     from dtoolcore.protodataset import ProtoDataSet
     from dtoolcore.dataset import DataSet
-    # from dtoolcore.utils import generate_identifier
+    from dtoolcore.utils import generate_identifier
 
     sample_data_path = os.path.join(TEST_SAMPLE_DATASET, 'data')
     dest_path = os.path.join(tmp_dir_fixture, 'my_dataset')
@@ -24,9 +24,9 @@ def test_basic_workflow(tmp_dir_fixture):  # NOQA
     # Read in a dataset
     dataset = DataSet.from_uri(dest_path)
 
-    # expected_identifier = generate_identifier('tiny.png')
-    # assert expected_identifier in dataset.identifiers
-    # assert len(dataset.identifiers) == 1
+    expected_identifier = generate_identifier('tiny.png')
+    assert expected_identifier in dataset.identifiers
+    assert len(dataset.identifiers) == 1
 
 # def test_creation_and_reading(tmp_dir_fixture):  # NOQA
 #     from dtool_azure import AzureProtoDataSet

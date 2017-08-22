@@ -4,6 +4,7 @@ import datetime
 from collections import defaultdict
 
 import dtoolcore.utils
+from dtoolcore.utils import generate_identifier
 
 from dtoolcore.storage_broker import DiskStorageBroker
 
@@ -58,7 +59,7 @@ class ProtoDataSet(object):
         """Return manifest generated from knowledge about contents."""
 
         items = {
-            handle: self._item_properties(handle)
+            generate_identifier(handle): self._item_properties(handle)
             for handle in self._iterhandles()
         }
 
