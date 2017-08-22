@@ -18,7 +18,7 @@ class ProtoDataSet(object):
         if admin_metadata is None:
             self._admin_metadata = {
                 "uuid": str(uuid.uuid4()),
-                "dtool_version": __version__,
+                "dtoolcore_version": __version__,
                 "name": name,
                 "type": "protodataset",
                 "creator_username": dtoolcore.utils.getuser(),
