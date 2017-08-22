@@ -17,7 +17,8 @@ def test_generate_identifier():
     from dtoolcore.utils import generate_identifier
     string = "Test me"
 
-    assert generate_identifier(handle=string) == "9940674fb235beddae40df565cbfc688b824b362"
+    assert generate_identifier(handle=string) ==  \
+        "9940674fb235beddae40df565cbfc688b824b362"
 
 
 def test_cross_platform_getuser_windows_and_no_username_env_var():

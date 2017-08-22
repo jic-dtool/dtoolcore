@@ -111,7 +111,6 @@ def test_creation_and_reading(tmp_dir_fixture):  # NOQA
 
     # Create a proto dataset
     proto_dataset = ProtoDataSet.create(dest_path, "func_test_dataset")
-    uuid = proto_dataset.uuid
 
     assert proto_dataset.name == "func_test_dataset"
 
@@ -158,8 +157,8 @@ def test_creation_and_reading(tmp_dir_fixture):  # NOQA
     assert metadata == {
         'foo': 'bar',
         'key': {
-                    'subkey': 'subval',
-                    'morekey': 'moreval'
+            'subkey': 'subval',
+            'morekey': 'moreval'
         }
     }
 

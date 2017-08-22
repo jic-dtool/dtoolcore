@@ -185,8 +185,8 @@ def test_store_and_retrieve_item_metadata(tmp_dir_fixture):  # NOQA
     assert metadata == {
         'foo': 'bar',
         'key': {
-                    'subkey': 'subval',
-                    'morekey': 'moreval'
+            'subkey': 'subval',
+            'morekey': 'moreval'
         }
     }
 
