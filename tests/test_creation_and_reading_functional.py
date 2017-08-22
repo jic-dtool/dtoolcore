@@ -135,7 +135,7 @@ def test_creation_and_reading(tmp_dir_fixture):  # NOQA
     assert handle in list(proto_dataset._iterhandles())
 
     # Test properties of that file
-    item_properties = proto_dataset._item_properties(handle)
+    item_properties = proto_dataset._storage_broker.item_properties(handle)
     assert item_properties['relpath'] == 'tiny.png'
     assert item_properties['size_in_bytes'] == 276
     assert item_properties['hash'] == 'dc73192d2f81d7009ce5a1ee7bad5755'

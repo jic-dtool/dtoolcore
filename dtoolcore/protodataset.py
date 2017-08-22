@@ -72,7 +72,8 @@ class ProtoDataSet(object):
         """Return manifest generated from knowledge about contents."""
 
         items = {
-            generate_identifier(handle): self._item_properties(handle)
+            generate_identifier(handle):
+                self._storage_broker.item_properties(handle)
             for handle in self._iterhandles()
         }
 
@@ -126,10 +127,6 @@ class ProtoDataSet(object):
         self._storage_broker.put_admin_metadata(self._admin_metadata)
 
         self._storage_broker.post_freeze_hook()
-
-    def _item_properties(self, handle):
-
-        return self._storage_broker.item_properties(handle)
 
     def _iterhandles(self):
 
