@@ -90,14 +90,16 @@ def test_creation_and_reading(tmp_dir_fixture):  # NOQA
 
     # Add another item and test manifest
     from dtoolcore import __version__
+    from dtoolcore.utils import generate_identifier
     local_file_path = os.path.join(sample_data_path, 'real_text_file.txt')
     proto_dataset.put_item(local_file_path, 'real_text_file.txt')
     second_handle = 'real_text_file.txt'
     generated_manifest = proto_dataset._generate_manifest()
     assert generated_manifest['hash_function'] == 'md5sum'
     assert generated_manifest['dtoolcore_version'] == __version__
-#   assert expected_identifier in generated_manifest['items']
-#   assert generated_manifest['items'][expected_identifier]['path'] \
-#       == 'real_text_file.txt'
-#   assert generated_manifest['items'][expected_identifier]['md5sum'] \
-#       == '37dd28e999a6b1472932351745dd9355'
+    expected_identifier = generate_identifier(second_handle)
+    assert expected_identifier in generated_manifest['items']
+    assert generated_manifest['items'][expected_identifier]['relpath'] \
+        == 'real_text_file.txt'
+    assert generated_manifest['items'][expected_identifier]['hash'] \
+        == '37dd28e999a6b1472932351745dd9355'
