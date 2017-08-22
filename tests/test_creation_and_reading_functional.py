@@ -37,6 +37,7 @@ def test_proto_dataset_freeze_functional(tmp_dir_fixture):  # NOQA
 
     from dtoolcore.protodataset import ProtoDataSet
     from dtoolcore.dataset import DataSet
+    from dtoolcore.utils import generate_identifier
 
     dest_path = os.path.join(tmp_dir_fixture, 'my_dataset')
     sample_data_path = os.path.join(TEST_SAMPLE_DATASET, 'data')
@@ -66,19 +67,19 @@ def test_proto_dataset_freeze_functional(tmp_dir_fixture):  # NOQA
 
     proto_dataset.freeze()
 
-#   # Now we shouln't be able to load as a ProtoDataSet
-#   with pytest.raises(TypeError):
-#       AzureProtoDataSet.from_uri(uuid)
+    # Now we shouln't be able to load as a ProtoDataSet
+    with pytest.raises(TypeError):
+        ProtoDataSet.from_uri(dest_path)
 
-#   # But we can as a DataSet
-#   dataset = AzureDataSet.from_uri(uuid)
-#   assert dataset.name == 'func_test_dataset_freeze'
+    # But we can as a DataSet
+    dataset = DataSet.from_uri(dest_path)
+    assert dataset.name == 'func_test_dataset_freeze'
 
-#   # Test identifiers
-#   expected_identifiers = map(sha1_hexdigest, filenames)
-#   assert set(dataset.identifiers) == set(expected_identifiers)
+    # Test identifiers
+    expected_identifiers = map(generate_identifier, filenames)
+    assert set(dataset.identifiers) == set(expected_identifiers)
 
-#   # Test readme contents
+    # Test readme contents
 #   assert dataset.readme_content == "Hello world!"
 
 #   # Test item
