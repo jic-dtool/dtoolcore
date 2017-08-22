@@ -212,3 +212,19 @@ def test_store_and_retrieve_item_metadata(tmp_dir_fixture):  # NOQA
     retrieved_overlay = storage_broker.get_overlay('example')
 
     assert example_overlay == retrieved_overlay
+
+
+def test_post_freeze_hook(tmp_dir_fixture):  # NOQA
+    from dtoolcore.storage_broker import DiskStorageBroker
+
+    destination_path = os.path.join(tmp_dir_fixture, 'my_proto_dataset')
+    storage_broker = DiskStorageBroker(destination_path)
+
+    storage_broker.create_structure()
+
+    handle = 'dummy'
+    storage_broker.add_item_metadata(handle, key='foo', value='bar')
+
+    assert os.path.isdir(storage_broker._metadata_fragments_abspath)
+    storage_broker.post_freeze_hook()
+    assert not os.path.isdir(storage_broker._metadata_fragments_abspath)

@@ -202,3 +202,7 @@ class DiskStorageBroker(object):
         item = manifest["items"][identifier]
         item_abspath = os.path.join(self._data_abspath, item["relpath"])
         return item_abspath
+
+    def post_freeze_hook(self):
+        """Cleanup actions post calling :meth:`ProtoDataSet.freeze` method."""
+        shutil.rmtree(self._metadata_fragments_abspath)
