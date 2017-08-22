@@ -95,8 +95,7 @@ class ProtoDataSet(object):
 
         self._storage_broker.put_readme(contents)
 
-    @property
-    def readme_content(self):
+    def get_readme_content(self):
         return self._storage_broker.get_readme_content()
 
     def add_item_metadata(self, handle, key, value):

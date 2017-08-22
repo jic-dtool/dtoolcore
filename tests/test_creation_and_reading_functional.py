@@ -84,7 +84,7 @@ def test_proto_dataset_freeze_functional(tmp_dir_fixture):  # NOQA
     assert set(dataset.identifiers) == set(expected_identifiers)
 
     # Test readme contents
-    assert dataset.readme_content == "Hello world!"
+    assert dataset.get_readme_content() == "Hello world!"
 
     # Test item
     expected_identifier = generate_identifier('tiny.png')
@@ -124,9 +124,9 @@ def test_creation_and_reading(tmp_dir_fixture):  # NOQA
     assert proto_dataset.name == "func_test_dataset"
 
     # Test get/put readme.
-    assert proto_dataset.readme_content == ""
+    assert proto_dataset.get_readme_content() == ""
     proto_dataset.put_readme("Hello world!")
-    assert proto_dataset.readme_content == "Hello world!"
+    assert proto_dataset.get_readme_content() == "Hello world!"
 
     # Test putting a local file
     handle = "tiny.png"

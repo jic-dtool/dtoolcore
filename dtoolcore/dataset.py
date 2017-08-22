@@ -47,8 +47,7 @@ class DataSet(object):
 
         return self._manifest_cache
 
-    @property
-    def readme_content(self):
+    def get_readme_content(self):
         return self._storage_broker.get_readme_content()
 
     @property
