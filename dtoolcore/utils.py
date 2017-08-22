@@ -33,6 +33,11 @@ def sha1_hexdigest(input_string):
     return hashlib.sha1(byte_string).hexdigest()
 
 
+def generate_identifier(handle):
+    """Return identifier from a ProtoDataSet handle."""
+    return sha1_hexdigest(handle)
+
+
 def mkdir_parents(path):
     """Create the given directory path.
     This includes all necessary parent directories. Does not raise an error if
