@@ -82,15 +82,15 @@ def test_proto_dataset_freeze_functional(tmp_dir_fixture):  # NOQA
     # Test readme contents
     assert dataset.readme_content == "Hello world!"
 
-#   # Test item
-#   expected_identifier = sha1_hexdigest('tiny.png')
-#   item_properties = dataset.item_properties(expected_identifier)
-#   assert item_properties['path'] == 'tiny.png'
-#   assert item_properties['size'] == 276
-#   assert item_properties['md5sum'] == 'dc73192d2f81d7009ce5a1ee7bad5755'
+    # Test item
+    expected_identifier = generate_identifier('tiny.png')
+    item_properties = dataset.item_properties(expected_identifier)
+    assert item_properties['relpath'] == 'tiny.png'
+    assert item_properties['size_in_bytes'] == 276
+    assert item_properties['hash'] == 'dc73192d2f81d7009ce5a1ee7bad5755'
 
 #   # Test accessing item
-#   expected_identifier = sha1_hexdigest('another_file.txt')
+#   expected_identifier = generate_identifier('another_file.txt')
 #   fpath = dataset.item_contents_abspath(expected_identifier)
 
 #   with open(fpath) as fh:
