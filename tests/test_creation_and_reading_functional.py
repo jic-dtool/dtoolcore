@@ -98,10 +98,10 @@ def test_proto_dataset_freeze_functional(tmp_dir_fixture):  # NOQA
 
     assert contents == "Hello\n"
 
-#   # Test overlays have been created properly
-#   namelen_overlay = dataset.access_overlay('namelen')
-#   expected_identifier = sha1_hexdigest('another_file.txt')
-#   assert namelen_overlay[expected_identifier] == len('another_file.txt')
+    # Test overlays have been created properly
+    namelen_overlay = dataset.access_overlay('namelen')
+    expected_identifier = generate_identifier('another_file.txt')
+    assert namelen_overlay[expected_identifier] == len('another_file.txt')
 
 
 def test_creation_and_reading(tmp_dir_fixture):  # NOQA
