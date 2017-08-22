@@ -67,6 +67,8 @@ def test_proto_dataset_freeze_functional(tmp_dir_fixture):  # NOQA
 
     proto_dataset.freeze()
 
+    assert not os.path.isdir(proto_dataset._storage_broker._metadata_fragments_abspath)
+
     # Now we shouln't be able to load as a ProtoDataSet
     with pytest.raises(TypeError):
         ProtoDataSet.from_uri(dest_path)

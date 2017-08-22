@@ -126,6 +126,8 @@ class ProtoDataSet(object):
         self._admin_metadata.update(metadata_update)
         self._storage_broker.store_admin_metadata(self._admin_metadata)
 
+        self._storage_broker.post_freeze_hook()
+
     def _item_properties(self, handle):
 
         return self._storage_broker.item_properties(handle)
