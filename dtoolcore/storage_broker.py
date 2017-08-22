@@ -205,4 +205,5 @@ class DiskStorageBroker(object):
 
     def post_freeze_hook(self):
         """Cleanup actions post calling :meth:`ProtoDataSet.freeze` method."""
-        shutil.rmtree(self._metadata_fragments_abspath)
+        if os.path.isdir(self._metadata_fragments_abspath):
+            shutil.rmtree(self._metadata_fragments_abspath)

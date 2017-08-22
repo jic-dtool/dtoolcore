@@ -222,6 +222,10 @@ def test_post_freeze_hook(tmp_dir_fixture):  # NOQA
 
     storage_broker.create_structure()
 
+    # The below should not raise an OSError because the .dtool/tmp_fragments
+    # directory has not been created.
+    storage_broker.post_freeze_hook()
+
     handle = 'dummy'
     storage_broker.add_item_metadata(handle, key='foo', value='bar')
 
