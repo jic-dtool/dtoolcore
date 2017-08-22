@@ -69,14 +69,14 @@ def test_creation_and_reading(tmp_dir_fixture):  # NOQA
     assert time_delta.days == 0
     assert time_delta.seconds < 20
 
-#   # Add metadata
-#   proto_dataset.add_item_metadata(handle, 'foo', 'bar')
-#   proto_dataset.add_item_metadata(
-#       expected_identifier,
-#       'key',
-#       {'subkey': 'subval',
-#        'morekey': 'moreval'}
-#   )
+    # Add metadata
+    proto_dataset.add_item_metadata(handle, 'foo', 'bar')
+    proto_dataset.add_item_metadata(
+        handle,
+        'key',
+        {'subkey': 'subval',
+         'morekey': 'moreval'}
+    )
 
 #   # Test metadata retrieval
 #   metadata = proto_dataset._item_metadata(expected_identifier)
