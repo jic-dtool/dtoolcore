@@ -47,14 +47,14 @@ class DataSet(object):
 
         return self._manifest_cache
 
-    def get_readme_content(self):
-        return self._storage_broker.get_readme_content()
-
     @property
     def name(self):
         """Return the name of the dataset."""
 
         return self._admin_metadata['name']
+
+    def get_readme_content(self):
+        return self._storage_broker.get_readme_content()
 
     def item_properties(self, identifier):
         """Return properties of the item with the given identifier."""
