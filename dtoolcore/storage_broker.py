@@ -6,7 +6,7 @@ import shutil
 
 from dtoolcore.utils import (
     mkdir_parents,
-    sha1_hexdigest
+    generate_identifier,
 )
 from dtoolcore.filehasher import FileHasher, md5sum
 
@@ -137,7 +137,7 @@ class DiskStorageBroker(object):
 
     def _handle_to_fragment_absprefixpath(self, handle):
 
-        stem = sha1_hexdigest(handle)
+        stem = generate_identifier(handle)
 
         return os.path.join(self._metadata_fragments_abspath, stem)
 
