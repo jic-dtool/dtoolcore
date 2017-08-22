@@ -65,7 +65,7 @@ class ProtoDataSet(object):
         manifest = {
             "items": items,
             "dtool_azure_version": __version__,
-            "hash_function": "md5sum"
+            "hash_function": self._storage_broker.hasher.name
         }
 
         return manifest

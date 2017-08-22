@@ -8,7 +8,7 @@ from dtoolcore.utils import (
     mkdir_parents,
     sha1_hexdigest
 )
-from dtoolcore.filehasher import md5sum
+from dtoolcore.filehasher import FileHasher, md5sum
 
 
 class StorageBrokerOSError(OSError):
@@ -18,6 +18,8 @@ class StorageBrokerOSError(OSError):
 class DiskStorageBroker(object):
     """Storage broker to allow DataSets and ProtoDataSets to be read from and
     written to local disk storage."""
+
+    hasher = FileHasher(md5sum)
 
     def __init__(self, path):
 
@@ -114,7 +116,7 @@ class DiskStorageBroker(object):
         properties = {
             'size_in_bytes': os.stat(fpath).st_size,
             'utc_timestamp': os.stat(fpath).st_mtime,
-            'hash': md5sum(fpath),
+            'hash': DiskStorageBroker.hasher(fpath),
             'relpath': handle
         }
 
