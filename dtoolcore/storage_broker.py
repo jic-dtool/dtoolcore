@@ -115,7 +115,7 @@ class DiskStorageBroker(object):
         with open(self._admin_metadata_fpath, 'w') as fh:
             json.dump(admin_metadata, fh)
 
-    def store_manifest(self, manifest_contents):
+    def put_manifest(self, manifest_contents):
         """Store the given manifest contents so we can retrieve it later."""
 
         with open(self._manifest_abspath, 'w') as fh:

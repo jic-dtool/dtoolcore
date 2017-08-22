@@ -105,7 +105,7 @@ class ProtoDataSet(object):
     def freeze(self):
 
         manifest = self._generate_manifest()
-        self._storage_broker.store_manifest(manifest)
+        self._storage_broker.put_manifest(manifest)
 
         all_user_metadata = defaultdict(dict)
         for handle in self._iterhandles():

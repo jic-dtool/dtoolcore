@@ -105,7 +105,7 @@ def test_store_and_retrieve_manifest(tmp_dir_fixture):  # NOQA
 
     manifest = {'a': 'b', 'c': [1, 2, 3]}
 
-    storage_broker.store_manifest(manifest)
+    storage_broker.put_manifest(manifest)
 
     retrieved_manifest = storage_broker.get_manifest()
 
