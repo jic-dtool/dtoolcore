@@ -88,6 +88,25 @@ class ProtoDataSet(object):
         """Return the name of the dataset."""
         return self._admin_metadata["name"]
 
+    def get_readme_content(self):
+        """
+        Return the content of the README describing the dataset.
+
+        :returns: content of README as a string
+        """
+        return self._storage_broker.get_readme_content()
+
+    def put_readme(self, content):
+        """
+        Put content into the README of the dataset.
+
+        The client is responsible for ensuring that the content is valid YAML.
+
+        :param content: string to put into the README
+        """
+
+        self._storage_broker.put_readme(content)
+
     def put_item(self, fpath, relpath):
         """
         Put an item into the dataset.
@@ -101,25 +120,6 @@ class ProtoDataSet(object):
             fpath,
             relpath
         )
-
-    def put_readme(self, content):
-        """
-        Put content into the README of the dataset.
-
-        The client is responsible for ensuring that the content is valid YAML.
-
-        :param content: string to put into the README
-        """
-
-        self._storage_broker.put_readme(content)
-
-    def get_readme_content(self):
-        """
-        Return the content of the README describing the dataset.
-
-        :returns: content of README as a string
-        """
-        return self._storage_broker.get_readme_content()
 
     def add_item_metadata(self, handle, key, value):
         """
@@ -150,38 +150,43 @@ class ProtoDataSet(object):
 
         return manifest
 
-    def freeze(self):
-        """
-        Convert :class:`dtoolcore.ProtoDataSet` to :class:`dtoolcore.DataSet`.
+    def _generate_overlays(self):
+        """Return dictionary of overlays generated from added item metadata."""
 
-        1. Generate and persist the manifest
-        2. Create and persist overlays from any item metadata that has been
-           added
-        3. Change the type of the dataset from "protodataset" to "dataset"
-           and add a "frozen_at" time stamp to the administrative metadata
-        4. Clean up using the storage broker's post freeze hook
-        """
-
-        manifest = self._generate_manifest()
-        self._storage_broker.put_manifest(manifest)
-
-        all_user_metadata = defaultdict(dict)
+        overlays = defaultdict(dict)
         for handle in self._storage_broker.iter_item_handles():
             identifier = generate_identifier(handle)
             item_metadata = self._storage_broker.get_item_metadata(handle)
             for k, v in item_metadata.items():
-                all_user_metadata[k][identifier] = v
+                overlays[k][identifier] = v
 
-        for overlay_name, overlay in all_user_metadata.items():
+        return overlays
+
+    def freeze(self):
+        """
+        Convert :class:`dtoolcore.ProtoDataSet` to :class:`dtoolcore.DataSet`.
+        """
+
+        # Generate and persist the manifest.
+        manifest = self._generate_manifest()
+        self._storage_broker.put_manifest(manifest)
+
+        # Generate and persist overlays from any item metadata that has been
+        # added.
+
+        overlays = self._generate_overlays()
+        for overlay_name, overlay in overlays.items():
             self._storage_broker.put_overlay(overlay_name, overlay)
 
+        # Change the type of the dataset from "protodataset" to "dataset" and
+        # add a "frozen_at" time stamp to the administrative metadata.
         now_timestamp = datetime.datetime.utcnow().strftime("%s")
         metadata_update = {
             "type": "dataset",
             "frozen_at": now_timestamp
         }
-
         self._admin_metadata.update(metadata_update)
         self._storage_broker.put_admin_metadata(self._admin_metadata)
 
+        # Clean up using the storage broker's post freeze hook.
         self._storage_broker.post_freeze_hook()
