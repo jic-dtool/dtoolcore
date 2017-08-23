@@ -15,9 +15,7 @@ class ProtoDataSet(object):
     """
     Class for building up a dataset.
     """
-
     def __init__(self, name, admin_metadata=None):
-
         if admin_metadata is None:
             self._admin_metadata = {
                 "uuid": str(uuid.uuid4()),
@@ -26,7 +24,6 @@ class ProtoDataSet(object):
                 "type": "protodataset",
                 "creator_username": dtoolcore.utils.getuser(),
                 "readme_path": "README.yml"
-
             }
         else:
             self._admin_metadata = admin_metadata
@@ -43,7 +40,6 @@ class ProtoDataSet(object):
         :params name: dataset name
         :returns: :class:`dtoolcore.ProtoDataSet`
         """
-
         proto_dataset = cls(name)
 
         proto_dataset._storage_broker = DiskStorageBroker(uri)
@@ -66,7 +62,6 @@ class ProtoDataSet(object):
                      :class:`dtoolcore.ProtoDataSet` is stored
         :returns: :class:`dtoolcore.ProtoDataSet`
         """
-
         storage_broker = DiskStorageBroker(uri)
         admin_metadata = storage_broker.get_admin_metadata()
         if admin_metadata["type"] != "protodataset":
@@ -104,7 +99,6 @@ class ProtoDataSet(object):
 
         :param content: string to put into the README
         """
-
         self._storage_broker.put_readme(content)
 
     def put_item(self, fpath, relpath):
@@ -115,11 +109,7 @@ class ProtoDataSet(object):
         :param relpath: relative path name given to the item in the dataset as
                         a handle
         """
-
-        self._storage_broker.put_item(
-            fpath,
-            relpath
-        )
+        self._storage_broker.put_item(fpath, relpath)
 
     def add_item_metadata(self, handle, key, value):
         """
@@ -130,12 +120,10 @@ class ProtoDataSet(object):
         :param key: metadata key
         :param value: metadata value
         """
-
         self._storage_broker.add_item_metadata(handle, key, value)
 
     def _generate_manifest(self):
         """Return manifest generated from knowledge about contents."""
-
         items = dict()
         for handle in self._storage_broker.iter_item_handles():
             key = generate_identifier(handle)
@@ -152,7 +140,6 @@ class ProtoDataSet(object):
 
     def _generate_overlays(self):
         """Return dictionary of overlays generated from added item metadata."""
-
         overlays = defaultdict(dict)
         for handle in self._storage_broker.iter_item_handles():
             identifier = generate_identifier(handle)
@@ -166,7 +153,6 @@ class ProtoDataSet(object):
         """
         Convert :class:`dtoolcore.ProtoDataSet` to :class:`dtoolcore.DataSet`.
         """
-
         # Generate and persist the manifest.
         manifest = self._generate_manifest()
         self._storage_broker.put_manifest(manifest)
