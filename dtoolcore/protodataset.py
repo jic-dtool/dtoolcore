@@ -88,23 +88,6 @@ class ProtoDataSet(object):
         """Return the name of the dataset."""
         return self._admin_metadata["name"]
 
-    def _generate_manifest(self):
-        """Return manifest generated from knowledge about contents."""
-
-        items = dict()
-        for handle in self._storage_broker.iter_item_handles():
-            key = generate_identifier(handle)
-            value = self._storage_broker.item_properties(handle)
-            items[key] = value
-
-        manifest = {
-            "items": items,
-            "dtoolcore_version": __version__,
-            "hash_function": self._storage_broker.hasher.name
-        }
-
-        return manifest
-
     def put_item(self, fpath, relpath):
         """
         Put an item into the dataset.
@@ -149,6 +132,23 @@ class ProtoDataSet(object):
         """
 
         self._storage_broker.add_item_metadata(handle, key, value)
+
+    def _generate_manifest(self):
+        """Return manifest generated from knowledge about contents."""
+
+        items = dict()
+        for handle in self._storage_broker.iter_item_handles():
+            key = generate_identifier(handle)
+            value = self._storage_broker.item_properties(handle)
+            items[key] = value
+
+        manifest = {
+            "items": items,
+            "dtoolcore_version": __version__,
+            "hash_function": self._storage_broker.hasher.name
+        }
+
+        return manifest
 
     def freeze(self):
         """
