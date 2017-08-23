@@ -12,126 +12,126 @@ from . import TEST_SAMPLE_DATASET
 
 def test_initialise():
 
-    from dtoolcore.storage_broker import DiskStorageBroker
+    from dtoolcore.storagebroker import DiskStorageBroker
 
     path = '/a/path'
-    storage_broker = DiskStorageBroker(uri=path)  # NOQA
+    storagebroker = DiskStorageBroker(uri=path)  # NOQA
 
 
 def test_create_structure(tmp_dir_fixture):  # NOQA
 
-    from dtoolcore.storage_broker import DiskStorageBroker
-    from dtoolcore.storage_broker import StorageBrokerOSError
+    from dtoolcore.storagebroker import DiskStorageBroker
+    from dtoolcore.storagebroker import StorageBrokerOSError
 
-    storage_broker = DiskStorageBroker(tmp_dir_fixture)
+    storagebroker = DiskStorageBroker(tmp_dir_fixture)
 
     with pytest.raises(StorageBrokerOSError):
-        storage_broker.create_structure()
+        storagebroker.create_structure()
 
     destination_path = os.path.join(tmp_dir_fixture, 'my_proto_dataset')
 
-    storage_broker = DiskStorageBroker(destination_path)
+    storagebroker = DiskStorageBroker(destination_path)
 
     assert not os.path.exists(destination_path)
-    storage_broker.create_structure()
+    storagebroker.create_structure()
     assert os.path.isdir(destination_path)
 
     destination_path = os.path.join(tmp_dir_fixture, 'sub', 'my_proto_dataset')
 
-    storage_broker = DiskStorageBroker(destination_path)
+    storagebroker = DiskStorageBroker(destination_path)
 
     with pytest.raises(OSError):
-        storage_broker.create_structure()
+        storagebroker.create_structure()
 
 
 def test_store_and_retrieve_readme(tmp_dir_fixture):  # NOQA
 
-    from dtoolcore.storage_broker import DiskStorageBroker
+    from dtoolcore.storagebroker import DiskStorageBroker
 
     destination_path = os.path.join(tmp_dir_fixture, 'my_proto_dataset')
-    storage_broker = DiskStorageBroker(destination_path)
+    storagebroker = DiskStorageBroker(destination_path)
 
-    storage_broker.create_structure()
+    storagebroker.create_structure()
 
-    storage_broker.put_readme('Hello world')
-    assert storage_broker.get_readme_content() == 'Hello world'
+    storagebroker.put_readme('Hello world')
+    assert storagebroker.get_readme_content() == 'Hello world'
 
 
 def test_store_and_retrieve_admin_metadata(tmp_dir_fixture):  # NOQA
 
-    from dtoolcore.storage_broker import DiskStorageBroker
+    from dtoolcore.storagebroker import DiskStorageBroker
 
     destination_path = os.path.join(tmp_dir_fixture, 'my_proto_dataset')
-    storage_broker = DiskStorageBroker(destination_path)
+    storagebroker = DiskStorageBroker(destination_path)
 
-    storage_broker.create_structure()
+    storagebroker.create_structure()
 
     admin_metadata = {'hello': 'world'}
-    storage_broker.put_admin_metadata(admin_metadata)
+    storagebroker.put_admin_metadata(admin_metadata)
 
-    storage_broker_2 = DiskStorageBroker(destination_path)
-    retrieved_admin_metadata = storage_broker_2.get_admin_metadata()
+    storagebroker_2 = DiskStorageBroker(destination_path)
+    retrieved_admin_metadata = storagebroker_2.get_admin_metadata()
     assert retrieved_admin_metadata == admin_metadata
 
 
 def test_put_item(tmp_dir_fixture):  # NOQA
 
-    from dtoolcore.storage_broker import DiskStorageBroker
+    from dtoolcore.storagebroker import DiskStorageBroker
 
     destination_path = os.path.join(tmp_dir_fixture, 'my_proto_dataset')
-    storage_broker = DiskStorageBroker(destination_path)
+    storagebroker = DiskStorageBroker(destination_path)
 
-    storage_broker.create_structure()
+    storagebroker.create_structure()
 
     input_file_path = os.path.join(TEST_SAMPLE_DATASET, 'data', 'tiny.png')
 
-    storage_broker.put_item(
+    storagebroker.put_item(
         fpath=input_file_path,
         relpath='tiny.png'
     )
 
-    handles = list(storage_broker.iter_item_handles())
+    handles = list(storagebroker.iter_item_handles())
 
     assert 'tiny.png' in handles
 
 
 def test_store_and_retrieve_manifest(tmp_dir_fixture):  # NOQA
-    from dtoolcore.storage_broker import DiskStorageBroker
+    from dtoolcore.storagebroker import DiskStorageBroker
 
     destination_path = os.path.join(tmp_dir_fixture, 'my_proto_dataset')
-    storage_broker = DiskStorageBroker(destination_path)
+    storagebroker = DiskStorageBroker(destination_path)
 
-    storage_broker.create_structure()
+    storagebroker.create_structure()
 
     manifest = {'a': 'b', 'c': [1, 2, 3]}
 
-    storage_broker.put_manifest(manifest)
+    storagebroker.put_manifest(manifest)
 
-    retrieved_manifest = storage_broker.get_manifest()
+    retrieved_manifest = storagebroker.get_manifest()
 
     assert retrieved_manifest == manifest
 
 
 def test_item_properties(tmp_dir_fixture):  # NOQA
-    from dtoolcore.storage_broker import DiskStorageBroker
+    from dtoolcore.storagebroker import DiskStorageBroker
 
     destination_path = os.path.join(tmp_dir_fixture, 'my_proto_dataset')
-    storage_broker = DiskStorageBroker(destination_path)
+    storagebroker = DiskStorageBroker(destination_path)
 
-    storage_broker.create_structure()
+    storagebroker.create_structure()
 
     input_file_path = os.path.join(TEST_SAMPLE_DATASET, 'data', 'tiny.png')
 
-    storage_broker.put_item(
+    storagebroker.put_item(
         fpath=input_file_path,
         relpath='tiny.png'
     )
 
-    handles = list(storage_broker.iter_item_handles())
+    handles = list(storagebroker.iter_item_handles())
 
     handle = handles[0]
 
-    item_properties = storage_broker.item_properties(handle)
+    item_properties = storagebroker.item_properties(handle)
 
     # Check size_in_bytes property
     assert item_properties['size_in_bytes'] == 276
@@ -158,22 +158,22 @@ def test_item_properties(tmp_dir_fixture):  # NOQA
 
 
 def test_store_and_retrieve_item_metadata(tmp_dir_fixture):  # NOQA
-    from dtoolcore.storage_broker import DiskStorageBroker
+    from dtoolcore.storagebroker import DiskStorageBroker
 
     destination_path = os.path.join(tmp_dir_fixture, 'my_proto_dataset')
-    storage_broker = DiskStorageBroker(destination_path)
+    storagebroker = DiskStorageBroker(destination_path)
 
-    storage_broker.create_structure()
+    storagebroker.create_structure()
 
     handle = 'dummy'
 
     # Here we add two set of metadata with different keys
-    storage_broker.add_item_metadata(
+    storagebroker.add_item_metadata(
         handle=handle,
         key='foo',
         value='bar'
     )
-    storage_broker.add_item_metadata(
+    storagebroker.add_item_metadata(
         handle=handle,
         key='key',
         value={'subkey': 'subval',
@@ -181,7 +181,7 @@ def test_store_and_retrieve_item_metadata(tmp_dir_fixture):  # NOQA
     )
 
     # Test metadata retrieval (we get back both sets of metadata)
-    metadata = storage_broker.get_item_metadata(handle)
+    metadata = storagebroker.get_item_metadata(handle)
     assert metadata == {
         'foo': 'bar',
         'key': {
@@ -192,43 +192,43 @@ def test_store_and_retrieve_item_metadata(tmp_dir_fixture):  # NOQA
 
 
 def test_store_and_retrieve_item_metadata(tmp_dir_fixture):  # NOQA
-    from dtoolcore.storage_broker import DiskStorageBroker
+    from dtoolcore.storagebroker import DiskStorageBroker
 
     destination_path = os.path.join(tmp_dir_fixture, 'my_proto_dataset')
-    storage_broker = DiskStorageBroker(destination_path)
+    storagebroker = DiskStorageBroker(destination_path)
 
-    storage_broker.create_structure()
+    storagebroker.create_structure()
 
     example_overlay = {
         'abcdef': 1,
         'ghijkl': 2
     }
 
-    storage_broker.put_overlay(
+    storagebroker.put_overlay(
         overlay_name="example",
         overlay=example_overlay
     )
 
-    retrieved_overlay = storage_broker.get_overlay('example')
+    retrieved_overlay = storagebroker.get_overlay('example')
 
     assert example_overlay == retrieved_overlay
 
 
 def test_post_freeze_hook(tmp_dir_fixture):  # NOQA
-    from dtoolcore.storage_broker import DiskStorageBroker
+    from dtoolcore.storagebroker import DiskStorageBroker
 
     destination_path = os.path.join(tmp_dir_fixture, 'my_proto_dataset')
-    storage_broker = DiskStorageBroker(destination_path)
+    storagebroker = DiskStorageBroker(destination_path)
 
-    storage_broker.create_structure()
+    storagebroker.create_structure()
 
     # The below should not raise an OSError because the .dtool/tmp_fragments
     # directory has not been created.
-    storage_broker.post_freeze_hook()
+    storagebroker.post_freeze_hook()
 
     handle = 'dummy'
-    storage_broker.add_item_metadata(handle, key='foo', value='bar')
+    storagebroker.add_item_metadata(handle, key='foo', value='bar')
 
-    assert os.path.isdir(storage_broker._metadata_fragments_abspath)
-    storage_broker.post_freeze_hook()
-    assert not os.path.isdir(storage_broker._metadata_fragments_abspath)
+    assert os.path.isdir(storagebroker._metadata_fragments_abspath)
+    storagebroker.post_freeze_hook()
+    assert not os.path.isdir(storagebroker._metadata_fragments_abspath)

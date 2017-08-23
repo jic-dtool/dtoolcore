@@ -8,7 +8,7 @@ import datetime
 from collections import defaultdict
 
 import dtoolcore.utils
-from dtoolcore.storage_broker import DiskStorageBroker
+from dtoolcore.storagebroker import DiskStorageBroker
 
 
 __version__ = "2.0.0"
