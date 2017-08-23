@@ -4,7 +4,6 @@ import datetime
 from collections import defaultdict
 
 import dtoolcore.utils
-from dtoolcore.utils import generate_identifier
 
 from dtoolcore import __version__
 
@@ -60,7 +59,7 @@ class _ProtoDataSet(_BaseDataSet):
     def identifiers(self):
         """Return iterable of dataset item identifiers."""
         for handle in self._storage_broker.iter_item_handles():
-            yield generate_identifier(handle)
+            yield dtoolcore.utils.generate_identifier(handle)
 
     def put_readme(self, content):
         """
@@ -97,7 +96,7 @@ class _ProtoDataSet(_BaseDataSet):
         """Return manifest generated from knowledge about contents."""
         items = dict()
         for handle in self._storage_broker.iter_item_handles():
-            key = generate_identifier(handle)
+            key = dtoolcore.utils.generate_identifier(handle)
             value = self._storage_broker.item_properties(handle)
             items[key] = value
 
@@ -113,7 +112,7 @@ class _ProtoDataSet(_BaseDataSet):
         """Return dictionary of overlays generated from added item metadata."""
         overlays = defaultdict(dict)
         for handle in self._storage_broker.iter_item_handles():
-            identifier = generate_identifier(handle)
+            identifier = dtoolcore.utils.generate_identifier(handle)
             item_metadata = self._storage_broker.get_item_metadata(handle)
             for k, v in item_metadata.items():
                 overlays[k][identifier] = v
