@@ -3,9 +3,14 @@ from dtoolcore.storage_broker import DiskStorageBroker
 __version__ = "0.1.0"
 
 
+def _get_storage_broker(uri, config_path):
+    """Helper function to enable use lookup of appropriate storage brokers."""
+    return DiskStorageBroker(uri, config_path)
+
+
 def _admin_metadata_from_uri(uri, config_path):
     """Helper function for getting admin metadata."""
-    storage_broker = DiskStorageBroker(uri, config_path)
+    storage_broker = _get_storage_broker(uri, config_path)
     admin_metadata = storage_broker.get_admin_metadata()
     return admin_metadata
 
@@ -15,7 +20,7 @@ class _BaseDataSet(object):
 
     def __init__(self, uri, admin_metadata, config_path=None):
         self._admin_metadata = admin_metadata
-        self._storage_broker = DiskStorageBroker(uri, config_path)
+        self._storage_broker = _get_storage_broker(uri, config_path)
 
     @classmethod
     def _from_uri_with_typecheck(cls, uri, config_path, type_name):
