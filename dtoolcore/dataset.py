@@ -1,7 +1,5 @@
 from dtoolcore.storage_broker import DiskStorageBroker
 
-__version__ = "0.1.0"
-
 
 def _get_storage_broker(uri, config_path):
     """Helper function to enable use lookup of appropriate storage brokers."""
