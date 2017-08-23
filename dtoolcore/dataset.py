@@ -90,7 +90,7 @@ class DataSet(_BaseDataSet):
 
     @property
     def identifiers(self):
-        """Return list of dataset item identifiers."""
+        """Return iterable of dataset item identifiers."""
         return self._manifest["items"].keys()
 
     @property

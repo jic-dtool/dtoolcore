@@ -56,6 +56,12 @@ class ProtoDataSet(_BaseDataSet):
 
         return proto_dataset
 
+    @property
+    def identifiers(self):
+        """Return iterable of dataset item identifiers."""
+        for handle in self._storage_broker.iter_item_handles():
+            yield generate_identifier(handle)
+
     def put_readme(self, content):
         """
         Put content into the README of the dataset.
@@ -127,7 +133,7 @@ class ProtoDataSet(_BaseDataSet):
 
         overlays = self._generate_overlays()
         for overlay_name, overlay in overlays.items():
-            self._storage_broker.put_overlay(overlay_name, overlay)
+            self.put_overlay(overlay_name, overlay)
 
         # Change the type of the dataset from "protodataset" to "dataset" and
         # add a "frozen_at" time stamp to the administrative metadata.
