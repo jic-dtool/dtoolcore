@@ -16,23 +16,12 @@ class ProtoDataSet(object):
     Class for building up a dataset.
     """
 
-    def __init__(self, name, admin_metadata=None):
-        if admin_metadata is None:
-            self._admin_metadata = {
-                "uuid": str(uuid.uuid4()),
-                "dtoolcore_version": __version__,
-                "name": name,
-                "type": "protodataset",
-                "creator_username": dtoolcore.utils.getuser(),
-                "readme_path": "README.yml"
-            }
-        else:
-            self._admin_metadata = admin_metadata
-
+    def __init__(self, admin_metadata, config_path=None):
+        self._admin_metadata = admin_metadata
         self._storage_broker = None
 
     @classmethod
-    def from_uri(cls, uri):
+    def from_uri(cls, uri, config_path=None):
         """
         Return an existing :class:`dtoolcore.ProtoDataSet` from a URI.
 
@@ -44,15 +33,12 @@ class ProtoDataSet(object):
         admin_metadata = storage_broker.get_admin_metadata()
         if admin_metadata["type"] != "protodataset":
             raise(TypeError("{} is not a ProtoDataSet".format(uri)))
-        proto_dataset = cls(
-            name=None,
-            admin_metadata=admin_metadata
-        )
+        proto_dataset = cls(admin_metadata, config_path)
         proto_dataset._storage_broker = storage_broker
         return proto_dataset
 
     @classmethod
-    def create(cls, uri, name):
+    def create(cls, uri, name, config_path=None):
         """
         Return a :class:`dtoolcore.ProtoDataSet`.
 
@@ -61,7 +47,15 @@ class ProtoDataSet(object):
         :params name: dataset name
         :returns: :class:`dtoolcore.ProtoDataSet`
         """
-        proto_dataset = cls(name)
+        admin_metadata = {
+            "uuid": str(uuid.uuid4()),
+            "dtoolcore_version": __version__,
+            "name": name,
+            "type": "protodataset",
+            "creator_username": dtoolcore.utils.getuser(),
+            "readme_path": "README.yml"
+        }
+        proto_dataset = cls(admin_metadata, config_path)
 
         proto_dataset._storage_broker = DiskStorageBroker(uri)
 

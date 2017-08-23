@@ -14,7 +14,7 @@ class DataSet(object):
         self._manifest_cache = None
 
     @classmethod
-    def from_uri(cls, uri):
+    def from_uri(cls, uri, config_path=None):
         """
         Return an existing :class:`dtoolcore.DataSet` from a URI.
 
@@ -30,9 +30,7 @@ class DataSet(object):
         if admin_metadata['type'] != 'dataset':
             raise TypeError("{} is not a dataset".format(uri))
 
-        dataset = cls(
-            admin_metadata=admin_metadata
-        )
+        dataset = cls(admin_metadata, config_path)
 
         dataset._storage_broker = storage_broker
 
