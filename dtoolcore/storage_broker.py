@@ -29,10 +29,10 @@ class DiskStorageBroker(object):
     #: function name to the manifest.
     hasher = FileHasher(md5sum)
 
-    def __init__(self, path, config_path=None):
+    def __init__(self, uri, config_path=None):
 
         # Define useful absolute paths for future reference.
-        self._abspath = os.path.abspath(path)
+        self._abspath = os.path.abspath(uri)
         self._dtool_abspath = os.path.join(self._abspath, '.dtool')
         self._admin_metadata_fpath = os.path.join(self._dtool_abspath, 'dtool')
         self._data_abspath = os.path.join(self._abspath, 'data')

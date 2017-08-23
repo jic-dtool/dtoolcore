@@ -15,7 +15,7 @@ def test_initialise():
     from dtoolcore.storage_broker import DiskStorageBroker
 
     path = '/a/path'
-    storage_broker = DiskStorageBroker(path=path)  # NOQA
+    storage_broker = DiskStorageBroker(uri=path)  # NOQA
 
 
 def test_create_structure(tmp_dir_fixture):  # NOQA
