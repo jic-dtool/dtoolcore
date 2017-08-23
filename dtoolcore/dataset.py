@@ -8,6 +8,11 @@ class DataSet(object):
     Class for reading the contents of a dataset.
     """
 
+    def __init__(self, admin_metadata, config_path=None):
+        self._admin_metadata = admin_metadata
+        self._storage_broker = None
+        self._manifest_cache = None
+
     @classmethod
     def from_uri(cls, uri):
         """
@@ -32,11 +37,6 @@ class DataSet(object):
         dataset._storage_broker = storage_broker
 
         return dataset
-
-    def __init__(self, admin_metadata, config_path=None):
-        self._admin_metadata = admin_metadata
-        self._storage_broker = None
-        self._manifest_cache = None
 
     @property
     def uuid(self):

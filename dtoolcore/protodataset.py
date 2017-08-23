@@ -15,6 +15,7 @@ class ProtoDataSet(object):
     """
     Class for building up a dataset.
     """
+
     def __init__(self, name, admin_metadata=None):
         if admin_metadata is None:
             self._admin_metadata = {
@@ -29,6 +30,26 @@ class ProtoDataSet(object):
             self._admin_metadata = admin_metadata
 
         self._storage_broker = None
+
+    @classmethod
+    def from_uri(cls, uri):
+        """
+        Return an existing :class:`dtoolcore.ProtoDataSet` from a URI.
+
+        :params uri: unique resource identifier where the existing
+                     :class:`dtoolcore.ProtoDataSet` is stored
+        :returns: :class:`dtoolcore.ProtoDataSet`
+        """
+        storage_broker = DiskStorageBroker(uri)
+        admin_metadata = storage_broker.get_admin_metadata()
+        if admin_metadata["type"] != "protodataset":
+            raise(TypeError("{} is not a ProtoDataSet".format(uri)))
+        proto_dataset = cls(
+            name=None,
+            admin_metadata=admin_metadata
+        )
+        proto_dataset._storage_broker = storage_broker
+        return proto_dataset
 
     @classmethod
     def create(cls, uri, name):
@@ -51,26 +72,6 @@ class ProtoDataSet(object):
 
         proto_dataset.put_readme("")
 
-        return proto_dataset
-
-    @classmethod
-    def from_uri(cls, uri):
-        """
-        Return an existing :class:`dtoolcore.ProtoDataSet` from a URI.
-
-        :params uri: unique resource identifier where the existing
-                     :class:`dtoolcore.ProtoDataSet` is stored
-        :returns: :class:`dtoolcore.ProtoDataSet`
-        """
-        storage_broker = DiskStorageBroker(uri)
-        admin_metadata = storage_broker.get_admin_metadata()
-        if admin_metadata["type"] != "protodataset":
-            raise(TypeError("{} is not a ProtoDataSet".format(uri)))
-        proto_dataset = cls(
-            name=None,
-            admin_metadata=admin_metadata
-        )
-        proto_dataset._storage_broker = storage_broker
         return proto_dataset
 
     @property
