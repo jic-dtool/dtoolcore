@@ -32,6 +32,24 @@ class _BaseDataSet(object):
         # Instantiate and return.
         return cls(uri, admin_metadata, config_path)
 
+    @property
+    def uuid(self):
+        """Return the UUID of the dataset."""
+        return self._admin_metadata["uuid"]
+
+    @property
+    def name(self):
+        """Return the name of the dataset."""
+        return self._admin_metadata['name']
+
+    def get_readme_content(self):
+        """
+        Return the content of the README describing the dataset.
+
+        :returns: content of README as a string
+        """
+        return self._storage_broker.get_readme_content()
+
 
 class DataSet(_BaseDataSet):
     """
@@ -54,11 +72,6 @@ class DataSet(_BaseDataSet):
         return cls._from_uri_with_typecheck(uri, config_path, "dataset")
 
     @property
-    def uuid(self):
-        """Return the UUID of the dataset."""
-        return self._admin_metadata["uuid"]
-
-    @property
     def identifiers(self):
         """Return list of dataset item identifiers."""
         return self._manifest["items"].keys()
@@ -70,19 +83,6 @@ class DataSet(_BaseDataSet):
             self._manifest_cache = self._storage_broker.get_manifest()
 
         return self._manifest_cache
-
-    @property
-    def name(self):
-        """Return the name of the dataset."""
-        return self._admin_metadata['name']
-
-    def get_readme_content(self):
-        """
-        Return the content of the README describing the dataset.
-
-        :returns: content of README as a string
-        """
-        return self._storage_broker.get_readme_content()
 
     def item_properties(self, identifier):
         """Return properties of the item with the given identifier.

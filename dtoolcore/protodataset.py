@@ -56,24 +56,6 @@ class ProtoDataSet(_BaseDataSet):
 
         return proto_dataset
 
-    @property
-    def uuid(self):
-        """Return the UUID of the dataset."""
-        return self._admin_metadata["uuid"]
-
-    @property
-    def name(self):
-        """Return the name of the dataset."""
-        return self._admin_metadata["name"]
-
-    def get_readme_content(self):
-        """
-        Return the content of the README describing the dataset.
-
-        :returns: content of README as a string
-        """
-        return self._storage_broker.get_readme_content()
-
     def put_readme(self, content):
         """
         Put content into the README of the dataset.
