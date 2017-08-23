@@ -4,4 +4,5 @@
 
 __version__ = "2.0.0"
 
-
+from dtoolcore.dataset import _DataSet as DataSet
+from dtoolcore.protodataset import _ProtoDataSet as ProtoDataSet

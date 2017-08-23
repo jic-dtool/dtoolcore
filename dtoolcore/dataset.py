@@ -68,13 +68,13 @@ class _BaseDataSet(object):
         self._storage_broker.put_overlay(overlay_name, overlay)
 
 
-class DataSet(_BaseDataSet):
+class _DataSet(_BaseDataSet):
     """
     Class for reading the contents of a dataset.
     """
 
     def __init__(self, uri, admin_metadata, config_path=None):
-        super(DataSet, self).__init__(uri, admin_metadata, config_path)
+        super(_DataSet, self).__init__(uri, admin_metadata, config_path)
         self._manifest_cache = None
 
     @classmethod

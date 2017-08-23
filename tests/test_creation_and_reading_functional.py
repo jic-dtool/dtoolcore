@@ -12,8 +12,8 @@ from . import TEST_SAMPLE_DATASET
 
 def test_basic_workflow(tmp_dir_fixture):  # NOQA
 
-    from dtoolcore.protodataset import ProtoDataSet
-    from dtoolcore.dataset import DataSet
+    from dtoolcore import ProtoDataSet
+    from dtoolcore import DataSet
     from dtoolcore.utils import generate_identifier
 
     sample_data_path = os.path.join(TEST_SAMPLE_DATASET, 'data')
@@ -35,8 +35,8 @@ def test_basic_workflow(tmp_dir_fixture):  # NOQA
 
 def test_proto_dataset_freeze_functional(tmp_dir_fixture):  # NOQA
 
-    from dtoolcore.protodataset import ProtoDataSet
-    from dtoolcore.dataset import DataSet
+    from dtoolcore import ProtoDataSet
+    from dtoolcore import DataSet
     from dtoolcore.utils import generate_identifier
 
     dest_path = os.path.join(tmp_dir_fixture, 'my_dataset')
@@ -109,7 +109,7 @@ def test_proto_dataset_freeze_functional(tmp_dir_fixture):  # NOQA
 
 
 def test_creation_and_reading(tmp_dir_fixture):  # NOQA
-    from dtoolcore.protodataset import ProtoDataSet
+    from dtoolcore import ProtoDataSet
 
     dest_path = os.path.join(tmp_dir_fixture, 'my_dataset')
     sample_data_path = os.path.join(TEST_SAMPLE_DATASET, 'data')

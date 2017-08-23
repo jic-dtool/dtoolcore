@@ -11,7 +11,7 @@ from dtoolcore import __version__
 from dtoolcore.dataset import _BaseDataSet
 
 
-class ProtoDataSet(_BaseDataSet):
+class _ProtoDataSet(_BaseDataSet):
     """
     Class for building up a dataset.
     """
