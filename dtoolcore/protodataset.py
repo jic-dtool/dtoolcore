@@ -6,8 +6,6 @@ from collections import defaultdict
 import dtoolcore.utils
 from dtoolcore.utils import generate_identifier
 
-from dtoolcore.storage_broker import DiskStorageBroker
-
 from dtoolcore import __version__
 
 from dtoolcore.dataset import _BaseDataSet
@@ -27,13 +25,7 @@ class ProtoDataSet(_BaseDataSet):
                      :class:`dtoolcore.ProtoDataSet` is stored
         :returns: :class:`dtoolcore.ProtoDataSet`
         """
-        storage_broker = DiskStorageBroker(uri)
-        admin_metadata = storage_broker.get_admin_metadata()
-        if admin_metadata["type"] != "protodataset":
-            raise(TypeError("{} is not a ProtoDataSet".format(uri)))
-        proto_dataset = cls(admin_metadata, config_path)
-        proto_dataset._storage_broker = storage_broker
-        return proto_dataset
+        return cls._from_uri_with_typecheck(uri, config_path, "protodataset")
 
     @classmethod
     def create(cls, uri, name, config_path=None):
@@ -53,9 +45,7 @@ class ProtoDataSet(_BaseDataSet):
             "creator_username": dtoolcore.utils.getuser(),
             "readme_path": "README.yml"
         }
-        proto_dataset = cls(admin_metadata, config_path)
-
-        proto_dataset._storage_broker = DiskStorageBroker(uri)
+        proto_dataset = cls(uri, admin_metadata, config_path)
 
         proto_dataset._storage_broker.create_structure()
         proto_dataset._storage_broker.put_admin_metadata(

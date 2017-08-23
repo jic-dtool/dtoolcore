@@ -3,12 +3,29 @@ from dtoolcore.storage_broker import DiskStorageBroker
 __version__ = "0.1.0"
 
 
+def _admin_metadata_from_uri(uri, config_path):
+    """Helper function for getting admin metadata."""
+    storage_broker = DiskStorageBroker(uri, config_path)
+    admin_metadata = storage_broker.get_admin_metadata()
+    return admin_metadata
+
+
 class _BaseDataSet(object):
     """Base class for datasets."""
-    def __init__(self, admin_metadata, config_path=None):
+
+    def __init__(self, uri, admin_metadata, config_path=None):
         self._admin_metadata = admin_metadata
-        self._storage_broker = None
-        self._manifest_cache = None
+        self._storage_broker = DiskStorageBroker(uri, config_path)
+
+    @classmethod
+    def _from_uri_with_typecheck(cls, uri, config_path, type_name):
+        # Get the admin metadata out of the URI and type check.
+        admin_metadata = _admin_metadata_from_uri(uri, config_path)
+        if admin_metadata['type'] != type_name:
+            raise TypeError("{} is not a {}".format(uri, cls.__name__))
+
+        # Instantiate and return.
+        return cls(uri, admin_metadata, config_path)
 
 
 class DataSet(_BaseDataSet):
@@ -16,8 +33,8 @@ class DataSet(_BaseDataSet):
     Class for reading the contents of a dataset.
     """
 
-    def __init__(self, admin_metadata, config_path=None):
-        super(DataSet, self).__init__(admin_metadata, config_path)
+    def __init__(self, uri, admin_metadata, config_path=None):
+        super(DataSet, self).__init__(uri, admin_metadata, config_path)
         self._manifest_cache = None
 
     @classmethod
@@ -29,19 +46,7 @@ class DataSet(_BaseDataSet):
                      :class:`dtoolcore.DataSet` is stored
         :returns: :class:`dtoolcore.DataSet`
         """
-
-        storage_broker = DiskStorageBroker(uri)
-
-        admin_metadata = storage_broker.get_admin_metadata()
-
-        if admin_metadata['type'] != 'dataset':
-            raise TypeError("{} is not a dataset".format(uri))
-
-        dataset = cls(admin_metadata, config_path)
-
-        dataset._storage_broker = storage_broker
-
-        return dataset
+        return cls._from_uri_with_typecheck(uri, config_path, "dataset")
 
     @property
     def uuid(self):
