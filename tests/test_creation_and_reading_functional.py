@@ -95,7 +95,7 @@ def test_proto_dataset_freeze_functional(tmp_dir_fixture):  # NOQA
 
     # Test accessing item
     expected_identifier = generate_identifier('another_file.txt')
-    fpath = dataset.item_contents_abspath(expected_identifier)
+    fpath = dataset.item_content_abspath(expected_identifier)
 
     with open(fpath) as fh:
         contents = fh.read()

@@ -80,7 +80,7 @@ class DataSet(object):
 
         return self._manifest["items"][identifier]
 
-    def item_contents_abspath(self, identifier):
+    def item_content_abspath(self, identifier):
         """Return absolute path at which item content can be accessed.
 
         :param identifier: item identifier
