@@ -51,7 +51,6 @@ class DataSet(object):
     @property
     def _manifest(self):
         """Return manifest content."""
-
         if self._manifest_cache is None:
             self._manifest_cache = self._storage_broker.get_manifest()
 
@@ -60,7 +59,6 @@ class DataSet(object):
     @property
     def name(self):
         """Return the name of the dataset."""
-
         return self._admin_metadata['name']
 
     def get_readme_content(self):
@@ -77,7 +75,6 @@ class DataSet(object):
         :param identifier: item identifier
         :returns: dictionary of item properties from the manifest
         """
-
         return self._manifest["items"][identifier]
 
     def item_content_abspath(self, identifier):
@@ -89,15 +86,22 @@ class DataSet(object):
         return self._storage_broker.get_item_abspath(identifier)
 
     def get_overlay(self, overlay_name):
-        """Return overlay as a dictionary."""
+        """Return overlay as a dictionary.
 
+        :param overlay_name: name of the overlay
+        :returns: overlay as a dictionary
+        """
         return self._storage_broker.get_overlay(overlay_name)
 
     def put_overlay(self, overlay_name, overlay):
-        """Store the given overlay so that it is accessible by the given name.
-        The overlay must be a dictionary where the keys are identifiers in the
-        dataset."""
+        """Store overlay so that it is accessible by the given name.
 
+        :param overlay_name: name of the overlay
+        :param overlay: overlay must be a dictionary where the keys are
+                        identifiers in the dataset
+        :raises: TypeError if the overlay is not a dictionary,
+                 ValueError if identifiers in overlay and dataset do not match
+        """
         if not isinstance(overlay, dict):
             raise TypeError("Overlay must be dict")
 
