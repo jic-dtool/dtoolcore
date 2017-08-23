@@ -10,15 +10,13 @@ from dtoolcore.storage_broker import DiskStorageBroker
 
 from dtoolcore import __version__
 
+from dtoolcore.dataset import _BaseDataSet
 
-class ProtoDataSet(object):
+
+class ProtoDataSet(_BaseDataSet):
     """
     Class for building up a dataset.
     """
-
-    def __init__(self, admin_metadata, config_path=None):
-        self._admin_metadata = admin_metadata
-        self._storage_broker = None
 
     @classmethod
     def from_uri(cls, uri, config_path=None):

@@ -3,14 +3,21 @@ from dtoolcore.storage_broker import DiskStorageBroker
 __version__ = "0.1.0"
 
 
-class DataSet(object):
+class _BaseDataSet(object):
+    """Base class for datasets."""
+    def __init__(self, admin_metadata, config_path=None):
+        self._admin_metadata = admin_metadata
+        self._storage_broker = None
+        self._manifest_cache = None
+
+
+class DataSet(_BaseDataSet):
     """
     Class for reading the contents of a dataset.
     """
 
     def __init__(self, admin_metadata, config_path=None):
-        self._admin_metadata = admin_metadata
-        self._storage_broker = None
+        super(DataSet, self).__init__(admin_metadata, config_path)
         self._manifest_cache = None
 
     @classmethod
