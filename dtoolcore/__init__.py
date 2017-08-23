@@ -1,4 +1,4 @@
-"""Tool for managing (scientific) data.
+"""API for creating and interacting with dtool datasets.
 
 """
 
