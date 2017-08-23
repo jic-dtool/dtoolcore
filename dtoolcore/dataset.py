@@ -4,9 +4,19 @@ __version__ = "0.1.0"
 
 
 class DataSet(object):
+    """
+    Class for reading the contents of a dataset.
+    """
 
     @classmethod
     def from_uri(cls, uri):
+        """
+        Return an existing :class:`dtoolcore.DataSet` from a URI.
+
+        :params uri: unique resource identifier where the existing
+                     :class:`dtoolcore.DataSet` is stored
+        :returns: :class:`dtoolcore.DataSet`
+        """
 
         storage_broker = DiskStorageBroker(uri)
 
@@ -30,7 +40,7 @@ class DataSet(object):
 
     @property
     def uuid(self):
-        """Return the proto dataset's UUID."""
+        """Return the UUID of the dataset."""
         return self._admin_metadata["uuid"]
 
     @property
@@ -54,15 +64,28 @@ class DataSet(object):
         return self._admin_metadata['name']
 
     def get_readme_content(self):
+        """
+        Return the content of the README describing the dataset.
+
+        :returns: content of README as a string
+        """
         return self._storage_broker.get_readme_content()
 
     def item_properties(self, identifier):
-        """Return properties of the item with the given identifier."""
+        """Return properties of the item with the given identifier.
+
+        :param identifier: item identifier
+        :returns: dictionary of item properties from the manifest
+        """
 
         return self._manifest["items"][identifier]
 
     def item_contents_abspath(self, identifier):
-        """Return absolute path at which item contents can be accessed."""
+        """Return absolute path at which item content can be accessed.
+
+        :param identifier: item identifier
+        :returns: absolute path from which the item content can be accessed
+        """
         return self._storage_broker.get_item_abspath(identifier)
 
     def get_overlay(self, overlay_name):
