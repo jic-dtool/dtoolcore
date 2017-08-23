@@ -6,3 +6,5 @@ API documentation
 
    api/dtoolcore
    api/filehasher
+   api/storagebroker
+   api/utils
