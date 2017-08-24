@@ -26,6 +26,10 @@ def _admin_metadata_from_uri(uri, config_path):
     return admin_metadata
 
 
+class DtoolCoreTypeError(OSError):
+    pass
+
+
 class _BaseDataSet(object):
     """Base class for datasets."""
 
@@ -38,7 +42,8 @@ class _BaseDataSet(object):
         # Get the admin metadata out of the URI and type check.
         admin_metadata = _admin_metadata_from_uri(uri, config_path)
         if admin_metadata['type'] != type_name:
-            raise TypeError("{} is not a {}".format(uri, cls.__name__))
+            raise DtoolCoreTypeError(
+                "{} is not a {}".format(uri, cls.__name__))
 
         # Instantiate and return.
         return cls(uri, admin_metadata, config_path)
