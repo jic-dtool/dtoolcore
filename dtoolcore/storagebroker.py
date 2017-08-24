@@ -137,7 +137,12 @@ class DiskStorageBroker(object):
         os.mkdir(self._abspath)
 
         # Create more essential subdirectories.
-        for abspath in [self._dtool_abspath, self._overlays_abspath]:
+        essential_subdirectories = [
+            self._dtool_abspath,
+            self._data_abspath,
+            self._overlays_abspath
+        ]
+        for abspath in essential_subdirectories:
             if not os.path.isdir(abspath):
                 os.mkdir(abspath)
 
