@@ -65,6 +65,13 @@ class DiskStorageBroker(object):
         with open(self._admin_metadata_fpath) as fh:
             return json.load(fh)
 
+    def has_admin_metadata(self):
+        """Return True if the administrative metadata exists.
+
+        This is the definition of being a "dataset".
+        """
+        return os.path.isfile(self._admin_metadata_fpath)
+
     def get_readme_content(self):
         """Return content of the README file as a string.
 

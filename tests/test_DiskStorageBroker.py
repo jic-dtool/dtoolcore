@@ -232,3 +232,20 @@ def test_post_freeze_hook(tmp_dir_fixture):  # NOQA
     assert os.path.isdir(storagebroker._metadata_fragments_abspath)
     storagebroker.post_freeze_hook()
     assert not os.path.isdir(storagebroker._metadata_fragments_abspath)
+
+
+def test_has_admin_metadata(tmp_dir_fixture):  # NOQA
+
+    from dtoolcore.storagebroker import DiskStorageBroker
+
+    destination_path = os.path.join(tmp_dir_fixture, 'my_proto_dataset')
+    storagebroker = DiskStorageBroker(destination_path)
+
+    assert not storagebroker.has_admin_metadata()
+
+    storagebroker.create_structure()
+    assert not storagebroker.has_admin_metadata()
+
+    admin_metadata = {'hello': 'world'}
+    storagebroker.put_admin_metadata(admin_metadata)
+    assert storagebroker.has_admin_metadata()
