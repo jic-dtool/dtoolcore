@@ -35,8 +35,7 @@ def test_basic_workflow(tmp_dir_fixture):  # NOQA
 
 def test_proto_dataset_freeze_functional(tmp_dir_fixture):  # NOQA
 
-    from dtoolcore import ProtoDataSet
-    from dtoolcore import DataSet
+    from dtoolcore import DataSet, ProtoDataSet, DtoolCoreTypeError
     from dtoolcore.utils import generate_identifier
 
     dest_path = os.path.join(tmp_dir_fixture, 'my_dataset')
@@ -62,7 +61,7 @@ def test_proto_dataset_freeze_functional(tmp_dir_fixture):  # NOQA
     proto_dataset.put_readme(content='Hello world!')
 
     # We shouldn't be able to load this as a DataSet
-    with pytest.raises(TypeError):
+    with pytest.raises(DtoolCoreTypeError):
         DataSet.from_uri(dest_path)
 
     proto_dataset.freeze()
@@ -72,7 +71,7 @@ def test_proto_dataset_freeze_functional(tmp_dir_fixture):  # NOQA
         proto_dataset._storage_broker._metadata_fragments_abspath)
 
     # Now we shouln't be able to load as a ProtoDataSet
-    with pytest.raises(TypeError):
+    with pytest.raises(DtoolCoreTypeError):
         ProtoDataSet.from_uri(dest_path)
 
     # But we can as a DataSet

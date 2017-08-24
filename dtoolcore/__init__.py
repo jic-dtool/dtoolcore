@@ -26,7 +26,7 @@ def _admin_metadata_from_uri(uri, config_path):
     return admin_metadata
 
 
-class DtoolCoreTypeError(OSError):
+class DtoolCoreTypeError(TypeError):
     pass
 
 
