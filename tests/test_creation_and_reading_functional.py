@@ -21,7 +21,7 @@ def test_basic_workflow(tmp_dir_fixture):  # NOQA
     local_file_path = os.path.join(sample_data_path, 'tiny.png')
 
     # Create a minimal dataset
-    proto_dataset = ProtoDataSet.create(uri=dest_path, name='my_dataset')
+    proto_dataset = ProtoDataSet.new(uri=dest_path, name='my_dataset')
     proto_dataset.put_item(local_file_path, 'tiny.png')
     proto_dataset.freeze()
 
@@ -41,7 +41,7 @@ def test_proto_dataset_freeze_functional(tmp_dir_fixture):  # NOQA
     dest_path = os.path.join(tmp_dir_fixture, 'my_dataset')
     sample_data_path = os.path.join(TEST_SAMPLE_DATASET, 'data')
 
-    proto_dataset = ProtoDataSet.create(dest_path, "func_test_dataset_freeze")
+    proto_dataset = ProtoDataSet.new(dest_path, "func_test_dataset_freeze")
 
     filenames = ['tiny.png', 'actually_a_png.txt', 'another_file.txt']
     for filename in filenames:
@@ -114,7 +114,7 @@ def test_creation_and_reading(tmp_dir_fixture):  # NOQA
     sample_data_path = os.path.join(TEST_SAMPLE_DATASET, 'data')
 
     # Create a proto dataset
-    proto_dataset = ProtoDataSet.create(dest_path, "func_test_dataset")
+    proto_dataset = ProtoDataSet.new(dest_path, "func_test_dataset")
 
     assert proto_dataset.name == "func_test_dataset"
 

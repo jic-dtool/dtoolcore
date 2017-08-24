@@ -159,7 +159,27 @@ class ProtoDataSet(_BaseDataSet):
         return cls._from_uri_with_typecheck(uri, config_path, "protodataset")
 
     @classmethod
-    def create(cls, uri, name, config_path=None):
+    def create_structure(
+        cls,
+        uri,
+        config_path=None,
+        admin_metadata=None
+    ):
+        """
+        :params uri: unique resource identifier defining where the dataset will
+                     be stored
+        :params name: dataset name
+        :returns: :class:`dtoolcore.ProtoDataSet`
+        """
+        proto_dataset = cls(
+            uri,
+            admin_metadata=admin_metadata,
+            config_path=config_path)
+        proto_dataset._storage_broker.create_structure()
+        return proto_dataset
+
+    @classmethod
+    def new(cls, uri, name, config_path=None):
         """
         Return a :class:`dtoolcore.ProtoDataSet`.
 
@@ -176,13 +196,16 @@ class ProtoDataSet(_BaseDataSet):
             "creator_username": dtoolcore.utils.getuser(),
             "readme_path": "README.yml"
         }
-        proto_dataset = cls(uri, admin_metadata, config_path)
 
-        proto_dataset._storage_broker.create_structure()
+        proto_dataset = cls.create_structure(
+            uri=uri,
+            config_path=config_path,
+            admin_metadata=admin_metadata
+        )
+
         proto_dataset._storage_broker.put_admin_metadata(
             proto_dataset._admin_metadata
         )
-
         proto_dataset.put_readme("")
 
         return proto_dataset
