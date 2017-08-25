@@ -17,5 +17,10 @@ setup(
     url=url,
     download_url="{}/tarball/{}".format(url, version),
     install_requires=[],
+    entry_points={
+        "dtool.storage_brokers": [
+            "DiskStorageBroker=dtoolcore.storagebroker:DiskStorageBroker",
+        ],
+    },
     license="MIT"
 )

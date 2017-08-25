@@ -25,6 +25,9 @@ class DiskStorageBroker(object):
     datasets from disk.
     """
 
+    #: Attribute used to define the type of storage broker.
+    key = "disk"
+
     #: Attribute used by :class:`dtoolcore.ProtoDataSet` to write the hash
     #: function name to the manifest.
     hasher = FileHasher(md5sum)

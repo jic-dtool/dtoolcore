@@ -36,8 +36,10 @@ Features
 - Structural metadata includes hash, size and modification time for
   subsequent integrity checks
 - Ability to annotate individual files with arbitrary metadata
-- Metadata stored on disk as plain text files, i.e. datasets
+- Metadata stored on disk as plain text files, i.e. disk datasets
   generated using this API can be accessed without special tools
+- Ability to create plugins for custom storage solutions
+- Plugins for iRODS and Microsoft Azure storage backends available
 - Cross-platform: Linux, Mac and Windows are all supported
 - Works with Python 2.7, 3.5 and 3.6
 - No external dependencies
@@ -51,3 +53,25 @@ It aims to help in three areas:
 1. Adding structure and meta data to your project and files
 2. Providing programmatic discovery of your data
 3. Verifying the integrity of your data
+
+
+Creating a custom storage plugin
+--------------------------------
+
+1. Examine the code in ``dtoolcore.storagebroker.DiskStorageBroker``.
+2. Create a Python class for your storage, e.g. ``MyStorageBroker``
+3. Add a ``MyStorageBroker.key``` attribute to the class, this key is used to
+   lookup an appropriate storage broker when interacting with a dataset
+4. Add a ``dtoolcore.FileHasher`` instance that matches the hashing algorithm
+   used by your storage to your ``MyStorageBroker.hasher`` attribute
+5. Add implementations for all the public functions in
+   ``dtoolcore.storagebroker.DiskStorageBroker`` class to ``MyStorageBroker``
+6. Expose the ``MyStorageBroker`` class as a ``dtool.storage_broker``
+   entrypoint, e.g. add a section along the lines of the below to the
+   ``setup.py`` file::
+   
+        entry_points={
+            "dtool.storage_brokers": [
+                "MyStorageBroker=my_dtool_storage_plugin:MyStorageBroker",
+            ],
+        },

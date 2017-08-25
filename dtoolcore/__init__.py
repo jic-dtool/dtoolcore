@@ -5,6 +5,7 @@
 import uuid
 import datetime
 
+from pkg_resources import iter_entry_points
 from collections import defaultdict
 
 import dtoolcore.utils
@@ -14,9 +15,21 @@ from dtoolcore.storagebroker import DiskStorageBroker
 __version__ = "2.0.0"
 
 
-def _get_storage_broker(uri, config_path):
+def _generate_storage_broker_lookup():
+    """Return dictionary of available storage brokers."""
+    storage_broker_lookup = dict()
+    for entrypoint in iter_entry_points("dtool.storage_brokers"):
+        StorageBroker = entrypoint.load()
+        storage_broker_lookup[StorageBroker.key] = StorageBroker
+    return storage_broker_lookup
+
+
+def _get_storage_broker(type_uri, config_path):
     """Helper function to enable use lookup of appropriate storage brokers."""
-    return DiskStorageBroker(uri, config_path)
+    storage_broker_lookup = _generate_storage_broker_lookup()
+    sb_type, stripped_uri = type_uri.split(":", 1)
+    StorageBroker = storage_broker_lookup[sb_type]
+    return StorageBroker(stripped_uri, config_path)
 
 
 def _admin_metadata_from_uri(uri, config_path):
