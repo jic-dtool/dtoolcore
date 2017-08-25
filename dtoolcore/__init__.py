@@ -26,6 +26,12 @@ def _admin_metadata_from_uri(uri, config_path):
     return admin_metadata
 
 
+def _is_dataset(uri, config_path):
+    """Helper function for determining if a URI is a dataset."""
+    storage_broker = _get_storage_broker(uri, config_path)
+    return storage_broker.has_admin_metadata()
+
+
 class DtoolCoreTypeError(TypeError):
     pass
 
@@ -39,6 +45,10 @@ class _BaseDataSet(object):
 
     @classmethod
     def _from_uri_with_typecheck(cls, uri, config_path, type_name):
+        # Make sure that the URI refers to a dataset.
+        if not _is_dataset(uri, config_path):
+            raise(DtoolCoreTypeError("{} is not a dataset".format(uri)))
+
         # Get the admin metadata out of the URI and type check.
         admin_metadata = _admin_metadata_from_uri(uri, config_path)
         if admin_metadata['type'] != type_name:
