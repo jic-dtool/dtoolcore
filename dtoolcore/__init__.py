@@ -9,7 +9,6 @@ from pkg_resources import iter_entry_points
 from collections import defaultdict
 
 import dtoolcore.utils
-from dtoolcore.storagebroker import DiskStorageBroker
 
 
 __version__ = "2.0.0"
