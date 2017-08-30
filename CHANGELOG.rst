@@ -4,18 +4,62 @@ CHANGELOG
 This project uses `semantic versioning <http://semver.org/>`_.
 This change log uses principles from `keep a changelog <http://keepachangelog.com/>`_.
 
-
 [Unreleased]
 ------------
 
 Added
 ^^^^^
 
-- DataSet.raw_descriptive_metadata added; it returns the content of the descriptive_metadata file (``README.yml``)
 
 Changed
 ^^^^^^^
 
+
+Deprecated
+^^^^^^^^^^
+
+
+Removed
+^^^^^^^
+
+
+Fixed
+^^^^^
+
+
+
+Security
+^^^^^^^^
+
+
+
+[2.0.0] 2017-08-30
+------------------
+
+Completely new API to be able to work with data stored on disk as well as data
+stored in the cloud or in other backends.
+
+Previously the ``dtoolcore.DataSet`` could be used both for building up,
+updating and reading a dataset. Now the ``dtoolcore.DataSet`` class can only be
+used for reading a dataset and add overlays. To build up a dataset one has to
+use the ``dtoolcore.ProtoDataSet`` class. It is no longer possible to update an
+existing dataset.
+
+The reading and writing of data is abstracted into the concept of a storage
+broker. An example storage broker for working with data on disk is
+``dtoolcore.storagebroker.DiskStorageBroker``.
+
+The structure of the manifest has also been updated. Instead of storing data
+items in a list called ``file_list`` they are stored in a dictionary called
+``items``.
+
+Added
+^^^^^
+
+Changed
+^^^^^^^
+
+- DataSet split into ProtoDataSet (for writing) and DataSet (for reading)
 - Updated dataset item identifier from file content sha1sum to relative file
   path sha1sum
 - Changed manifest item storage from list ("file_list") to dictionary ("items")
@@ -27,17 +71,23 @@ Deprecated
 Removed
 ^^^^^^^
 
-- *API breaking change*: DataSet.descriptive_metadata no longer exists
 - Removed dependency on PyYAML
 
 
 Fixed
 ^^^^^
 
-
-
 Security
 ^^^^^^^^
+
+
+[1.0.0] - 2017-05-09
+--------------------
+
+Changed
+^^^^^^^
+
+- Updated version number from 0.15.0 to 1.0.0
 
 
 [0.15.0] - 2017-04-25
