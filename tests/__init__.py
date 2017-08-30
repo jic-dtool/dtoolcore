@@ -7,7 +7,7 @@ import tempfile
 import pytest
 
 _HERE = os.path.dirname(__file__)
-TEST_SAMPLE_DATASET = os.path.join(_HERE, "data", "sample_data")
+TEST_SAMPLE_DATA = os.path.join(_HERE, "data")
 
 
 @pytest.fixture

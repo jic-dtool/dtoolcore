@@ -7,7 +7,7 @@ import pytz
 import pytest
 
 from . import tmp_dir_fixture  # NOQA
-from . import TEST_SAMPLE_DATASET
+from . import TEST_SAMPLE_DATA
 
 
 def test_basic_workflow(tmp_dir_fixture):  # NOQA
@@ -16,7 +16,7 @@ def test_basic_workflow(tmp_dir_fixture):  # NOQA
     from dtoolcore import DataSet
     from dtoolcore.utils import generate_identifier
 
-    sample_data_path = os.path.join(TEST_SAMPLE_DATASET, 'data')
+    sample_data_path = os.path.join(TEST_SAMPLE_DATA)
     dest_path = "disk:" + os.path.join(tmp_dir_fixture, 'my_dataset')
     local_file_path = os.path.join(sample_data_path, 'tiny.png')
 
@@ -39,7 +39,7 @@ def test_proto_dataset_freeze_functional(tmp_dir_fixture):  # NOQA
     from dtoolcore.utils import generate_identifier
 
     dest_path = "disk:" + os.path.join(tmp_dir_fixture, 'my_dataset')
-    sample_data_path = os.path.join(TEST_SAMPLE_DATASET, 'data')
+    sample_data_path = os.path.join(TEST_SAMPLE_DATA)
 
     proto_dataset = ProtoDataSet.new(dest_path, "func_test_dataset_freeze")
 
@@ -111,7 +111,7 @@ def test_creation_and_reading(tmp_dir_fixture):  # NOQA
     from dtoolcore import ProtoDataSet
 
     dest_path = "disk:" + os.path.join(tmp_dir_fixture, 'my_dataset')
-    sample_data_path = os.path.join(TEST_SAMPLE_DATASET, 'data')
+    sample_data_path = os.path.join(TEST_SAMPLE_DATA)
 
     # Create a proto dataset
     proto_dataset = ProtoDataSet.new(dest_path, "func_test_dataset")

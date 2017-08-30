@@ -7,7 +7,7 @@ import datetime
 import pytest
 
 from . import tmp_dir_fixture  # NOQA
-from . import TEST_SAMPLE_DATASET
+from . import TEST_SAMPLE_DATA
 
 
 def test_initialise():
@@ -83,7 +83,7 @@ def test_put_item(tmp_dir_fixture):  # NOQA
 
     storagebroker.create_structure()
 
-    input_file_path = os.path.join(TEST_SAMPLE_DATASET, 'data', 'tiny.png')
+    input_file_path = os.path.join(TEST_SAMPLE_DATA, 'tiny.png')
 
     storagebroker.put_item(
         fpath=input_file_path,
@@ -120,7 +120,7 @@ def test_item_properties(tmp_dir_fixture):  # NOQA
 
     storagebroker.create_structure()
 
-    input_file_path = os.path.join(TEST_SAMPLE_DATASET, 'data', 'tiny.png')
+    input_file_path = os.path.join(TEST_SAMPLE_DATA, 'tiny.png')
 
     storagebroker.put_item(
         fpath=input_file_path,
