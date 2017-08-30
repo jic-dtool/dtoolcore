@@ -88,7 +88,7 @@ class _BaseDataSet(object):
         """
         return self._storage_broker.get_readme_content()
 
-    def put_overlay(self, overlay_name, overlay):
+    def _put_overlay(self, overlay_name, overlay):
         """Store overlay so that it is accessible by the given name.
 
         :param overlay_name: name of the overlay
@@ -100,7 +100,7 @@ class _BaseDataSet(object):
         if not isinstance(overlay, dict):
             raise TypeError("Overlay must be dict")
 
-        if set(self.identifiers) != set(overlay.keys()):
+        if set(self._identifiers()) != set(overlay.keys()):
             raise ValueError("Overlay keys must be dataset identifiers")
 
         self._storage_broker.put_overlay(overlay_name, overlay)
@@ -114,6 +114,9 @@ class DataSet(_BaseDataSet):
     def __init__(self, uri, admin_metadata, config_path=None):
         super(DataSet, self).__init__(uri, admin_metadata, config_path)
         self._manifest_cache = None
+
+    def _identifiers(self):
+        return self._manifest["items"].keys()
 
     @classmethod
     def from_uri(cls, uri, config_path=None):
@@ -129,7 +132,7 @@ class DataSet(_BaseDataSet):
     @property
     def identifiers(self):
         """Return iterable of dataset item identifiers."""
-        return self._manifest["items"].keys()
+        return self._identifiers()
 
     @property
     def _manifest(self):
@@ -162,6 +165,17 @@ class DataSet(_BaseDataSet):
         :returns: overlay as a dictionary
         """
         return self._storage_broker.get_overlay(overlay_name)
+
+    def put_overlay(self, overlay_name, overlay):
+        """Store overlay so that it is accessible by the given name.
+
+        :param overlay_name: name of the overlay
+        :param overlay: overlay must be a dictionary where the keys are
+                        identifiers in the dataset
+        :raises: TypeError if the overlay is not a dictionary,
+                 ValueError if identifiers in overlay and dataset do not match
+        """
+        self._put_overlay(overlay_name, overlay)
 
 
 class ProtoDataSet(_BaseDataSet):
@@ -232,8 +246,7 @@ class ProtoDataSet(_BaseDataSet):
 
         return proto_dataset
 
-    @property
-    def identifiers(self):
+    def _identifiers(self):
         """Return iterable of dataset item identifiers."""
         for handle in self._storage_broker.iter_item_handles():
             yield dtoolcore.utils.generate_identifier(handle)
@@ -309,7 +322,7 @@ class ProtoDataSet(_BaseDataSet):
 
         overlays = self._generate_overlays()
         for overlay_name, overlay in overlays.items():
-            self.put_overlay(overlay_name, overlay)
+            self._put_overlay(overlay_name, overlay)
 
         # Change the type of the dataset from "protodataset" to "dataset" and
         # add a "frozen_at" time stamp to the administrative metadata.
