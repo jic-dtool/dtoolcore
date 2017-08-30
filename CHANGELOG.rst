@@ -63,6 +63,10 @@ Changed
 - Updated dataset item identifier from file content sha1sum to relative file
   path sha1sum
 - Changed manifest item storage from list ("file_list") to dictionary ("items")
+- Manifest item keys have changed from:
+  - ``path`` to ``relpath``
+  - ``size`` to ``size_in_bytes``
+  - ``mtime`` to ``utc_timestamp``
 
 Deprecated
 ^^^^^^^^^^
