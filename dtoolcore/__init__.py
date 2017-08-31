@@ -23,24 +23,24 @@ def _generate_storage_broker_lookup():
     return storage_broker_lookup
 
 
-def _get_storage_broker(type_uri, config_path):
+def _get_storage_broker(type_uri, config):
     """Helper function to enable use lookup of appropriate storage brokers."""
     storage_broker_lookup = _generate_storage_broker_lookup()
     sb_type, stripped_uri = type_uri.split(":", 1)
     StorageBroker = storage_broker_lookup[sb_type]
-    return StorageBroker(stripped_uri, config_path)
+    return StorageBroker(stripped_uri, config)
 
 
-def _admin_metadata_from_uri(uri, config_path):
+def _admin_metadata_from_uri(uri, config):
     """Helper function for getting admin metadata."""
-    storage_broker = _get_storage_broker(uri, config_path)
+    storage_broker = _get_storage_broker(uri, config)
     admin_metadata = storage_broker.get_admin_metadata()
     return admin_metadata
 
 
-def _is_dataset(uri, config_path):
+def _is_dataset(uri, config):
     """Helper function for determining if a URI is a dataset."""
-    storage_broker = _get_storage_broker(uri, config_path)
+    storage_broker = _get_storage_broker(uri, config)
     return storage_broker.has_admin_metadata()
 
 
@@ -51,24 +51,24 @@ class DtoolCoreTypeError(TypeError):
 class _BaseDataSet(object):
     """Base class for datasets."""
 
-    def __init__(self, uri, admin_metadata, config_path=None):
+    def __init__(self, uri, admin_metadata, config=None):
         self._admin_metadata = admin_metadata
-        self._storage_broker = _get_storage_broker(uri, config_path)
+        self._storage_broker = _get_storage_broker(uri, config)
 
     @classmethod
-    def _from_uri_with_typecheck(cls, uri, config_path, type_name):
+    def _from_uri_with_typecheck(cls, uri, config, type_name):
         # Make sure that the URI refers to a dataset.
-        if not _is_dataset(uri, config_path):
+        if not _is_dataset(uri, config):
             raise(DtoolCoreTypeError("{} is not a dataset".format(uri)))
 
         # Get the admin metadata out of the URI and type check.
-        admin_metadata = _admin_metadata_from_uri(uri, config_path)
+        admin_metadata = _admin_metadata_from_uri(uri, config)
         if admin_metadata['type'] != type_name:
             raise DtoolCoreTypeError(
                 "{} is not a {}".format(uri, cls.__name__))
 
         # Instantiate and return.
-        return cls(uri, admin_metadata, config_path)
+        return cls(uri, admin_metadata, config)
 
     @property
     def uuid(self):
@@ -111,15 +111,15 @@ class DataSet(_BaseDataSet):
     Class for reading the contents of a dataset.
     """
 
-    def __init__(self, uri, admin_metadata, config_path=None):
-        super(DataSet, self).__init__(uri, admin_metadata, config_path)
+    def __init__(self, uri, admin_metadata, config=None):
+        super(DataSet, self).__init__(uri, admin_metadata, config)
         self._manifest_cache = None
 
     def _identifiers(self):
         return self._manifest["items"].keys()
 
     @classmethod
-    def from_uri(cls, uri, config_path=None):
+    def from_uri(cls, uri, config=None):
         """
         Return an existing :class:`dtoolcore.DataSet` from a URI.
 
@@ -127,7 +127,7 @@ class DataSet(_BaseDataSet):
                      :class:`dtoolcore.DataSet` is stored
         :returns: :class:`dtoolcore.DataSet`
         """
-        return cls._from_uri_with_typecheck(uri, config_path, "dataset")
+        return cls._from_uri_with_typecheck(uri, config, "dataset")
 
     @property
     def identifiers(self):
@@ -184,7 +184,7 @@ class ProtoDataSet(_BaseDataSet):
     """
 
     @classmethod
-    def from_uri(cls, uri, config_path=None):
+    def from_uri(cls, uri, config=None):
         """
         Return an existing :class:`dtoolcore.ProtoDataSet` from a URI.
 
@@ -192,13 +192,13 @@ class ProtoDataSet(_BaseDataSet):
                      :class:`dtoolcore.ProtoDataSet` is stored
         :returns: :class:`dtoolcore.ProtoDataSet`
         """
-        return cls._from_uri_with_typecheck(uri, config_path, "protodataset")
+        return cls._from_uri_with_typecheck(uri, config, "protodataset")
 
     @classmethod
     def create_structure(
         cls,
         uri,
-        config_path=None,
+        config=None,
         admin_metadata=None
     ):
         """
@@ -210,12 +210,12 @@ class ProtoDataSet(_BaseDataSet):
         proto_dataset = cls(
             uri,
             admin_metadata=admin_metadata,
-            config_path=config_path)
+            config=config)
         proto_dataset._storage_broker.create_structure()
         return proto_dataset
 
     @classmethod
-    def new(cls, uri, name, config_path=None):
+    def new(cls, uri, name, config=None):
         """
         Return a :class:`dtoolcore.ProtoDataSet`.
 
@@ -235,7 +235,7 @@ class ProtoDataSet(_BaseDataSet):
 
         proto_dataset = cls.create_structure(
             uri=uri,
-            config_path=config_path,
+            config=config,
             admin_metadata=admin_metadata
         )
 
