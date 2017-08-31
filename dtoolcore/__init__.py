@@ -268,8 +268,9 @@ class ProtoDataSet(_BaseDataSet):
         :param fpath: path to the item on disk
         :param relpath: relative path name given to the item in the dataset as
                         a handle
+        :returns: the handle given to the item
         """
-        self._storage_broker.put_item(fpath, relpath)
+        return self._storage_broker.put_item(fpath, relpath)
 
     def add_item_metadata(self, handle, key, value):
         """

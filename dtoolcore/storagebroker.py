@@ -197,6 +197,7 @@ class DiskStorageBroker(object):
         :param fpath: path to the item on disk
         :param relpath: relative path name given to the item in the dataset as
                         a handle
+        :returns: the handle given to the item
         """
 
         # Define the destination path and make any missing parent directories.
@@ -206,6 +207,8 @@ class DiskStorageBroker(object):
 
         # Copy the file across.
         shutil.copyfile(fpath, dest_path)
+
+        return relpath
 
     def iter_item_handles(self):
         """Return iterator over item handles."""

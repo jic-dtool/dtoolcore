@@ -14,6 +14,8 @@ Added
 Changed
 ^^^^^^^
 
+- ``ProtoDataSet.put_item`` now returns the handle assigned to the item.
+
 
 Deprecated
 ^^^^^^^^^^
