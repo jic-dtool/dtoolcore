@@ -12,21 +12,32 @@ from . import TEST_SAMPLE_DATA
 
 def test_basic_workflow(tmp_dir_fixture):  # NOQA
 
-    from dtoolcore import ProtoDataSet
+    from dtoolcore import ProtoDataSet, generate_admin_metadata
     from dtoolcore import DataSet
     from dtoolcore.utils import generate_identifier
+    from dtoolcore.storagebroker import DiskStorageBroker
+
+    name = "my_dataset"
+    admin_metadata = generate_admin_metadata(name)
+    dest_uri = DiskStorageBroker.generate_uri(
+        name=name,
+        uuid=admin_metadata["uuid"],
+        prefix=tmp_dir_fixture)
 
     sample_data_path = os.path.join(TEST_SAMPLE_DATA)
-    dest_path = "disk:" + os.path.join(tmp_dir_fixture, 'my_dataset')
     local_file_path = os.path.join(sample_data_path, 'tiny.png')
 
     # Create a minimal dataset
-    proto_dataset = ProtoDataSet.new(uri=dest_path, name='my_dataset')
+    proto_dataset = ProtoDataSet(
+        uri=dest_uri,
+        admin_metadata=admin_metadata,
+        config=None)
+    proto_dataset.create()
     proto_dataset.put_item(local_file_path, 'tiny.png')
     proto_dataset.freeze()
 
     # Read in a dataset
-    dataset = DataSet.from_uri(dest_path)
+    dataset = DataSet.from_uri(dest_uri)
 
     expected_identifier = generate_identifier('tiny.png')
     assert expected_identifier in dataset.identifiers
@@ -35,13 +46,30 @@ def test_basic_workflow(tmp_dir_fixture):  # NOQA
 
 def test_proto_dataset_freeze_functional(tmp_dir_fixture):  # NOQA
 
-    from dtoolcore import DataSet, ProtoDataSet, DtoolCoreTypeError
+    from dtoolcore import (
+        generate_admin_metadata,
+        DataSet,
+        ProtoDataSet,
+        DtoolCoreTypeError
+    )
     from dtoolcore.utils import generate_identifier
+    from dtoolcore.storagebroker import DiskStorageBroker
 
-    dest_path = "disk:" + os.path.join(tmp_dir_fixture, 'my_dataset')
+    name = "func_test_dataset_freeze"
+    admin_metadata = generate_admin_metadata(name)
+    dest_uri = DiskStorageBroker.generate_uri(
+        name=name,
+        uuid=admin_metadata["uuid"],
+        prefix=tmp_dir_fixture)
+
     sample_data_path = os.path.join(TEST_SAMPLE_DATA)
 
-    proto_dataset = ProtoDataSet.new(dest_path, "func_test_dataset_freeze")
+    proto_dataset = ProtoDataSet(
+        uri=dest_uri,
+        admin_metadata=admin_metadata,
+        config=None
+    )
+    proto_dataset.create()
 
     filenames = ['tiny.png', 'actually_a_png.txt', 'another_file.txt']
     for filename in filenames:
@@ -62,7 +90,7 @@ def test_proto_dataset_freeze_functional(tmp_dir_fixture):  # NOQA
 
     # We shouldn't be able to load this as a DataSet
     with pytest.raises(DtoolCoreTypeError):
-        DataSet.from_uri(dest_path)
+        DataSet.from_uri(dest_uri)
 
     proto_dataset.freeze()
 
@@ -72,10 +100,10 @@ def test_proto_dataset_freeze_functional(tmp_dir_fixture):  # NOQA
 
     # Now we shouln't be able to load as a ProtoDataSet
     with pytest.raises(DtoolCoreTypeError):
-        ProtoDataSet.from_uri(dest_path)
+        ProtoDataSet.from_uri(dest_uri)
 
     # But we can as a DataSet
-    dataset = DataSet.from_uri(dest_path)
+    dataset = DataSet.from_uri(dest_uri)
     assert dataset.name == 'func_test_dataset_freeze'
 
     # Test identifiers
@@ -108,18 +136,30 @@ def test_proto_dataset_freeze_functional(tmp_dir_fixture):  # NOQA
 
 
 def test_creation_and_reading(tmp_dir_fixture):  # NOQA
-    from dtoolcore import ProtoDataSet
+    from dtoolcore import ProtoDataSet, generate_admin_metadata
+    from dtoolcore.storagebroker import DiskStorageBroker
 
-    dest_path = "disk:" + os.path.join(tmp_dir_fixture, 'my_dataset')
+    name = "func_test_dataset"
+    admin_metadata = generate_admin_metadata(name)
+    dest_uri = DiskStorageBroker.generate_uri(
+        name=name,
+        uuid=admin_metadata["uuid"],
+        prefix=tmp_dir_fixture)
+
     sample_data_path = os.path.join(TEST_SAMPLE_DATA)
 
     # Create a proto dataset
-    proto_dataset = ProtoDataSet.new(dest_path, "func_test_dataset")
+    proto_dataset = ProtoDataSet(
+        uri=dest_uri,
+        admin_metadata=admin_metadata,
+        config=None)
+    proto_dataset.create()
+    proto_dataset.put_readme("")
 
     assert proto_dataset.name == "func_test_dataset"
 
     # Test reading from URI.
-    proto_dataset = ProtoDataSet.from_uri(dest_path)
+    proto_dataset = ProtoDataSet.from_uri(dest_uri)
     assert proto_dataset.name == "func_test_dataset"
 
     # Test get/put readme.

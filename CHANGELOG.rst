@@ -10,6 +10,11 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 Added
 ^^^^^
 
+- ``DiskStorageBroker.generate_uri`` class method, used by client to generate
+  URI for initialising ``ProtoDataSet`` class
+- ``ProtoDataSet.create`` method to do some tasks previously carried out by
+  ``ProtoDataSet.create_structure``
+
 
 Changed
 ^^^^^^^
@@ -23,6 +28,9 @@ Deprecated
 
 Removed
 ^^^^^^^
+
+- ``ProtoDataSet.create_structure`` and ``ProtoDataSet.new`` class methods,
+  responsibility for generating initial admin metadata moved to client
 
 
 Fixed

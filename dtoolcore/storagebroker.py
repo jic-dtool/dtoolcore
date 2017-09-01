@@ -56,6 +56,12 @@ class DiskStorageBroker(object):
             'tmp_fragments'
         )
 
+    @classmethod
+    def generate_uri(cls, name, uuid, prefix):
+        dataset_path = os.path.join(prefix, name)
+        dataset_abspath = os.path.abspath(dataset_path)
+        return "{}:{}".format(cls.key, dataset_abspath)
+
 #############################################################################
 # Methods used by both ProtoDataSet and DataSet.
 #############################################################################

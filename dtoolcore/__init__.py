@@ -2,8 +2,8 @@
 
 """
 
-import uuid
 import datetime
+import uuid
 
 from pkg_resources import iter_entry_points
 from collections import defaultdict
@@ -42,6 +42,21 @@ def _is_dataset(uri, config):
     """Helper function for determining if a URI is a dataset."""
     storage_broker = _get_storage_broker(uri, config)
     return storage_broker.has_admin_metadata()
+
+
+def generate_admin_metadata(name, creator_username=None):
+    """Return admin metadata as a dictionary."""
+    if creator_username is None:
+        creator_username = dtoolcore.utils.getuser()
+    admin_metadata = {
+        "uuid": str(uuid.uuid4()),
+        "dtoolcore_version": __version__,
+        "name": name,
+        "type": "protodataset",
+        "creator_username": creator_username,
+        "readme_path": "README.yml"
+    }
+    return admin_metadata
 
 
 class DtoolCoreTypeError(TypeError):
@@ -194,62 +209,15 @@ class ProtoDataSet(_BaseDataSet):
         """
         return cls._from_uri_with_typecheck(uri, config, "protodataset")
 
-    @classmethod
-    def create_structure(
-        cls,
-        uri,
-        config=None,
-        admin_metadata=None
-    ):
-        """
-        :params uri: unique resource identifier defining where the dataset will
-                     be stored
-        :params name: dataset name
-        :returns: :class:`dtoolcore.ProtoDataSet`
-        """
-        proto_dataset = cls(
-            uri,
-            admin_metadata=admin_metadata,
-            config=config)
-        proto_dataset._storage_broker.create_structure()
-        return proto_dataset
-
-    @classmethod
-    def new(cls, uri, name, config=None):
-        """
-        Return a :class:`dtoolcore.ProtoDataSet`.
-
-        :params uri: unique resource identifier defining where the dataset will
-                     be stored
-        :params name: dataset name
-        :returns: :class:`dtoolcore.ProtoDataSet`
-        """
-        admin_metadata = {
-            "uuid": str(uuid.uuid4()),
-            "dtoolcore_version": __version__,
-            "name": name,
-            "type": "protodataset",
-            "creator_username": dtoolcore.utils.getuser(),
-            "readme_path": "README.yml"
-        }
-
-        proto_dataset = cls.create_structure(
-            uri=uri,
-            config=config,
-            admin_metadata=admin_metadata
-        )
-
-        proto_dataset._storage_broker.put_admin_metadata(
-            proto_dataset._admin_metadata
-        )
-        proto_dataset.put_readme("")
-
-        return proto_dataset
-
     def _identifiers(self):
         """Return iterable of dataset item identifiers."""
         for handle in self._storage_broker.iter_item_handles():
             yield dtoolcore.utils.generate_identifier(handle)
+
+    def create(self):
+        """Create the required directory structure and admin metadata."""
+        self._storage_broker.create_structure()
+        self._storage_broker.put_admin_metadata(self._admin_metadata)
 
     def put_readme(self, content):
         """
