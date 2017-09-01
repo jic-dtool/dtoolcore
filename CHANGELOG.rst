@@ -4,12 +4,60 @@ CHANGELOG
 This project uses `semantic versioning <http://semver.org/>`_.
 This change log uses principles from `keep a changelog <http://keepachangelog.com/>`_.
 
+
 [Unreleased]
 ------------
 
 Added
 ^^^^^
 
+
+Changed
+^^^^^^^
+
+
+Deprecated
+^^^^^^^^^^
+
+
+Removed
+^^^^^^^
+
+
+Fixed
+^^^^^
+
+
+
+Security
+^^^^^^^^
+
+
+
+[2.1.0] 2017-09-01
+------------------
+
+API for creating a ``ProtoDataSet`` now works both for local disk datasets and
+datasets in the "cloud". It is now the responsibility of the client to generate
+initial administrative metadata and an appropriate URI to initialise a
+``ProtoDataSet``.
+
+::
+
+    >>> from dtoolcore import ProtoDataSet, generate_admin_metadata
+    >>> from dtoolcore.storagebroker import DiskStorageBroker
+    >>> name = "my_dataset"
+    >>> admin_metadata = generate_admin_metadata(name)
+    >>> uuid = admin_metadata["uuid"]
+    >>> uri = DiskStorageBroker.generate_uri(name, uuid, "/tmp")
+    >>> proto_dataset = ProtoDataSet(uri, admin_metadata, config=None)
+    >>> proto_dataset.create()
+
+
+Added
+^^^^^
+
+- ``generate_admin_metadata`` helper function
 - ``DiskStorageBroker.generate_uri`` class method, used by client to generate
   URI for initialising ``ProtoDataSet`` class
 - ``ProtoDataSet.create`` method to do some tasks previously carried out by
@@ -22,24 +70,11 @@ Changed
 - ``ProtoDataSet.put_item`` now returns the handle assigned to the item.
 
 
-Deprecated
-^^^^^^^^^^
-
-
 Removed
 ^^^^^^^
 
 - ``ProtoDataSet.create_structure`` and ``ProtoDataSet.new`` class methods,
   responsibility for generating initial admin metadata moved to client
-
-
-Fixed
-^^^^^
-
-
-
-Security
-^^^^^^^^
 
 
 
