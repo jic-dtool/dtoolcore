@@ -11,15 +11,9 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 Added
 ^^^^^
 
-- ``dtoolcore.utils.base64_to_hex`` helper function
-- ``dtoolcore.filehasher.sha256sum_hexdigest`` helper function
-
 
 Changed
 ^^^^^^^
-
-- Renamed ``dtoolcore.filehasher.md5sum`` to ``md5sum_hexdigest`` 
-- Renamed ``dtoolcore.filehasher.shasum`` to ``sha1sum_hexdigest`` 
 
 
 Deprecated
@@ -37,6 +31,27 @@ Fixed
 
 Security
 ^^^^^^^^
+
+
+[2.2.0] 2017-09-04
+------------------
+
+Add helper functions to make it easier to work with iRODS hashes.
+Make existing hash function names more explicit, i.e. indicate
+that they are represented as hexdigests.
+
+Added
+^^^^^
+
+- ``dtoolcore.utils.base64_to_hex`` helper function
+- ``dtoolcore.filehasher.sha256sum_hexdigest`` helper function
+
+
+Changed
+^^^^^^^
+
+- Renamed ``dtoolcore.filehasher.md5sum`` to ``md5sum_hexdigest`` 
+- Renamed ``dtoolcore.filehasher.shasum`` to ``sha1sum_hexdigest`` 
 
 
 
