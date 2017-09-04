@@ -21,6 +21,14 @@ def test_md5sum():
     assert actual == expected
 
 
+def test_sha256sum_hexdigest():
+    from dtoolcore.filehasher import sha256sum_hexdigest
+    e = "66a045b452102c59d840ec097d59d9467e13a3f34f6494e539ffd32c1bb35f18"
+    test_file = os.path.join(TEST_SAMPLE_DATA, 'another_file.txt')
+    actual = sha256sum_hexdigest(test_file)
+    assert actual == e
+
+
 def test_FileHasher():
     from dtoolcore.filehasher import FileHasher
 
