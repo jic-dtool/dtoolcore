@@ -58,3 +58,12 @@ def test_getuser():
     dtoolcore.utils.cross_platform_getuser = MagicMock(return_value="user1")
     assert dtoolcore.utils.getuser() == "user1"
     assert dtoolcore.utils.cross_platform_getuser.called_once()
+
+
+def test_base64_to_hex():
+    from dtoolcore.utils import base64_to_hex
+
+    input_string = "86aJiAkXSLnTuXcSVW8/TVdYTbp2of+veyzp3a3A3uA="
+    e = "f3a68988091748b9d3b97712556f3f4d57584dba76a1ffaf7b2ce9ddadc0dee0"
+
+    assert base64_to_hex(input_string) == e

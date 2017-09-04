@@ -11,6 +11,8 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 Added
 ^^^^^
 
+- ``dtoolcore.utils.base64_to_hex`` helper function
+
 
 Changed
 ^^^^^^^

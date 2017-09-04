@@ -5,6 +5,8 @@ import errno
 import getpass
 import hashlib
 import platform
+import binascii
+import base64
 
 
 def cross_platform_getuser(is_windows, no_username_in_env):
@@ -31,6 +33,12 @@ def sha1_hexdigest(input_string):
     byte_string = input_string.encode()
 
     return hashlib.sha1(byte_string).hexdigest()
+
+
+def base64_to_hex(input_string):
+    """Retun the hex encoded version of the base64 encoded input string."""
+
+    return binascii.hexlify(base64.b64decode(input_string)).decode()
 
 
 def generate_identifier(handle):
