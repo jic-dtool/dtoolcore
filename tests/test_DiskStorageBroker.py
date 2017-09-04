@@ -148,8 +148,8 @@ def test_item_properties(tmp_dir_fixture):  # NOQA
     assert time_delta.seconds < 20
 
     # Check hash property
-    from dtoolcore.filehasher import md5sum
-    expected_hash = md5sum(input_file_path)
+    from dtoolcore.filehasher import md5sum_hexdigest
+    expected_hash = md5sum_hexdigest(input_file_path)
 
     assert item_properties['hash'] == expected_hash
 

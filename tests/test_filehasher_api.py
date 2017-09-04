@@ -5,19 +5,19 @@ import os
 from . import TEST_SAMPLE_DATA
 
 
-def test_shasum():
-    from dtoolcore.filehasher import shasum
+def test_sha1sum_hexdigest():
+    from dtoolcore.filehasher import sha1sum_hexdigest
     expected = "1d229271928d3f9e2bb0375bd6ce5db6c6d348d9"
     test_file = os.path.join(TEST_SAMPLE_DATA, 'another_file.txt')
-    actual = shasum(test_file)
+    actual = sha1sum_hexdigest(test_file)
     assert actual == expected
 
 
-def test_md5sum():
-    from dtoolcore.filehasher import md5sum
+def test_md5sum_hexdigest():
+    from dtoolcore.filehasher import md5sum_hexdigest
     expected = "09f7e02f1290be211da707a266f153b3"
     test_file = os.path.join(TEST_SAMPLE_DATA, 'another_file.txt')
-    actual = md5sum(test_file)
+    actual = md5sum_hexdigest(test_file)
     assert actual == expected
 
 

@@ -12,10 +12,14 @@ Added
 ^^^^^
 
 - ``dtoolcore.utils.base64_to_hex`` helper function
+- ``dtoolcore.filehasher.sha256sum_hexdigest`` helper function
 
 
 Changed
 ^^^^^^^
+
+- Renamed ``dtoolcore.filehasher.md5sum`` to ``md5sum_hexdigest`` 
+- Renamed ``dtoolcore.filehasher.shasum`` to ``sha1sum_hexdigest`` 
 
 
 Deprecated

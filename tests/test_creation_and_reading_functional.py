@@ -213,7 +213,7 @@ def test_creation_and_reading(tmp_dir_fixture):  # NOQA
     proto_dataset.put_item(local_file_path, 'real_text_file.txt')
     second_handle = 'real_text_file.txt'
     generated_manifest = proto_dataset._generate_manifest()
-    assert generated_manifest['hash_function'] == 'md5sum'
+    assert generated_manifest['hash_function'] == 'md5sum_hexdigest'
     assert generated_manifest['dtoolcore_version'] == __version__
     expected_identifier = generate_identifier(second_handle)
     assert expected_identifier in generated_manifest['items']

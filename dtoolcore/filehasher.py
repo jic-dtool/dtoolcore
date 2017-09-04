@@ -29,7 +29,7 @@ def hashsum(hasher, filename):
     return hasher.hexdigest()
 
 
-def shasum(filename):
+def sha1sum_hexdigest(filename):
     """Return hex digest of SHA-1 hash of file.
 
     :param filename: path to file
@@ -49,7 +49,7 @@ def sha256sum_hexdigest(filename):
     return hashsum(hasher, filename)
 
 
-def md5sum(filename):
+def md5sum_hexdigest(filename):
     """Return hex digest of MD5sum of file.
 
     :param filename: path to file

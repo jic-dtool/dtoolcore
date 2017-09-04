@@ -8,7 +8,7 @@ from dtoolcore.utils import (
     mkdir_parents,
     generate_identifier,
 )
-from dtoolcore.filehasher import FileHasher, md5sum
+from dtoolcore.filehasher import FileHasher, md5sum_hexdigest
 
 
 class StorageBrokerOSError(OSError):
@@ -30,7 +30,7 @@ class DiskStorageBroker(object):
 
     #: Attribute used by :class:`dtoolcore.ProtoDataSet` to write the hash
     #: function name to the manifest.
-    hasher = FileHasher(md5sum)
+    hasher = FileHasher(md5sum_hexdigest)
 
     def __init__(self, uri, config=None):
 
