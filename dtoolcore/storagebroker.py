@@ -116,7 +116,6 @@ class DiskStorageBroker(object):
         with open(self._manifest_abspath) as fh:
             return json.load(fh)
 
-
     def list_overlay_names(self):
         """Return list of overlay names."""
         overlay_names = []
@@ -124,7 +123,6 @@ class DiskStorageBroker(object):
             name, ext = os.path.splitext(fname)
             overlay_names.append(name)
         return overlay_names
-
 
     def get_overlay(self, overlay_name):
         """Return overlay as a dictionary.
