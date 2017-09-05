@@ -70,18 +70,31 @@ def generate_admin_metadata(name, creator_username=None):
     return admin_metadata
 
 
-def generate_uri(admin_metadata, prefix, storage):
+def _generate_uri(admin_metadata, prefix, storage):
     """Return dataset URI.
 
     :param admin_metadata: dataset administrative metadata
     :param prefix: dataset root
     :param storage: type of storage
+    :returns: dataset URI
     """
     name = admin_metadata["name"]
     uuid = admin_metadata["uuid"]
     storage_broker_lookup = _generate_storage_broker_lookup()
     StorageBroker = storage_broker_lookup[storage]
     return StorageBroker.generate_uri(name, uuid, prefix)
+
+
+def generate_proto_dataset(admin_metadata, prefix, storage, config_path=None):
+    """Return :class:`dtoolcore.ProtoDataSet` instance.
+
+    :param admin_metadata: dataset administrative metadata
+    :param prefix: dataset root
+    :param storage: type of storage
+    :param config_path: path to dtool configuration file
+    """
+    uri = _generate_uri(admin_metadata, prefix, storage)
+    return ProtoDataSet(uri, admin_metadata, config_path)
 
 
 class DtoolCoreTypeError(TypeError):
@@ -92,6 +105,7 @@ class _BaseDataSet(object):
     """Base class for datasets."""
 
     def __init__(self, uri, admin_metadata, config_path=None):
+        self._uri = uri
         self._admin_metadata = admin_metadata
         self._storage_broker = _get_storage_broker(uri, config_path)
 
@@ -109,6 +123,11 @@ class _BaseDataSet(object):
 
         # Instantiate and return.
         return cls(uri, admin_metadata, config_path)
+
+    @property
+    def uri(self):
+        """Return the URI of the dataset."""
+        return self._uri
 
     @property
     def uuid(self):
