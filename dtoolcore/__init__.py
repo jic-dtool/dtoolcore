@@ -32,7 +32,13 @@ def _get_storage_broker(uri, config_path):
     """Helper function to enable use lookup of appropriate storage brokers."""
     storage_broker_lookup = _generate_storage_broker_lookup()
     parsed_uri = urlparse(uri)
-    StorageBroker = storage_broker_lookup[parsed_uri.scheme]
+    scheme = parsed_uri.scheme
+
+    # If scheme is missing (e.g. /some/path) assume it is on local disk.
+    if scheme == "":
+        scheme = "file"
+
+    StorageBroker = storage_broker_lookup[scheme]
     return StorageBroker(parsed_uri.path, config_path)
 
 

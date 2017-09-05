@@ -13,6 +13,9 @@ Added
 ^^^^^
 
 - ``dtoolcore.utils.get_config_value`` helper function
+- Added ability to look up datasets on local disk without specifying
+  the URI scheme, e.g. using ``/some/path`` as an alias for
+  ``file:///some/path``
 
 
 Changed
@@ -21,7 +24,6 @@ Changed
 - URI parsing more robust
 - URI for ``DiskStorageBackend`` changed from ``disk:/some/path`` to
   ``file:///some/path``
-
 
 Deprecated
 ^^^^^^^^^^
