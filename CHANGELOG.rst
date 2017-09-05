@@ -5,6 +5,7 @@ This project uses `semantic versioning <http://semver.org/>`_.
 This change log uses principles from `keep a changelog <http://keepachangelog.com/>`_.
 
 
+
 [Unreleased]
 ------------
 
@@ -17,6 +18,10 @@ Added
 Changed
 ^^^^^^^
 
+- URI parsing more robust
+- URI for ``DiskStorageBackend`` changed from ``disk:/some/path`` to
+  ``file:///some/path``
+
 
 Deprecated
 ^^^^^^^^^^
@@ -28,7 +33,6 @@ Removed
 
 Fixed
 ^^^^^
-
 
 
 Security

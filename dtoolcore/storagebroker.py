@@ -26,7 +26,7 @@ class DiskStorageBroker(object):
     """
 
     #: Attribute used to define the type of storage broker.
-    key = "disk"
+    key = "file"
 
     #: Attribute used by :class:`dtoolcore.ProtoDataSet` to write the hash
     #: function name to the manifest.
@@ -60,7 +60,7 @@ class DiskStorageBroker(object):
     def generate_uri(cls, name, uuid, prefix):
         dataset_path = os.path.join(prefix, name)
         dataset_abspath = os.path.abspath(dataset_path)
-        return "{}:{}".format(cls.key, dataset_abspath)
+        return "{}://{}".format(cls.key, dataset_abspath)
 
 #############################################################################
 # Methods used by both ProtoDataSet and DataSet.

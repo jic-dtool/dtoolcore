@@ -8,6 +8,11 @@ import uuid
 from pkg_resources import iter_entry_points
 from collections import defaultdict
 
+try:
+    from urlparse import urlparse
+except ImportError:
+    from urllib.parse import urlparse
+
 import dtoolcore.utils
 
 
@@ -23,12 +28,12 @@ def _generate_storage_broker_lookup():
     return storage_broker_lookup
 
 
-def _get_storage_broker(type_uri, config_path):
+def _get_storage_broker(uri, config_path):
     """Helper function to enable use lookup of appropriate storage brokers."""
     storage_broker_lookup = _generate_storage_broker_lookup()
-    sb_type, stripped_uri = type_uri.split(":", 1)
-    StorageBroker = storage_broker_lookup[sb_type]
-    return StorageBroker(stripped_uri, config_path)
+    parsed_uri = urlparse(uri)
+    StorageBroker = storage_broker_lookup[parsed_uri.scheme]
+    return StorageBroker(parsed_uri.path, config_path)
 
 
 def _admin_metadata_from_uri(uri, config_path):
