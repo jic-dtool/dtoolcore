@@ -3,11 +3,19 @@
 import os
 import shutil
 import tempfile
+from contextlib import contextmanager
 
 import pytest
 
 _HERE = os.path.dirname(__file__)
 TEST_SAMPLE_DATA = os.path.join(_HERE, "data")
+
+
+@contextmanager
+def tmp_env_var(key, value):
+    os.environ[key] = value
+    yield
+    del os.environ[key]
 
 
 @pytest.fixture

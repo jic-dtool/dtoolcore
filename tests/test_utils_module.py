@@ -1,9 +1,15 @@
 """Test the dtoolcore.utils module."""
 
+import os
+import json
+
 try:
     from unittest.mock import MagicMock
 except ImportError:
     from mock import MagicMock
+
+from . import tmp_dir_fixture  # NOQA
+from . import tmp_env_var
 
 
 def test_sha1_hexdigest():
@@ -67,3 +73,46 @@ def test_base64_to_hex():
     e = "f3a68988091748b9d3b97712556f3f4d57584dba76a1ffaf7b2ce9ddadc0dee0"
 
     assert base64_to_hex(input_string) == e
+
+
+def test_get_config_value():
+    from dtoolcore.utils import get_config_value
+    value = get_config_value(
+        key="MY_KEY",
+        config_path=None,
+        default="hello"
+    )
+    assert value == "hello"
+
+
+def test_get_config_value_from_file(tmp_dir_fixture):  # NOQA
+    from dtoolcore.utils import get_config_value
+
+    config = {"MY_KEY": "from_file"}
+    config_path = os.path.join(tmp_dir_fixture, "my.conf")
+    with open(config_path, "w") as fh:
+        json.dump(config, fh)
+
+    value = get_config_value(
+        key="MY_KEY",
+        config_path=config_path,
+        default="hello"
+    )
+    assert value == "from_file"
+
+
+def test_get_config_value_from_env(tmp_dir_fixture):  # NOQA
+    from dtoolcore.utils import get_config_value
+
+    config = {"MY_KEY": "from_file"}
+    config_path = os.path.join(tmp_dir_fixture, "my.conf")
+    with open(config_path, "w") as fh:
+        json.dump(config, fh)
+
+    with tmp_env_var("MY_KEY", "from_env"):
+        value = get_config_value(
+            key="MY_KEY",
+            config_path=config_path,
+            default="hello"
+        )
+    assert value == "from_env"

@@ -4,6 +4,7 @@ import os
 import errno
 import getpass
 import hashlib
+import json
 import platform
 import binascii
 import base64
@@ -25,6 +26,28 @@ def getuser():
     is_windows = platform.system() == "Windows"
     no_username_in_env = os.environ.get("USERNAME") is None
     return cross_platform_getuser(is_windows, no_username_in_env)
+
+
+def get_config_value(key, config_path=None, default=None):
+    """Get a configuration value.
+
+    Preference:
+    1. From environment
+    2. From JSON configuration file supplied in ``config_path`` argument
+    3. The default supplied to the function
+
+    :param key: name of lookup value
+    :param config_path: path to JSON configuration file
+    :param default: default fall back value
+    :returns: value associated with the key
+    """
+    value = default
+    if config_path is not None and os.path.isfile(config_path):
+        with open(config_path, "r") as fh:
+            config = json.load(fh)
+            value = config.get(key, value)
+    value = os.environ.get(key, value)
+    return value
 
 
 def sha1_hexdigest(input_string):
