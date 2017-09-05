@@ -184,6 +184,10 @@ class DataSet(_BaseDataSet):
         """
         return self._storage_broker.get_item_abspath(identifier)
 
+    def list_overlay_names(self):
+        """Return list of overlay names."""
+        return self._storage_broker.list_overlay_names()
+
     def get_overlay(self, overlay_name):
         """Return overlay as a dictionary.
 

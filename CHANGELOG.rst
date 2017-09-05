@@ -11,6 +11,9 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 Added
 ^^^^^
 
+- ``dtoolcore.DataSet.list_overlay_names`` method
+- ``dtoolcore.storagebroker.DiskStorageBroker.list_overlay_names`` method
+
 
 Changed
 ^^^^^^^
