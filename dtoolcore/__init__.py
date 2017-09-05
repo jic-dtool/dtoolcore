@@ -70,6 +70,20 @@ def generate_admin_metadata(name, creator_username=None):
     return admin_metadata
 
 
+def generate_uri(admin_metadata, prefix, storage):
+    """Return dataset URI.
+
+    :param admin_metadata: dataset administrative metadata
+    :param prefix: dataset root
+    :param storage: type of storage
+    """
+    name = admin_metadata["name"]
+    uuid = admin_metadata["uuid"]
+    storage_broker_lookup = _generate_storage_broker_lookup()
+    StorageBroker = storage_broker_lookup[storage]
+    return StorageBroker.generate_uri(name, uuid, prefix)
+
+
 class DtoolCoreTypeError(TypeError):
     pass
 

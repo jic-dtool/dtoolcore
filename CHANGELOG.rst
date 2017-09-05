@@ -11,6 +11,7 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 Added
 ^^^^^
 
+- ``dtoolcore.generate_uri`` helper function
 - ``dtoolcore.DataSet.list_overlay_names`` method
 - ``dtoolcore.storagebroker.DiskStorageBroker.list_overlay_names`` method
 
