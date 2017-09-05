@@ -97,6 +97,44 @@ def generate_proto_dataset(admin_metadata, prefix, storage, config_path=None):
     return ProtoDataSet(uri, admin_metadata, config_path)
 
 
+def copy(src_uri, prefix, storage, config_path=None):
+    """Copy a dataset to another location.
+
+    :param src_uri: URI of dataset to be copied
+    :param prefix: root to put dataset into
+    :param storage: type of storage
+    :param config_path: path to dtool configuration file
+    :returns: URI of new dataset
+    """
+    dataset = DataSet.from_uri(src_uri)
+
+    admin_metadata = dataset._admin_metadata
+
+    proto_dataset = generate_proto_dataset(
+        admin_metadata=admin_metadata,
+        prefix=prefix,
+        storage=storage,
+        config_path=config_path
+    )
+    proto_dataset.create()
+
+    for identifier in dataset.identifiers:
+        item_properties = dataset.item_properties(identifier)
+        src_abspath = dataset.item_content_abspath(identifier)
+        relpath = item_properties["relpath"]
+        proto_dataset.put_item(src_abspath, relpath)
+
+    proto_dataset.put_readme(dataset.get_readme_content())
+
+    proto_dataset.freeze()
+
+    for overlay_name in dataset.list_overlay_names():
+        overlay = dataset.get_overlay(overlay_name)
+        proto_dataset._put_overlay(overlay_name, overlay)
+
+    return proto_dataset.uri
+
+
 class DtoolCoreTypeError(TypeError):
     pass
 
