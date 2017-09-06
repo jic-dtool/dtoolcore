@@ -11,6 +11,8 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 Added
 ^^^^^
 
+- ``dtoolcore.stored.VirtualDiskStorageBroker`` class
+- ``dtoolcore.stored.DiskStorageBroker.set_data_location`` method
 - ``dtoolcore.copy`` helper function
 - ``dtoolcore._BaseDataSet.uri`` property
 - ``dtoolcore.generate_proto_dataset`` helper function
