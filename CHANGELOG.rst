@@ -11,12 +11,6 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 Added
 ^^^^^
 
-- ``dtoolcore.copy`` helper function
-- ``dtoolcore._BaseDataSet.uri`` property
-- ``dtoolcore.generate_proto_dataset`` helper function
-- ``dtoolcore.DataSet.list_overlay_names`` method
-- ``dtoolcore.storagebroker.DiskStorageBroker.list_overlay_names`` method
-
 
 Changed
 ^^^^^^^
@@ -37,6 +31,18 @@ Fixed
 Security
 ^^^^^^^^
 
+
+[2.4.0] 2017-09-11
+------------------
+
+Added
+^^^^^
+
+- ``dtoolcore.copy`` helper function
+- ``dtoolcore._BaseDataSet.uri`` property
+- ``dtoolcore.generate_proto_dataset`` helper function
+- ``dtoolcore.DataSet.list_overlay_names`` method
+- ``dtoolcore.storagebroker.DiskStorageBroker.list_overlay_names`` method
 
 
 [2.3.0] 2017-09-05
