@@ -32,8 +32,6 @@ class DiskStorageBroker(object):
     #: function name to the manifest.
     hasher = FileHasher(md5sum_hexdigest)
 
-
-
     def __init__(self, uri, config_path=None):
 
         # Define useful absolute paths for future reference.
@@ -315,28 +313,3 @@ class DiskStorageBroker(object):
         """
         if os.path.isdir(self._metadata_fragments_abspath):
             shutil.rmtree(self._metadata_fragments_abspath)
-
-
-class VirtualDiskStorageBroker(DiskStorageBroker):
-    """VirtualDiskStorageBroker class.
-
-    Warning: Only works on Unix like systems.
-    """
-
-    key = "virtual"
-
-    def __init__(self, uri, config_path=None):
-        super(VirtualDiskStorageBroker, self).__init__(uri, config_path)
-        self._essential_subdirectories = [
-            self._dtool_abspath,
-            self._overlays_abspath
-        ]
-
-    def put_item(self, fpath, relpath):
-        """Raise NotImplementedError as it is not possible to put data into a
-        virtual dataset."""
-        raise(NotImplementedError())
-
-    def set_data_location(self, data_location):
-        """Set the virtual data location."""
-        os.symlink(data_location, self._data_abspath)

@@ -20,7 +20,6 @@ setup(
     entry_points={
         "dtool.storage_brokers": [
             "DiskStorageBroker=dtoolcore.storagebroker:DiskStorageBroker",
-            "VirtualDiskStorageBroker=dtoolcore.storagebroker:VirtualDiskStorageBroker",
         ],
     },
     license="MIT"

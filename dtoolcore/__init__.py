@@ -300,16 +300,6 @@ class ProtoDataSet(_BaseDataSet):
         for handle in self._storage_broker.iter_item_handles():
             yield dtoolcore.utils.generate_identifier(handle)
 
-    def set_data_location(self, data_location):
-        """Set the data location in the storage broker.
-
-        :raises: NotImplementedError if not possible
-        """
-        try:
-            self._storage_broker.set_data_location(data_location)
-        except AttributeError:
-            raise(NotImplementedError())
-
     def create(self):
         """Create the required directory structure and admin metadata."""
         self._storage_broker.create_structure()
