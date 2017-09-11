@@ -51,7 +51,7 @@ def diff_content(a, reference):
     """Return list of tuples where content differ.
 
     Tuple structure:
-    (identifier, hash name, hash in a, hash in reference)
+    (identifier, hash in a, hash in reference)
 
     Assumes list of identifiers in a and b are identical.
 
@@ -62,12 +62,13 @@ def diff_content(a, reference):
     :returns: list of tuples for all items with different content
     """
     difference = []
-    hasher_name = reference._storage_broker.hasher.name
+
     for i in a.identifiers:
         fpath = a.item_content_abspath(i)
         calc_hash = reference._storage_broker.hasher(fpath)
         ref_hash = reference.item_properties(i)["hash"]
         if calc_hash != ref_hash:
-            info = (i, hasher_name, calc_hash, ref_hash)
+            info = (i, calc_hash, ref_hash)
             difference.append(info)
+
     return difference

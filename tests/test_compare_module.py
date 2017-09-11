@@ -131,7 +131,6 @@ def test_diff_content(tmp_dir_fixture):  # NOQA
     identifier = generate_identifier("file.txt")
     expected = [(
         generate_identifier("file.txt"),
-        DiskStorageBroker.hasher.name,
         DiskStorageBroker.hasher(ds_a.item_content_abspath(identifier)),
         DiskStorageBroker.hasher(ds_b.item_content_abspath(identifier))
     )]
