@@ -13,14 +13,16 @@ def diff_identifiers(a, b):
 
 
 def diff_sizes(a, b):
-    """Return list of tuples (identifier, size in a, size in b).
+    """Return list of tuples where sizes differ.
+
+    Tuple structure:
+    (identifier, size in a, size in b)
 
     Assumes list of identifiers in a and b are identical.
 
     :param a: first :class:`dtoolcore.DataSet`
     :param b: second :class:`dtoolcore.DataSet`
     :returns: list of tuples for all items with different sizes
-              (identifier, size in a, size in b)
     """
     difference = []
 
@@ -30,4 +32,30 @@ def diff_sizes(a, b):
         if a_size != b_size:
             difference.append((i, a_size, b_size))
 
+    return difference
+
+
+def diff_content(a, reference):
+    """Return list of tuples where content differ.
+
+    Tuple structure:
+    (identifier, hash name, hash in a, hash in reference)
+
+    Assumes list of identifiers in a and b are identical.
+
+    Storage broker of reference used to generate hash for files in a.
+
+    :param a: first :class:`dtoolcore.DataSet`
+    :param b: second :class:`dtoolcore.DataSet`
+    :returns: list of tuples for all items with different content
+    """
+    difference = []
+    hasher_name = reference._storage_broker.hasher.name
+    for i in a.identifiers:
+        fpath = a.item_content_abspath(i)
+        calc_hash = reference._storage_broker.hasher(fpath)
+        ref_hash = reference.item_properties(i)["hash"]
+        if calc_hash != ref_hash:
+            info = (i, hasher_name, calc_hash, ref_hash)
+            difference.append(info)
     return difference
