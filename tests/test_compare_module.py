@@ -46,12 +46,12 @@ def test_diff_identifiers(tmp_dir_fixture):  # NOQA
     ds_a = DataSet.from_uri(proto_ds_a.uri)
     ds_b = DataSet.from_uri(proto_ds_b.uri)
 
-    assert diff_identifiers(ds_a, ds_a) == (set(), set())
+    assert diff_identifiers(ds_a, ds_a) == []
 
-    expected = (
-        set([generate_identifier("a.txt")]),
-        set([generate_identifier("b.txt")])
-    )
+    expected = [
+        (generate_identifier("a.txt"), True, False),
+        (generate_identifier("b.txt"), False, True)
+    ]
     assert diff_identifiers(ds_a, ds_b) == expected
 
 
