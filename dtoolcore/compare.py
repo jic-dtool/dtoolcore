@@ -25,7 +25,7 @@ def diff_identifiers(a, b):
     return difference
 
 
-def diff_sizes(a, b):
+def diff_sizes(a, b, progressbar=None):
     """Return list of tuples where sizes differ.
 
     Tuple structure:
@@ -44,11 +44,13 @@ def diff_sizes(a, b):
         b_size = b.item_properties(i)["size_in_bytes"]
         if a_size != b_size:
             difference.append((i, a_size, b_size))
+        if progressbar:
+            progressbar.update(1)
 
     return difference
 
 
-def diff_content(a, reference):
+def diff_content(a, reference, progressbar=None):
     """Return list of tuples where content differ.
 
     Tuple structure:
@@ -71,5 +73,7 @@ def diff_content(a, reference):
         if calc_hash != ref_hash:
             info = (i, calc_hash, ref_hash)
             difference.append(info)
+        if progressbar:
+            progressbar.update(1)
 
     return difference

@@ -11,6 +11,11 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 Added
 ^^^^^
 
+- Progress bar hook to ``dtoolcore.ProtoDataSet.freeze`` method
+- Progress bar hook to ``dtoolcore.copy`` function
+- Progress bar hook to ``dtoolcore.compare.diff_sizes`` function
+- Progress bar hook to ``dtoolcore.compare.diff_content`` function
+
 
 Changed
 ^^^^^^^

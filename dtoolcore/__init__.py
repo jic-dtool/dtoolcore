@@ -97,7 +97,7 @@ def generate_proto_dataset(admin_metadata, prefix, storage, config_path=None):
     return ProtoDataSet(uri, admin_metadata, config_path)
 
 
-def copy(src_uri, prefix, storage, config_path=None):
+def copy(src_uri, prefix, storage, config_path=None, progressbar=None):
     """Copy a dataset to another location.
 
     :param src_uri: URI of dataset to be copied
@@ -123,10 +123,12 @@ def copy(src_uri, prefix, storage, config_path=None):
         src_abspath = dataset.item_content_abspath(identifier)
         relpath = item_properties["relpath"]
         proto_dataset.put_item(src_abspath, relpath)
+        if progressbar:
+            progressbar.update(1)
 
     proto_dataset.put_readme(dataset.get_readme_content())
 
-    proto_dataset.freeze()
+    proto_dataset.freeze(progressbar=progressbar)
 
     for overlay_name in dataset.list_overlay_names():
         overlay = dataset.get_overlay(overlay_name)
@@ -337,13 +339,15 @@ class ProtoDataSet(_BaseDataSet):
         """
         self._storage_broker.add_item_metadata(handle, key, value)
 
-    def _generate_manifest(self):
+    def _generate_manifest(self, progressbar=None):
         """Return manifest generated from knowledge about contents."""
         items = dict()
         for handle in self._storage_broker.iter_item_handles():
             key = dtoolcore.utils.generate_identifier(handle)
             value = self._storage_broker.item_properties(handle)
             items[key] = value
+            if progressbar:
+                progressbar.update(1)
 
         manifest = {
             "items": items,
@@ -364,12 +368,12 @@ class ProtoDataSet(_BaseDataSet):
 
         return overlays
 
-    def freeze(self):
+    def freeze(self, progressbar=None):
         """
         Convert :class:`dtoolcore.ProtoDataSet` to :class:`dtoolcore.DataSet`.
         """
         # Generate and persist the manifest.
-        manifest = self._generate_manifest()
+        manifest = self._generate_manifest(progressbar=progressbar)
         self._storage_broker.put_manifest(manifest)
 
         # Generate and persist overlays from any item metadata that has been
