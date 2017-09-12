@@ -1,5 +1,6 @@
 """Module with helper functions for comparing datasets."""
 
+
 def diff_identifiers(a, b):
     """Return list of tuples where identifiers in datasets differ.
 
