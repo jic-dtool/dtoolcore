@@ -3,12 +3,15 @@
 import os
 import json
 import shutil
+import logging
 
 from dtoolcore.utils import (
     mkdir_parents,
     generate_identifier,
 )
 from dtoolcore.filehasher import FileHasher, md5sum_hexdigest
+
+logger = logging.getLogger(__name__)
 
 
 class StorageBrokerOSError(OSError):
@@ -61,6 +64,25 @@ class DiskStorageBroker(object):
             self._data_abspath,
             self._overlays_abspath
         ]
+
+    @classmethod
+    def list_dataset_uris(cls, prefix, config_path):
+        """Return list containing URIs in prefix location."""
+        uri_list = []
+        for d in os.listdir(prefix):
+            dir_path = os.path.join(prefix, d)
+
+            if not os.path.isdir(dir_path):
+                continue
+
+            storage_broker = cls(dir_path, config_path)
+
+            if not storage_broker.has_admin_metadata():
+                continue
+
+            uri_list.append("{}://{}".format(cls.key, dir_path))
+
+        return uri_list
 
     @classmethod
     def generate_uri(cls, name, uuid, prefix):

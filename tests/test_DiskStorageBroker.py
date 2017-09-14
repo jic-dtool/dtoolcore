@@ -249,3 +249,32 @@ def test_has_admin_metadata(tmp_dir_fixture):  # NOQA
     admin_metadata = {'hello': 'world'}
     storagebroker.put_admin_metadata(admin_metadata)
     assert storagebroker.has_admin_metadata()
+
+
+def test_list_dataset_uris(tmp_dir_fixture):  # NOQA
+
+    import dtoolcore
+    from dtoolcore.storagebroker import DiskStorageBroker
+
+    assert [] == DiskStorageBroker.list_dataset_uris(
+        prefix=tmp_dir_fixture,
+        config_path=None
+    )
+
+    # Create two datasets to be copied.
+    expected_uris = []
+    for name in ["test_ds_1", "test_ds_2"]:
+        admin_metadata = dtoolcore.generate_admin_metadata(name)
+        proto_dataset = dtoolcore.generate_proto_dataset(
+            admin_metadata=admin_metadata,
+            prefix=tmp_dir_fixture,
+            storage="file")
+        proto_dataset.create()
+        expected_uris.append(proto_dataset.uri)
+
+    actual_uris = DiskStorageBroker.list_dataset_uris(
+        prefix=tmp_dir_fixture,
+        config_path=None
+    )
+
+    assert set(expected_uris) == set(actual_uris)

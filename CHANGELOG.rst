@@ -11,6 +11,7 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 Added
 ^^^^^
 
+- ``dtoolcore.storagebroker.DiskStorageBroker.list_dataset_uris`` class method
 - ``dtoolcore.ProtoDataSet.update_name`` method
 
 
