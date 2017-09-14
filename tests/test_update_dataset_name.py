@@ -24,3 +24,7 @@ def test_copy(tmp_dir_fixture):  # NOQA
     proto_dataset.update_name("test_another_new_name")
 
     assert proto_dataset.name == "test_another_new_name"
+
+    read_proto_dataset = dtoolcore.ProtoDataSet.from_uri(proto_dataset.uri)
+
+    assert read_proto_dataset.name == "test_another_new_name"

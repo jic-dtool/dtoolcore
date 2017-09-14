@@ -308,6 +308,8 @@ class ProtoDataSet(_BaseDataSet):
         :param new_name: the new name of the proto dataset
         """
         self._admin_metadata['name'] = new_name
+        if self._storage_broker.has_admin_metadata():
+            self._storage_broker.put_admin_metadata(self._admin_metadata)
 
     def create(self):
         """Create the required directory structure and admin metadata."""
