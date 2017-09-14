@@ -53,25 +53,3 @@ It aims to help in three areas:
 1. Adding structure and meta data to your project and files
 2. Providing programmatic discovery of your data
 3. Verifying the integrity of your data
-
-
-Creating a custom storage plugin
---------------------------------
-
-1. Examine the code in ``dtoolcore.storagebroker.DiskStorageBroker``.
-2. Create a Python class for your storage, e.g. ``MyStorageBroker``
-3. Add a ``MyStorageBroker.key``` attribute to the class, this key is used to
-   lookup an appropriate storage broker when interacting with a dataset
-4. Add a ``dtoolcore.FileHasher`` instance that matches the hashing algorithm
-   used by your storage to your ``MyStorageBroker.hasher`` attribute
-5. Add implementations for all the public functions in
-   ``dtoolcore.storagebroker.DiskStorageBroker`` class to ``MyStorageBroker``
-6. Expose the ``MyStorageBroker`` class as a ``dtool.storage_broker``
-   entrypoint, e.g. add a section along the lines of the below to the
-   ``setup.py`` file::
-   
-        entry_points={
-            "dtool.storage_brokers": [
-                "MyStorageBroker=my_dtool_storage_plugin:MyStorageBroker",
-            ],
-        },
