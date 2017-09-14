@@ -11,6 +11,8 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 Added
 ^^^^^
 
+- ``dtoolcore.ProtoDataSet.update_name`` method
+
 
 Changed
 ^^^^^^^
