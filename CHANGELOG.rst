@@ -30,6 +30,7 @@ Removed
 Fixed
 ^^^^^
 
+- Made the ``uri`` dataset property more robust
 
 Security
 ^^^^^^^^

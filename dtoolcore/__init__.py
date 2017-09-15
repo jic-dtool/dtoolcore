@@ -145,9 +145,11 @@ class _BaseDataSet(object):
     """Base class for datasets."""
 
     def __init__(self, uri, admin_metadata, config_path=None):
-        self._uri = uri
         self._admin_metadata = admin_metadata
         self._storage_broker = _get_storage_broker(uri, config_path)
+        parsed_uri = urlparse(uri)
+        self._uri = "{}://{}".format(
+            self._storage_broker.key, parsed_uri.path)
 
     @classmethod
     def _from_uri_with_typecheck(cls, uri, config_path, type_name):
