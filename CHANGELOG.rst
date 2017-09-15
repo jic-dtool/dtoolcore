@@ -11,9 +11,6 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 Added
 ^^^^^
 
-- ``dtoolcore.storagebroker.DiskStorageBroker.list_dataset_uris`` class method
-- ``dtoolcore.ProtoDataSet.update_name`` method
-
 
 Changed
 ^^^^^^^
@@ -30,10 +27,24 @@ Removed
 Fixed
 ^^^^^
 
-- Made the ``uri`` dataset property more robust
 
 Security
 ^^^^^^^^
+
+
+[2.7.0] - 2017-09-15
+--------------------
+
+Added
+^^^^^
+
+- ``dtoolcore.storagebroker.DiskStorageBroker.list_dataset_uris`` class method
+- ``dtoolcore.ProtoDataSet.update_name`` method
+
+Fixed
+^^^^^
+
+- Made the ``uri`` dataset property more robust
 
 
 [2.6.0] 2017-09-12
