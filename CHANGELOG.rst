@@ -49,8 +49,8 @@ Fixed
 - Made the ``uri`` dataset property more robust
 
 
-[2.6.0] 2017-09-12
-------------------
+[2.6.0] - 2017-09-12
+--------------------
 
 Added
 ^^^^^
@@ -61,8 +61,8 @@ Added
 - Progress bar hook to ``dtoolcore.compare.diff_content`` function
 
 
-[2.5.0] 2017-09-12
-------------------
+[2.5.0] - 2017-09-12
+--------------------
 
 Added
 ^^^^^
@@ -72,8 +72,8 @@ Added
 - ``dtoolcore.compare.diff_content`` helper function
 
 
-[2.4.0] 2017-09-11
-------------------
+[2.4.0] - 2017-09-11
+--------------------
 
 Added
 ^^^^^
@@ -85,8 +85,8 @@ Added
 - ``dtoolcore.storagebroker.DiskStorageBroker.list_overlay_names`` method
 
 
-[2.3.0] 2017-09-05
-------------------
+[2.3.0] - 2017-09-05
+--------------------
 
 Added
 ^^^^^
@@ -105,8 +105,8 @@ Changed
   ``file:///some/path``
 
 
-[2.2.0] 2017-09-04
-------------------
+[2.2.0] - 2017-09-04
+--------------------
 
 Add helper functions to make it easier to work with iRODS hashes.
 Make existing hash function names more explicit, i.e. indicate
@@ -127,8 +127,8 @@ Changed
 
 
 
-[2.1.0] 2017-09-01
-------------------
+[2.1.0] - 2017-09-01
+--------------------
 
 API for creating a ``ProtoDataSet`` now works both for local disk datasets and
 datasets in the "cloud". It is now the responsibility of the client to generate
@@ -171,8 +171,8 @@ Removed
 
 
 
-[2.0.0] 2017-08-30
-------------------
+[2.0.0] -  2017-08-30
+---------------------
 
 Completely new API to be able to work with data stored on disk as well as data
 stored in the cloud or in other backends.
