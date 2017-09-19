@@ -11,8 +11,6 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 Added
 ^^^^^
 
-- ``dtoolcore._BaseDataSet.generate_manifest`` method
-
 
 Changed
 ^^^^^^^
@@ -32,6 +30,17 @@ Fixed
 
 Security
 ^^^^^^^^
+
+
+[2.8.0] - 2017-09-19
+--------------------
+
+Added
+^^^^^
+
+- ``dtoolcore.DataSet.generate_manifest`` method
+- ``dtoolcore.ProtoDataSet.generate_manifest`` method
+
 
 
 [2.7.0] - 2017-09-15
