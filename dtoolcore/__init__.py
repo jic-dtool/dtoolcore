@@ -206,6 +206,24 @@ class _BaseDataSet(object):
 
         self._storage_broker.put_overlay(overlay_name, overlay)
 
+    def generate_manifest(self, progressbar=None):
+        """Return manifest generated from knowledge about contents."""
+        items = dict()
+        for handle in self._storage_broker.iter_item_handles():
+            key = dtoolcore.utils.generate_identifier(handle)
+            value = self._storage_broker.item_properties(handle)
+            items[key] = value
+            if progressbar:
+                progressbar.update(1)
+
+        manifest = {
+            "items": items,
+            "dtoolcore_version": __version__,
+            "hash_function": self._storage_broker.hasher.name
+        }
+
+        return manifest
+
 
 class DataSet(_BaseDataSet):
     """
@@ -350,24 +368,6 @@ class ProtoDataSet(_BaseDataSet):
         """
         self._storage_broker.add_item_metadata(handle, key, value)
 
-    def _generate_manifest(self, progressbar=None):
-        """Return manifest generated from knowledge about contents."""
-        items = dict()
-        for handle in self._storage_broker.iter_item_handles():
-            key = dtoolcore.utils.generate_identifier(handle)
-            value = self._storage_broker.item_properties(handle)
-            items[key] = value
-            if progressbar:
-                progressbar.update(1)
-
-        manifest = {
-            "items": items,
-            "dtoolcore_version": __version__,
-            "hash_function": self._storage_broker.hasher.name
-        }
-
-        return manifest
-
     def _generate_overlays(self):
         """Return dictionary of overlays generated from added item metadata."""
         overlays = defaultdict(dict)
@@ -384,7 +384,7 @@ class ProtoDataSet(_BaseDataSet):
         Convert :class:`dtoolcore.ProtoDataSet` to :class:`dtoolcore.DataSet`.
         """
         # Generate and persist the manifest.
-        manifest = self._generate_manifest(progressbar=progressbar)
+        manifest = self.generate_manifest(progressbar=progressbar)
         self._storage_broker.put_manifest(manifest)
 
         # Generate and persist overlays from any item metadata that has been
