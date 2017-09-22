@@ -27,6 +27,9 @@ Removed
 Fixed
 ^^^^^
 
+- Fixed bug where copy creates an intermediate proto dataset that self
+  identifies as a frozen dataset.
+
 
 Security
 ^^^^^^^^

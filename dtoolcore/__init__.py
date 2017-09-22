@@ -109,6 +109,8 @@ def copy(src_uri, prefix, storage, config_path=None, progressbar=None):
     dataset = DataSet.from_uri(src_uri)
 
     admin_metadata = dataset._admin_metadata
+    admin_metadata["type"] = "protodataset"
+    del admin_metadata["frozen_at"]
 
     proto_dataset = generate_proto_dataset(
         admin_metadata=admin_metadata,
@@ -116,6 +118,12 @@ def copy(src_uri, prefix, storage, config_path=None, progressbar=None):
         storage=storage,
         config_path=config_path
     )
+
+    # Ensure that this bug does not get re-introduced:
+    # https://github.com/jic-dtool/dtoolcore/issues/1
+    assert proto_dataset._admin_metadata["type"] == "protodataset"
+    assert "frozen_at" not in proto_dataset._admin_metadata
+
     proto_dataset.create()
 
     for identifier in dataset.identifiers:
