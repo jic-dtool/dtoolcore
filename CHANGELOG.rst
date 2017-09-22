@@ -29,6 +29,8 @@ Fixed
 
 - Fixed bug where copy creates an intermediate proto dataset that self
   identifies as a frozen dataset.
+- Fixed potential bug where a copy could convert a proto dataset to
+  a dataset before all its overlays had been copied over
 
 
 Security

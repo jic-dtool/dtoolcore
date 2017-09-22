@@ -136,11 +136,11 @@ def copy(src_uri, prefix, storage, config_path=None, progressbar=None):
 
     proto_dataset.put_readme(dataset.get_readme_content())
 
-    proto_dataset.freeze(progressbar=progressbar)
-
     for overlay_name in dataset.list_overlay_names():
         overlay = dataset.get_overlay(overlay_name)
         proto_dataset._put_overlay(overlay_name, overlay)
+
+    proto_dataset.freeze(progressbar=progressbar)
 
     return proto_dataset.uri
 
