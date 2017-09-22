@@ -404,7 +404,7 @@ class ProtoDataSet(_BaseDataSet):
 
         # Change the type of the dataset from "protodataset" to "dataset" and
         # add a "frozen_at" time stamp to the administrative metadata.
-        now_timestamp = datetime.datetime.utcnow().strftime("%s")
+        now_timestamp = float(datetime.datetime.utcnow().strftime("%s"))
         metadata_update = {
             "type": "dataset",
             "frozen_at": now_timestamp
