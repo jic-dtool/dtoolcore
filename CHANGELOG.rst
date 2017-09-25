@@ -27,15 +27,22 @@ Removed
 Fixed
 ^^^^^
 
+
+Security
+^^^^^^^^
+
+
+[2.8.1] - 2017-09-25
+--------------------
+
+Fixed
+^^^^^
+
 - Fixed bug where copy creates an intermediate proto dataset that self
   identifies as a frozen dataset.
 - Fixed potential bug where a copy could convert a proto dataset to
   a dataset before all its overlays had been copied over
 - Fixed type of "frozen_at" time stamp in admin metadata: from string to float
-
-
-Security
-^^^^^^^^
 
 
 [2.8.0] - 2017-09-19
