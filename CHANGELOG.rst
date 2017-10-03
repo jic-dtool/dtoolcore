@@ -27,6 +27,8 @@ Removed
 Fixed
 ^^^^^
 
+- Progress bar now shows information on individual items being processed
+
 
 Security
 ^^^^^^^^

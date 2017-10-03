@@ -108,6 +108,9 @@ def copy(src_uri, prefix, storage, config_path=None, progressbar=None):
     """
     dataset = DataSet.from_uri(src_uri)
 
+    if progressbar:
+        progressbar.label = "Copying dataset"
+
     admin_metadata = dataset._admin_metadata
     admin_metadata["type"] = "protodataset"
     del admin_metadata["frozen_at"]
@@ -132,6 +135,7 @@ def copy(src_uri, prefix, storage, config_path=None, progressbar=None):
         relpath = item_properties["relpath"]
         proto_dataset.put_item(src_abspath, relpath)
         if progressbar:
+            progressbar.item_show_func = lambda x: relpath
             progressbar.update(1)
 
     proto_dataset.put_readme(dataset.get_readme_content())
@@ -217,11 +221,16 @@ class _BaseDataSet(object):
     def generate_manifest(self, progressbar=None):
         """Return manifest generated from knowledge about contents."""
         items = dict()
+
+        if progressbar:
+            progressbar.label = "Generating manifest"
+
         for handle in self._storage_broker.iter_item_handles():
             key = dtoolcore.utils.generate_identifier(handle)
             value = self._storage_broker.item_properties(handle)
             items[key] = value
             if progressbar:
+                progressbar.item_show_func = lambda x: handle
                 progressbar.update(1)
 
         manifest = {
@@ -391,6 +400,9 @@ class ProtoDataSet(_BaseDataSet):
         """
         Convert :class:`dtoolcore.ProtoDataSet` to :class:`dtoolcore.DataSet`.
         """
+        if progressbar:
+            progressbar.label = "Freezing dataset"
+
         # Generate and persist the manifest.
         manifest = self.generate_manifest(progressbar=progressbar)
         self._storage_broker.put_manifest(manifest)
