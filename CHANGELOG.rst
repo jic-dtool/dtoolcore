@@ -27,11 +27,18 @@ Removed
 Fixed
 ^^^^^
 
-- Progress bar now shows information on individual items being processed
-
 
 Security
 ^^^^^^^^
+
+
+[2.8.2] - 2017-10-04
+--------------------
+
+Fixed
+^^^^^
+
+- Progress bar now shows information on individual items being processed
 
 
 [2.8.1] - 2017-09-25
