@@ -69,6 +69,7 @@ class DiskStorageBroker(object):
     def list_dataset_uris(cls, prefix, config_path):
         """Return list containing URIs in prefix location."""
         uri_list = []
+        prefix = os.path.abspath(prefix)
         for d in os.listdir(prefix):
             dir_path = os.path.join(prefix, d)
 
