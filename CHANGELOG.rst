@@ -27,11 +27,18 @@ Removed
 Fixed
 ^^^^^
 
-- Made ``DiskStorageBroker.list_dataset_uris`` class method more robust
-
 
 Security
 ^^^^^^^^
+
+
+[2.8.3] - 2017-10-09
+--------------------
+
+Fixed
+^^^^^
+
+- Made ``DiskStorageBroker.list_dataset_uris`` class method more robust
 
 
 [2.8.2] - 2017-10-04
