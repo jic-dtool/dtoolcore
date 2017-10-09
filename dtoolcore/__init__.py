@@ -16,7 +16,7 @@ except ImportError:
 import dtoolcore.utils
 
 
-__version__ = "2.8.2"
+__version__ = "2.8.3"
 
 
 def _generate_storage_broker_lookup():
