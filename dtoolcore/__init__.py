@@ -400,6 +400,9 @@ class ProtoDataSet(_BaseDataSet):
         """
         Convert :class:`dtoolcore.ProtoDataSet` to :class:`dtoolcore.DataSet`.
         """
+        # Call the storage broker pre_freeze hook.
+        self._storage_broker.pre_freeze_hook()
+
         if progressbar:
             progressbar.label = "Freezing dataset"
 

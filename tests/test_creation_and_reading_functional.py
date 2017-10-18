@@ -6,6 +6,11 @@ import datetime
 import pytz
 import pytest
 
+try:
+    from unittest.mock import MagicMock
+except ImportError:
+    from mock import MagicMock
+
 from . import tmp_dir_fixture  # NOQA
 from . import TEST_SAMPLE_DATA
 
@@ -34,7 +39,10 @@ def test_basic_workflow(tmp_dir_fixture):  # NOQA
         config_path=None)
     proto_dataset.create()
     proto_dataset.put_item(local_file_path, 'tiny.png')
+
+    proto_dataset._storage_broker.pre_freeze_hook = MagicMock()
     proto_dataset.freeze()
+    proto_dataset._storage_broker.pre_freeze_hook.assert_called_once()
 
     # Read in a dataset
     dataset = DataSet.from_uri(dest_uri)
@@ -91,6 +99,7 @@ def test_proto_dataset_freeze_functional(tmp_dir_fixture):  # NOQA
     # We shouldn't be able to load this as a DataSet
     with pytest.raises(DtoolCoreTypeError):
         DataSet.from_uri(dest_uri)
+
 
     proto_dataset.freeze()
 

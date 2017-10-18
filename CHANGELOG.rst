@@ -11,6 +11,9 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 Added
 ^^^^^
 
+- ``pre_freeze_hoook`` to the stroage broker interface called at the beginning
+  of ``ProtoDataSet.freeze`` method.
+
 
 Changed
 ^^^^^^^
