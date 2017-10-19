@@ -42,7 +42,7 @@ def test_basic_workflow(tmp_dir_fixture):  # NOQA
 
     proto_dataset._storage_broker.pre_freeze_hook = MagicMock()
     proto_dataset.freeze()
-    proto_dataset._storage_broker.pre_freeze_hook.assert_called_once()
+    assert proto_dataset._storage_broker.pre_freeze_hook.call_count == 1
 
     # Read in a dataset
     dataset = DataSet.from_uri(dest_uri)
