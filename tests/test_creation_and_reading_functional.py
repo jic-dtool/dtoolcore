@@ -100,7 +100,6 @@ def test_proto_dataset_freeze_functional(tmp_dir_fixture):  # NOQA
     with pytest.raises(DtoolCoreTypeError):
         DataSet.from_uri(dest_uri)
 
-
     proto_dataset.freeze()
 
     # Freezing removes the temporary metadata fragments directory.
