@@ -30,6 +30,8 @@ Removed
 Fixed
 ^^^^^
 
+- Made the ``DiskStorageBroker.create_structure`` method more robust
+
 
 Security
 ^^^^^^^^
