@@ -11,9 +11,6 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 Added
 ^^^^^
 
-- ``pre_freeze_hoook`` to the stroage broker interface called at the beginning
-  of ``ProtoDataSet.freeze`` method.
-
 
 Changed
 ^^^^^^^
@@ -30,11 +27,24 @@ Removed
 Fixed
 ^^^^^
 
-- Made the ``DiskStorageBroker.create_structure`` method more robust
-
 
 Security
 ^^^^^^^^
+
+
+[2.9.0] - 2017-10-23
+--------------------
+
+Added
+^^^^^
+
+- ``pre_freeze_hoook`` to the stroage broker interface called at the beginning
+  of ``ProtoDataSet.freeze`` method.
+
+Fixed
+^^^^^
+
+- Made the ``DiskStorageBroker.create_structure`` method more robust
 
 
 [2.8.3] - 2017-10-09
