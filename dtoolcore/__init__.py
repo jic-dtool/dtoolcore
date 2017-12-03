@@ -2,6 +2,7 @@
 
 """
 
+import os
 import datetime
 import uuid
 
@@ -159,9 +160,17 @@ class _BaseDataSet(object):
     def __init__(self, uri, admin_metadata, config_path=None):
         self._admin_metadata = admin_metadata
         self._storage_broker = _get_storage_broker(uri, config_path)
+
+        # Create a full qualified URI for the dataset.
         parsed_uri = urlparse(uri)
-        self._uri = "{}://{}".format(
-            self._storage_broker.key, parsed_uri.path)
+        prefix = os.path.dirname(parsed_uri.path)
+        uri = self._storage_broker.generate_uri(
+            name=admin_metadata["name"],
+            uuid=admin_metadata["uuid"],
+            prefix=prefix
+        )
+
+        self._uri = uri
 
     @classmethod
     def _from_uri_with_typecheck(cls, uri, config_path, type_name):
