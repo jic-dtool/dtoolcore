@@ -3,11 +3,11 @@ import os
 from . import chdir_fixture  # NOQA
 from . import TEST_SAMPLE_DATA
 
+
 def test_uri_property_when_using_relpath(chdir_fixture):  # NOQA
 
     from dtoolcore import ProtoDataSet, generate_admin_metadata
     from dtoolcore import DataSet
-    from dtoolcore.utils import generate_identifier
     from dtoolcore.storagebroker import DiskStorageBroker
 
     name = "my_dataset"
@@ -29,7 +29,6 @@ def test_uri_property_when_using_relpath(chdir_fixture):  # NOQA
     proto_dataset.put_item(local_file_path, 'tiny.png')
 
     proto_dataset.freeze()
-
 
     dataset = DataSet.from_uri("./my_dataset")
     expected_uri = "file://" + os.path.abspath("my_dataset")
