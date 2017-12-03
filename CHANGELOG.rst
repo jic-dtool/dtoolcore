@@ -32,6 +32,16 @@ Security
 ^^^^^^^^
 
 
+[2.9.1] - 2017-12-03
+--------------------
+
+Fixed
+^^^^^
+
+- Fixed defect where an incorrect URI would get set on the dataset when using
+  ``DataSet.from_path`` class method on a relative path
+
+
 [2.9.0] - 2017-10-23
 --------------------
 
