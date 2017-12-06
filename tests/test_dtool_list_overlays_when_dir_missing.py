@@ -6,8 +6,9 @@ from . import TEST_SAMPLE_DATA
 
 def test_list_overlays_when_dir_missing(chdir_fixture):  # NOQA
     """
-    This test simulates checking out a frozen dataset from Git that has no overlays written to it,
-    i.e. where the ``.dtool/overlays`` directory is missing.
+    This test simulates checking out a frozen dataset from Git that has no
+    overlays written to it, i.e. where the ``.dtool/overlays`` directory is
+    missing.
 
     See also:
     https://github.com/jic-dtool/dtoolcore/issues/3
