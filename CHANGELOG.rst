@@ -27,13 +27,20 @@ Removed
 Fixed
 ^^^^^
 
-- Made the DiskStorageBroker.list_overlay_names method more robust. It no
-  longer falls over if the ``.dtool/overlays`` directory has been lost, i.e. by
-  cloning a dataset with no overlays from a Git repository.
-
 
 Security
 ^^^^^^^^
+
+
+[2.9.2] - 2017-12-06
+--------------------
+
+Fixed
+^^^^^
+
+- Made the DiskStorageBroker.list_overlay_names method more robust. It no
+  longer falls over if the ``.dtool/overlays`` directory has been lost, i.e. by
+  cloning a dataset with no overlays from a Git repository.
 
 
 [2.9.1] - 2017-12-03
