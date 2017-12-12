@@ -111,6 +111,25 @@ def test_store_and_retrieve_manifest(tmp_dir_fixture):  # NOQA
 
     assert retrieved_manifest == manifest
 
+    # Test the formatting on disk.
+#   expected = '{\n  "a": "b", \n  "c": [\n    1, \n    2, \n    3\n  ]\n}'
+    expected_lines = [
+        '{',
+        '  "a": "b",',
+        '  "c": [',
+        '    1,',
+        '    2,',
+        '    3',
+        '  ]',
+        '}'
+    ]
+
+    with open(storagebroker._manifest_abspath) as fh:
+        for i, actual in enumerate(fh):
+            actual = actual.rstrip()
+            expected = expected_lines[i]
+            assert actual == expected
+
 
 def test_item_properties(tmp_dir_fixture):  # NOQA
     from dtoolcore.storagebroker import DiskStorageBroker

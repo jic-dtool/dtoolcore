@@ -223,7 +223,7 @@ class DiskStorageBroker(object):
         :param manifest: dictionary with manifest structural metadata
         """
         with open(self._manifest_abspath, 'w') as fh:
-            json.dump(manifest, fh)
+            json.dump(manifest, fh, indent=2)
 
     def put_readme(self, content):
         """
