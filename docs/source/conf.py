@@ -55,7 +55,7 @@ repo_name = u"dtoolcore"
 # built documents.
 #
 # The short X.Y version.
-version = u"2.9.2"
+version = u"2.9.3"
 # The full version, including alpha/beta/rc tags.
 release = version
 
