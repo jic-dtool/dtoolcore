@@ -27,12 +27,19 @@ Removed
 Fixed
 ^^^^^
 
-- Made ``.dtool/manifest.json`` content created by DiskStorageBroker human
-  readable by adding new lines and indentation to the JSON formatting.
-
 
 Security
 ^^^^^^^^
+
+
+[2.9.3] - 2017-12-14
+--------------------
+
+Fixed
+^^^^^
+
+- Made ``.dtool/manifest.json`` content created by DiskStorageBroker human
+  readable by adding new lines and indentation to the JSON formatting.
 
 
 [2.9.2] - 2017-12-06
