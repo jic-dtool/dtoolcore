@@ -9,6 +9,35 @@ import platform
 import binascii
 import base64
 
+try:
+    from urlparse import urlparse, urlunparse
+except ImportError:
+    from urllib.parse import urlparse, urlunparse
+
+
+def generous_parse_uri(uri):
+    """Return a urlparse.ParseResult object with the results of parsing the
+    given URI. This has the same properties as the result of parse_uri.
+
+    When passed a relative path, it determines the absolute path, sets the
+    scheme to file, the netloc to localhost and returns a parse of the result.
+    """
+
+    parse_result = urlparse(uri)
+
+    if parse_result.scheme == '':
+        abspath = os.path.abspath(parse_result.path)
+        fixed_uri = "file://localhost{}".format(abspath)
+        parse_result = urlparse(fixed_uri)
+
+    return parse_result
+
+
+def sanitise_uri(uri):
+    """Return fully qualified uri from the input, which might be a relpath."""
+
+    return urlunparse(generous_parse_uri(uri))
+
 
 def cross_platform_getuser(is_windows, no_username_in_env):
     """Return the username or "unknown".
