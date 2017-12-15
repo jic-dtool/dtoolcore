@@ -286,8 +286,8 @@ def test_list_dataset_uris(tmp_dir_fixture):  # NOQA
         admin_metadata = dtoolcore.generate_admin_metadata(name)
         proto_dataset = dtoolcore.generate_proto_dataset(
             admin_metadata=admin_metadata,
-            prefix=tmp_dir_fixture,
-            storage="file")
+            base_uri="file://{}".format(tmp_dir_fixture),
+            )
         proto_dataset.create()
         expected_uris.append(proto_dataset.uri)
 

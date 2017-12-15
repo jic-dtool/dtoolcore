@@ -2,17 +2,11 @@
 
 """
 
-import os
 import datetime
 import uuid
 
 from pkg_resources import iter_entry_points
 from collections import defaultdict
-
-try:
-    from urlparse import urlparse
-except ImportError:
-    from urllib.parse import urlparse
 
 import dtoolcore.utils
 
@@ -32,14 +26,8 @@ def _generate_storage_broker_lookup():
 def _get_storage_broker(uri, config_path):
     """Helper function to enable use lookup of appropriate storage brokers."""
     storage_broker_lookup = _generate_storage_broker_lookup()
-    parsed_uri = urlparse(uri)
-    scheme = parsed_uri.scheme
-
-    # If scheme is missing (e.g. /some/path) assume it is on local disk.
-    if scheme == "":
-        scheme = "file"
-
-    StorageBroker = storage_broker_lookup[scheme]
+    parsed_uri = dtoolcore.utils.generous_parse_uri(uri)
+    StorageBroker = storage_broker_lookup[parsed_uri.scheme]
     return StorageBroker(parsed_uri.path, config_path)
 
 
@@ -71,39 +59,38 @@ def generate_admin_metadata(name, creator_username=None):
     return admin_metadata
 
 
-def _generate_uri(admin_metadata, prefix, storage):
+def _generate_uri(admin_metadata, base_uri):
     """Return dataset URI.
 
     :param admin_metadata: dataset administrative metadata
-    :param prefix: dataset root
-    :param storage: type of storage
+    :param base_uri: base URI from which to derive dataset URI
     :returns: dataset URI
     """
     name = admin_metadata["name"]
     uuid = admin_metadata["uuid"]
-    storage_broker_lookup = _generate_storage_broker_lookup()
-    StorageBroker = storage_broker_lookup[storage]
-    return StorageBroker.generate_uri(name, uuid, prefix)
+    # storage_broker_lookup = _generate_storage_broker_lookup()
+    # parse_result = urlparse(base_uri)
+    # storage = parse_result.scheme
+    StorageBroker = _get_storage_broker(base_uri, config_path=None)
+    return StorageBroker.generate_uri(name, uuid, base_uri)
 
 
-def generate_proto_dataset(admin_metadata, prefix, storage, config_path=None):
+def generate_proto_dataset(admin_metadata, base_uri, config_path=None):
     """Return :class:`dtoolcore.ProtoDataSet` instance.
 
     :param admin_metadata: dataset administrative metadata
-    :param prefix: dataset root
-    :param storage: type of storage
+    :param base_uri: base URI for proto dataset
     :param config_path: path to dtool configuration file
     """
-    uri = _generate_uri(admin_metadata, prefix, storage)
+    uri = _generate_uri(admin_metadata, base_uri)
     return ProtoDataSet(uri, admin_metadata, config_path)
 
 
-def copy(src_uri, prefix, storage, config_path=None, progressbar=None):
+def copy(src_uri, dest_base_uri, config_path=None, progressbar=None):
     """Copy a dataset to another location.
 
     :param src_uri: URI of dataset to be copied
-    :param prefix: root to put dataset into
-    :param storage: type of storage
+    :param dest_base_uri: base of URI for copy target
     :param config_path: path to dtool configuration file
     :returns: URI of new dataset
     """
@@ -118,8 +105,7 @@ def copy(src_uri, prefix, storage, config_path=None, progressbar=None):
 
     proto_dataset = generate_proto_dataset(
         admin_metadata=admin_metadata,
-        prefix=prefix,
-        storage=storage,
+        base_uri=dest_base_uri,
         config_path=config_path
     )
 
@@ -158,18 +144,11 @@ class _BaseDataSet(object):
     """Base class for datasets."""
 
     def __init__(self, uri, admin_metadata, config_path=None):
+
+        uri = dtoolcore.utils.sanitise_uri(uri)
+
         self._admin_metadata = admin_metadata
         self._storage_broker = _get_storage_broker(uri, config_path)
-
-        # Create a full qualified URI for the dataset.
-        parsed_uri = urlparse(uri)
-        prefix = os.path.dirname(parsed_uri.path)
-        uri = self._storage_broker.generate_uri(
-            name=admin_metadata["name"],
-            uuid=admin_metadata["uuid"],
-            prefix=prefix
-        )
-
         self._uri = uri
 
     @classmethod

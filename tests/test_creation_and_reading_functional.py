@@ -27,7 +27,7 @@ def test_basic_workflow(tmp_dir_fixture):  # NOQA
     dest_uri = DiskStorageBroker.generate_uri(
         name=name,
         uuid=admin_metadata["uuid"],
-        prefix=tmp_dir_fixture)
+        base_uri=tmp_dir_fixture)
 
     sample_data_path = os.path.join(TEST_SAMPLE_DATA)
     local_file_path = os.path.join(sample_data_path, 'tiny.png')
@@ -68,7 +68,7 @@ def test_proto_dataset_freeze_functional(tmp_dir_fixture):  # NOQA
     dest_uri = DiskStorageBroker.generate_uri(
         name=name,
         uuid=admin_metadata["uuid"],
-        prefix=tmp_dir_fixture)
+        base_uri=tmp_dir_fixture)
 
     sample_data_path = os.path.join(TEST_SAMPLE_DATA)
 
@@ -152,7 +152,7 @@ def test_creation_and_reading(tmp_dir_fixture):  # NOQA
     dest_uri = DiskStorageBroker.generate_uri(
         name=name,
         uuid=admin_metadata["uuid"],
-        prefix=tmp_dir_fixture)
+        base_uri=tmp_dir_fixture)
 
     sample_data_path = os.path.join(TEST_SAMPLE_DATA)
 

@@ -5,6 +5,11 @@ import json
 import shutil
 import logging
 
+try:
+    from urlparse import urlparse
+except ImportError:
+    from urllib.parse import urlparse
+
 from dtoolcore.utils import (
     mkdir_parents,
     generate_identifier,
@@ -37,8 +42,11 @@ class DiskStorageBroker(object):
 
     def __init__(self, uri, config_path=None):
 
+        parse_result = urlparse(uri)
+        path = parse_result.path
+
         # Define useful absolute paths for future reference.
-        self._abspath = os.path.abspath(uri)
+        self._abspath = os.path.abspath(path)
         self._dtool_abspath = os.path.join(self._abspath, '.dtool')
         self._admin_metadata_fpath = os.path.join(self._dtool_abspath, 'dtool')
         self._data_abspath = os.path.join(self._abspath, 'data')
@@ -86,7 +94,8 @@ class DiskStorageBroker(object):
         return uri_list
 
     @classmethod
-    def generate_uri(cls, name, uuid, prefix):
+    def generate_uri(cls, name, uuid, base_uri):
+        prefix = urlparse(base_uri).path
         dataset_path = os.path.join(prefix, name)
         dataset_abspath = os.path.abspath(dataset_path)
         return "{}://{}".format(cls.key, dataset_abspath)
@@ -223,7 +232,7 @@ class DiskStorageBroker(object):
         :param manifest: dictionary with manifest structural metadata
         """
         with open(self._manifest_abspath, 'w') as fh:
-            json.dump(manifest, fh, indent=2)
+            json.dump(manifest, fh, indent=2, sort_keys=True)
 
     def put_readme(self, content):
         """

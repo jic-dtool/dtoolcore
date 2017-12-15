@@ -19,8 +19,8 @@ def test_copy(tmp_dir_fixture):  # NOQA
     admin_metadata = dtoolcore.generate_admin_metadata("test_copy")
     proto_dataset = dtoolcore.generate_proto_dataset(
         admin_metadata=admin_metadata,
-        prefix=src_dir,
-        storage="file")
+        base_uri=src_dir
+    )
     proto_dataset.create()
     src_uri = proto_dataset.uri
 

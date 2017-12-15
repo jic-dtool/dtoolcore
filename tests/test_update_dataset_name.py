@@ -10,8 +10,8 @@ def test_copy(tmp_dir_fixture):  # NOQA
     admin_metadata = dtoolcore.generate_admin_metadata("test_name")
     proto_dataset = dtoolcore.generate_proto_dataset(
         admin_metadata=admin_metadata,
-        prefix=tmp_dir_fixture,
-        storage="file")
+        base_uri=tmp_dir_fixture
+    )
 
     assert proto_dataset.name == "test_name"
 

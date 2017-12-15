@@ -11,10 +11,15 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 Added
 ^^^^^
 
+* Helper functions ``sanitise_uri`` and ``generous_parse_uri`` to handle URIs
+  that consist only of relative paths (added to ``dtoolcore.utils``).
 
 Changed
 ^^^^^^^
 
+* Functions that previously took ``prefix`` and ``storage`` arguments now take
+  ``base_uri`` instead. These URIs are sanitised so that relative paths work.
+  Most notably ``generate_proto_dataset`` and ``copy``.
 
 Deprecated
 ^^^^^^^^^^

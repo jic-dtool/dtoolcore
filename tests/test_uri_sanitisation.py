@@ -14,7 +14,6 @@ def test_generous_parse_uri():
     assert parse_result.netloc == 'my-bucket'
     assert parse_result.path == '/path/to/files'
 
-
     lazy_file_uri = ".my_dataset"
 
     parse_result = generous_parse_uri(lazy_file_uri)
@@ -53,7 +52,6 @@ def test_sanitise_uri():
     sanitised_uri = sanitise_uri(relpath)
     expected_uri = "file://localhost{}".format(abspath)
     assert sanitised_uri == expected_uri
-
 
     s3_uri = "s3://my-bucket/path/to/files"
     sanitised_uri = sanitise_uri(s3_uri)

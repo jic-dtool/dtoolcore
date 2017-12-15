@@ -29,16 +29,16 @@ def test_diff_identifiers(tmp_dir_fixture):  # NOQA
 
     proto_ds_a = generate_proto_dataset(
         admin_metadata=generate_admin_metadata("test_compare_1"),
-        prefix=tmp_dir_fixture,
-        storage="file")
+        base_uri=tmp_dir_fixture
+    )
     proto_ds_a.create()
     proto_ds_a.put_item(fpaths["cat"], "a.txt")
     proto_ds_a.freeze()
 
     proto_ds_b = generate_proto_dataset(
         admin_metadata=generate_admin_metadata("test_compare_2"),
-        prefix=tmp_dir_fixture,
-        storage="file")
+        base_uri=tmp_dir_fixture
+    )
     proto_ds_b.create()
     proto_ds_b.put_item(fpaths["cat"], "b.txt")
     proto_ds_b.freeze()
@@ -69,16 +69,16 @@ def test_diff_sizes(tmp_dir_fixture):  # NOQA
 
     proto_ds_a = generate_proto_dataset(
         admin_metadata=generate_admin_metadata("test_compare_1"),
-        prefix=tmp_dir_fixture,
-        storage="file")
+        base_uri=tmp_dir_fixture
+    )
     proto_ds_a.create()
     proto_ds_a.put_item(fpaths["he"], "file.txt")
     proto_ds_a.freeze()
 
     proto_ds_b = generate_proto_dataset(
         admin_metadata=generate_admin_metadata("test_compare_2"),
-        prefix=tmp_dir_fixture,
-        storage="file")
+        base_uri=tmp_dir_fixture
+    )
     proto_ds_b.create()
     proto_ds_b.put_item(fpaths["she"], "file.txt")
     proto_ds_b.freeze()
@@ -109,16 +109,16 @@ def test_diff_content(tmp_dir_fixture):  # NOQA
 
     proto_ds_a = generate_proto_dataset(
         admin_metadata=generate_admin_metadata("test_compare_1"),
-        prefix=tmp_dir_fixture,
-        storage="file")
+        base_uri=tmp_dir_fixture
+    )
     proto_ds_a.create()
     proto_ds_a.put_item(fpaths["cat"], "file.txt")
     proto_ds_a.freeze()
 
     proto_ds_b = generate_proto_dataset(
         admin_metadata=generate_admin_metadata("test_compare_2"),
-        prefix=tmp_dir_fixture,
-        storage="file")
+        base_uri=tmp_dir_fixture
+    )
     proto_ds_b.create()
     proto_ds_b.put_item(fpaths["she"], "file.txt")
     proto_ds_b.freeze()

@@ -13,5 +13,5 @@ def test_uri_property(tmp_dir_fixture):  # NOQA
     }
     base_ds = _BaseDataSet(tmp_dir_fixture, admin_metadata, None)
 
-    expected_uri = "file://{}".format(tmp_dir_fixture)
+    expected_uri = "file://localhost{}".format(tmp_dir_fixture)
     assert base_ds.uri == expected_uri

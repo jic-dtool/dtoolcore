@@ -23,7 +23,7 @@ def test_list_overlays_when_dir_missing(chdir_fixture):  # NOQA
     dest_uri = DiskStorageBroker.generate_uri(
         name=name,
         uuid=admin_metadata["uuid"],
-        prefix=".")
+        base_uri=".")
 
     sample_data_path = os.path.join(TEST_SAMPLE_DATA)
     local_file_path = os.path.join(sample_data_path, 'tiny.png')

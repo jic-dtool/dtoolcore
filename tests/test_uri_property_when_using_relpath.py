@@ -15,7 +15,7 @@ def test_uri_property_when_using_relpath(chdir_fixture):  # NOQA
     dest_uri = DiskStorageBroker.generate_uri(
         name=name,
         uuid=admin_metadata["uuid"],
-        prefix=".")
+        base_uri=".")
 
     sample_data_path = os.path.join(TEST_SAMPLE_DATA)
     local_file_path = os.path.join(sample_data_path, 'tiny.png')
@@ -30,6 +30,6 @@ def test_uri_property_when_using_relpath(chdir_fixture):  # NOQA
 
     proto_dataset.freeze()
 
-    dataset = DataSet.from_uri("./my_dataset")
-    expected_uri = "file://" + os.path.abspath("my_dataset")
+    dataset = DataSet.from_uri("my_dataset")
+    expected_uri = "file://localhost" + os.path.abspath("my_dataset")
     assert dataset.uri == expected_uri
