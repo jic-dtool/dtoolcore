@@ -25,14 +25,16 @@ def _generate_storage_broker_lookup():
 
 def _get_storage_broker(uri, config_path):
     """Helper function to enable use lookup of appropriate storage brokers."""
+    uri = dtoolcore.utils.sanitise_uri(uri)
     storage_broker_lookup = _generate_storage_broker_lookup()
     parsed_uri = dtoolcore.utils.generous_parse_uri(uri)
     StorageBroker = storage_broker_lookup[parsed_uri.scheme]
-    return StorageBroker(parsed_uri.path, config_path)
+    return StorageBroker(uri, config_path)
 
 
 def _admin_metadata_from_uri(uri, config_path):
     """Helper function for getting admin metadata."""
+    uri = dtoolcore.utils.sanitise_uri(uri)
     storage_broker = _get_storage_broker(uri, config_path)
     admin_metadata = storage_broker.get_admin_metadata()
     return admin_metadata
@@ -40,6 +42,7 @@ def _admin_metadata_from_uri(uri, config_path):
 
 def _is_dataset(uri, config_path):
     """Helper function for determining if a URI is a dataset."""
+    uri = dtoolcore.utils.sanitise_uri(uri)
     storage_broker = _get_storage_broker(uri, config_path)
     return storage_broker.has_admin_metadata()
 
