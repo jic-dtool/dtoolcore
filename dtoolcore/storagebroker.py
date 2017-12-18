@@ -5,14 +5,10 @@ import json
 import shutil
 import logging
 
-try:
-    from urlparse import urlparse
-except ImportError:
-    from urllib.parse import urlparse
-
 from dtoolcore.utils import (
     mkdir_parents,
     generate_identifier,
+    generous_parse_uri,
 )
 from dtoolcore.filehasher import FileHasher, md5sum_hexdigest
 
@@ -42,7 +38,7 @@ class DiskStorageBroker(object):
 
     def __init__(self, uri, config_path=None):
 
-        parse_result = urlparse(uri)
+        parse_result = generous_parse_uri(uri)
         path = parse_result.path
 
         # Define useful absolute paths for future reference.
@@ -74,12 +70,14 @@ class DiskStorageBroker(object):
         ]
 
     @classmethod
-    def list_dataset_uris(cls, prefix, config_path):
-        """Return list containing URIs in prefix location."""
+    def list_dataset_uris(cls, base_uri, config_path):
+        """Return list containing URIs in location given by base_uri."""
+
+        parsed_uri = generous_parse_uri(base_uri)
         uri_list = []
-        prefix = os.path.abspath(prefix)
-        for d in os.listdir(prefix):
-            dir_path = os.path.join(prefix, d)
+        path = parsed_uri.path
+        for d in os.listdir(path):
+            dir_path = os.path.join(path, d)
 
             if not os.path.isdir(dir_path):
                 continue
@@ -89,13 +87,18 @@ class DiskStorageBroker(object):
             if not storage_broker.has_admin_metadata():
                 continue
 
-            uri_list.append("{}://{}".format(cls.key, dir_path))
+            uri = storage_broker.generate_uri(
+                name=d,
+                uuid=None,
+                base_uri=base_uri
+            )
+            uri_list.append(uri)
 
         return uri_list
 
     @classmethod
     def generate_uri(cls, name, uuid, base_uri):
-        prefix = urlparse(base_uri).path
+        prefix = generous_parse_uri(base_uri).path
         dataset_path = os.path.join(prefix, name)
         dataset_abspath = os.path.abspath(dataset_path)
         return "{}://{}".format(cls.key, dataset_abspath)

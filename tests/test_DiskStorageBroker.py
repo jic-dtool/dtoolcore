@@ -276,7 +276,7 @@ def test_list_dataset_uris(tmp_dir_fixture):  # NOQA
     from dtoolcore.storagebroker import DiskStorageBroker
 
     assert [] == DiskStorageBroker.list_dataset_uris(
-        prefix=tmp_dir_fixture,
+        base_uri=tmp_dir_fixture,
         config_path=None
     )
 
@@ -292,7 +292,7 @@ def test_list_dataset_uris(tmp_dir_fixture):  # NOQA
         expected_uris.append(proto_dataset.uri)
 
     actual_uris = DiskStorageBroker.list_dataset_uris(
-        prefix=tmp_dir_fixture,
+        base_uri=tmp_dir_fixture,
         config_path=None
     )
 
