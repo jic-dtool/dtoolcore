@@ -17,14 +17,36 @@ logger = logging.getLogger(__name__)
 
 _STRUCTURE_PARAMETERS = {
     "data_directory": ["data"],
-    "readme_relpath": ["README.yml"],
+    "dataset_readme_relpath": ["README.yml"],
     "dtool_directory": [".dtool"],
     "admin_metadata_relpath": [".dtool", "dtool"],
     "structure_metadata_relpath": [".dtool", "structure.json"],
+    "dtool_readme_relpath": [".dtool", "README.txt"],
     "manifest_relpath": [".dtool", "manifest.json"],
     "overlays_directory": [".dtool", "overlays"],
     "metadata_fragments_directory": [".dtool", "tmp_fragments"],
 }
+
+_DTOOL_README_TXT = """README
+======
+
+This is a Dtool dataset.
+
+Content provided during the dataset creation process
+----------------------------------------------------
+
+Dataset descriptive metadata: README.yml
+Dataset items: data/
+
+Automatically generated files and directories
+---------------------------------------------
+
+This file: .dtool/README.txt
+Administrative metadata describing the dataset: .dtool/dtool
+Structural metadata describing the dataset: .dtool/structure.json
+Structural metadata describing the data items: .dtool/manifest.json
+Per item descriptive metadata: .dtool/overlays/
+"""
 
 
 class StorageBrokerOSError(OSError):
@@ -71,9 +93,12 @@ class DiskStorageBroker(object):
         self._dtool_abspath = generate_abspath("dtool_directory")
         self._data_abspath = generate_abspath("data_directory")
         self._admin_metadata_fpath = generate_abspath("admin_metadata_relpath")
-        self._structure_metadata_fpath = generate_abspath("structure_metadata_relpath")
+        self._structure_metadata_fpath = generate_abspath(
+            "structure_metadata_relpath"
+        )
+        self._dtool_readme_abspath = generate_abspath("dtool_readme_relpath")
         self._manifest_abspath = generate_abspath("manifest_relpath")
-        self._readme_abspath = generate_abspath("readme_relpath")
+        self._readme_abspath = generate_abspath("dataset_readme_relpath")
         self._overlays_abspath = generate_abspath("overlays_directory")
         self._metadata_fragments_abspath = generate_abspath(
             "metadata_fragments_directory"
@@ -228,6 +253,8 @@ class DiskStorageBroker(object):
         # Write out self descriptive metadata.
         with open(self._structure_metadata_fpath, "w") as fh:
             json.dump(_STRUCTURE_PARAMETERS, fh)
+        with open(self._dtool_readme_abspath, "w") as fh:
+            fh.write(_DTOOL_README_TXT)
 
     def put_admin_metadata(self, admin_metadata):
         """Store the admin metadata by writing to disk.
