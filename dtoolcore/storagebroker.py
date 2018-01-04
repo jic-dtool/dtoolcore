@@ -252,7 +252,7 @@ class DiskStorageBroker(object):
 
         # Write out self descriptive metadata.
         with open(self._structure_metadata_fpath, "w") as fh:
-            json.dump(_STRUCTURE_PARAMETERS, fh)
+            json.dump(_STRUCTURE_PARAMETERS, fh, indent=2, sort_keys=True)
         with open(self._dtool_readme_abspath, "w") as fh:
             fh.write(_DTOOL_README_TXT)
 
