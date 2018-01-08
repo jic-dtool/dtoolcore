@@ -67,7 +67,6 @@ def test_writing_of_dtool_readme_file(tmp_dir_fixture):  # NOQA
     )
     assert os.path.isfile(expected_dtool_structure_fpath)
 
-
     with open(expected_dtool_structure_fpath) as fh:
         actual_content = fh.read()
     assert actual_content.startswith("README")
