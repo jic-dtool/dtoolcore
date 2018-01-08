@@ -57,7 +57,6 @@ def generate_admin_metadata(name, creator_username=None):
         "name": name,
         "type": "protodataset",
         "creator_username": creator_username,
-        "readme_path": "README.yml"
     }
     return admin_metadata
 
