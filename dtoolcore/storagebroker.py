@@ -30,7 +30,7 @@ _STRUCTURE_PARAMETERS = {
 _DTOOL_README_TXT = """README
 ======
 
-This is a Dtool dataset.
+This is a Dtool dataset stored on traditional file system storage.
 
 Content provided during the dataset creation process
 ----------------------------------------------------
