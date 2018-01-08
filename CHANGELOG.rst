@@ -13,6 +13,10 @@ Added
 
 * Helper functions ``sanitise_uri`` and ``generous_parse_uri`` to handle URIs
   that consist only of relative paths (added to ``dtoolcore.utils``).
+* Writing of ``.dtool/structure.json`` file to the DiskStorageBroker; a file
+  for describing the structure of the dtool dataset in a computer readable format
+* Writing of ``.dtool/README.txt`` file to the DiskStorageBroker; a file
+  for describing the structure of the dtool dataset in a human readable format
 
 Changed
 ^^^^^^^
@@ -31,6 +35,9 @@ Removed
 
 Fixed
 ^^^^^
+
+* Removed the historical ``dtool_readme`` key/value pair from the
+  administrative metadata (in the .dtool/dtool file)
 
 
 Security
