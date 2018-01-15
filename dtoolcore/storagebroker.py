@@ -4,11 +4,13 @@ import os
 import json
 import shutil
 import logging
+import datetime
 
 from dtoolcore.utils import (
     mkdir_parents,
     generate_identifier,
     generous_parse_uri,
+    timestamp,
 )
 from dtoolcore.filehasher import FileHasher, md5sum_hexdigest
 
@@ -326,9 +328,10 @@ class DiskStorageBroker(object):
         """Return properties of the item with the given handle."""
 
         fpath = os.path.join(self._data_abspath, handle)
+        datetime_obj = datetime.datetime.fromtimestamp(os.stat(fpath).st_mtime)
         properties = {
             'size_in_bytes': os.stat(fpath).st_size,
-            'utc_timestamp': os.stat(fpath).st_mtime,
+            'utc_timestamp': timestamp(datetime_obj),
             'hash': DiskStorageBroker.hasher(fpath),
             'relpath': handle
         }

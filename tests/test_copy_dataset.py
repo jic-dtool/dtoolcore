@@ -42,7 +42,13 @@ def test_copy(tmp_dir_fixture):  # NOQA
     src_ds = dtoolcore.DataSet.from_uri(src_uri)
     dest_ds = dtoolcore.DataSet.from_uri(dest_uri)
 
-    assert src_ds._admin_metadata == dest_ds._admin_metadata
+    for key, value in src_ds._admin_metadata.items():
+        if key == "frozen_at":
+            tolerance = 2
+            assert dest_ds._admin_metadata[key] >= value
+            assert dest_ds._admin_metadata[key] < value + tolerance
+        else:
+            assert dest_ds._admin_metadata[key] == value
 
     assert src_ds.identifiers == dest_ds.identifiers
     for i in src_ds.identifiers:

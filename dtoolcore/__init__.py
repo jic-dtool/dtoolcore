@@ -409,10 +409,10 @@ class ProtoDataSet(_BaseDataSet):
 
         # Change the type of the dataset from "protodataset" to "dataset" and
         # add a "frozen_at" time stamp to the administrative metadata.
-        now_timestamp = float(datetime.datetime.utcnow().strftime("%s"))
+        datetime_obj = datetime.datetime.utcnow()
         metadata_update = {
             "type": "dataset",
-            "frozen_at": now_timestamp
+            "frozen_at": dtoolcore.utils.timestamp(datetime_obj)
         }
         self._admin_metadata.update(metadata_update)
         self._storage_broker.put_admin_metadata(self._admin_metadata)
