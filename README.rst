@@ -6,8 +6,8 @@ Manage scientific data sets
    :target: http://badge.fury.io/py/dtoolcore
    :alt: PyPi package
 
-.. image:: https://travis-ci.org/JIC-CSB/dtoolcore.svg?branch=master
-   :target: https://travis-ci.org/JIC-CSB/dtoolcore
+.. image:: https://travis-ci.org/jic-dtool/dtoolcore.svg?branch=master
+   :target: https://travis-ci.org/jic-dtool/dtoolcore
    :alt: Travis CI build status (Linux)
 
 .. image:: https://ci.appveyor.com/api/projects/status/cbv7ecvl8rb251xt/branch/master?svg=true
