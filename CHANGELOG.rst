@@ -8,6 +8,10 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 [Unreleased]
 ------------
 
+This release starts making more use of URIs in the core API. It also adds more
+metadata to describe the structure of the dataset and fixes a defect in how
+timestamps were handled on Windows.
+
 Added
 ^^^^^
 
