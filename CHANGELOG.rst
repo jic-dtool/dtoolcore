@@ -21,6 +21,8 @@ Added
   for describing the structure of the dtool dataset in a computer readable format
 * Writing of ``.dtool/README.txt`` file to the DiskStorageBroker; a file
   for describing the structure of the dtool dataset in a human readable format
+* Helper function ``timestamp`` for calculating the Unix timestamp from a
+  Python datetime object
 
 Changed
 ^^^^^^^
