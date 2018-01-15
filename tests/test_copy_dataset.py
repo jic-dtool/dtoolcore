@@ -52,7 +52,15 @@ def test_copy(tmp_dir_fixture):  # NOQA
 
     assert src_ds.identifiers == dest_ds.identifiers
     for i in src_ds.identifiers:
-        assert src_ds.item_properties(i) == dest_ds.item_properties(i)
+        src_item_props = src_ds.item_properties(i)
+        dest_item_props = dest_ds.item_properties(i)
+        for key, value in src_item_props.items():
+            if key == "utc_timestamp":
+                tolerance = 2
+                assert dest_item_props[key] >= value
+                assert dest_item_props[key] < value + tolerance
+            else:
+                assert dest_item_props[key] == value
 
     assert src_ds.get_readme_content() == dest_ds.get_readme_content()
 
