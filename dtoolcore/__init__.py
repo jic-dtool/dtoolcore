@@ -11,7 +11,7 @@ from collections import defaultdict
 import dtoolcore.utils
 
 
-__version__ = "2.9.3"
+__version__ = "3.0.0"
 
 
 def _generate_storage_broker_lookup():
