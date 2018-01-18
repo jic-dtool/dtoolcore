@@ -4,9 +4,39 @@ CHANGELOG
 This project uses `semantic versioning <http://semver.org/>`_.
 This change log uses principles from `keep a changelog <http://keepachangelog.com/>`_.
 
-
 [Unreleased]
 ------------
+
+This release starts making more use of URIs in the core API. It also adds more
+metadata to describe the structure of the dataset and fixes a defect in how
+timestamps were handled on Windows.
+
+Added
+^^^^^
+
+
+Changed
+^^^^^^^
+
+
+Deprecated
+^^^^^^^^^^
+
+
+Removed
+^^^^^^^
+
+
+Fixed
+^^^^^
+
+
+Security
+^^^^^^^^
+
+
+[3.0.0] - 2018-01-18
+--------------------
 
 This release starts making more use of URIs in the core API. It also adds more
 metadata to describe the structure of the dataset and fixes a defect in how
@@ -31,23 +61,12 @@ Changed
   ``base_uri`` instead. These URIs are sanitised so that relative paths work.
   Most notably ``generate_proto_dataset`` and ``copy``.
 
-Deprecated
-^^^^^^^^^^
-
-
-Removed
-^^^^^^^
-
 
 Fixed
 ^^^^^
 
 * Removed the historical ``dtool_readme`` key/value pair from the
   administrative metadata (in the .dtool/dtool file)
-
-
-Security
-^^^^^^^^
 
 
 [2.9.3] - 2017-12-14
