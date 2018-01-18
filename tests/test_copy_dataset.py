@@ -44,7 +44,7 @@ def test_copy(tmp_dir_fixture):  # NOQA
 
     for key, value in src_ds._admin_metadata.items():
         if key == "frozen_at":
-            tolerance = 2
+            tolerance = 2  # seconds (number chosen arbitrarily)
             assert dest_ds._admin_metadata[key] >= value
             assert dest_ds._admin_metadata[key] < value + tolerance
         else:
@@ -56,7 +56,7 @@ def test_copy(tmp_dir_fixture):  # NOQA
         dest_item_props = dest_ds.item_properties(i)
         for key, value in src_item_props.items():
             if key == "utc_timestamp":
-                tolerance = 2
+                tolerance = 2  # seconds (number chosen arbitrarily)
                 assert dest_item_props[key] >= value
                 assert dest_item_props[key] < value + tolerance
             else:
