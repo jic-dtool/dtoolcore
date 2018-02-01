@@ -14,6 +14,8 @@ timestamps were handled on Windows.
 Added
 ^^^^^
 
+- Add ``dtoolcore.copy_resume`` function
+
 
 Changed
 ^^^^^^^
