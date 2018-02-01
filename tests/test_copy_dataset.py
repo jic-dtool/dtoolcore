@@ -36,7 +36,7 @@ def test_copy(tmp_dir_fixture):  # NOQA
     proto_dataset.freeze()
 
     # Copy the src dataset to dest.
-    dest_uri = dtoolcore.copy(src_uri, dest_dir, "file")
+    dest_uri = dtoolcore.copy(src_uri, dest_dir)
 
     # Compare the two datasets.
     src_ds = dtoolcore.DataSet.from_uri(src_uri)
