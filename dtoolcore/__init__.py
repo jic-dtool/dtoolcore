@@ -119,6 +119,13 @@ def _copy_create_proto_dataset(
 
 def _copy_content(src_dataset, dest_proto_dataset, progressbar=None):
 
+    # When using ``dtoolcore.copy`` there should be no handles in the
+    # destination proto dataset so this funciton will return an empty
+    # dictionary.
+    # When using ``dtoolcore.copy_resume`` there may be handles in the
+    # destination proto dataset. We therefore need to get the properties
+    # of the item associated with the handle so that we can use the size
+    # to ensure that the item has been copied across successfully.
     def get_dest_sizes(dest_proto_dataset):
         sizes = {}
         for handle in dest_proto_dataset._storage_broker.iter_item_handles():
@@ -131,6 +138,9 @@ def _copy_content(src_dataset, dest_proto_dataset, progressbar=None):
     dest_identifiers = set(dest_sizes.keys())
     for identifier in src_dataset.identifiers:
         src_properties = src_dataset.item_properties(identifier)
+
+        # We don't want to redo the copy of the item if it has already been
+        # done successfully.
         if identifier in dest_identifiers:
             src_size = src_properties["size_in_bytes"]
             dest_size = dest_sizes[identifier]
@@ -138,6 +148,7 @@ def _copy_content(src_dataset, dest_proto_dataset, progressbar=None):
                 if progressbar:
                     progressbar.update(1)
                 continue
+
         src_abspath = src_dataset.item_content_abspath(identifier)
         relpath = src_properties["relpath"]
         dest_proto_dataset.put_item(src_abspath, relpath)
