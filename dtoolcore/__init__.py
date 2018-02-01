@@ -156,6 +156,25 @@ def copy(src_uri, dest_base_uri, config_path=None, progressbar=None):
     return proto_dataset.uri
 
 
+def copy_resume(src_uri, dest_base_uri, config_path=None, progressbar=None):
+    """Copy a dataset to another location.
+
+    :param src_uri: URI of dataset to be copied
+    :param dest_base_uri: base of URI for copy target
+    :param config_path: path to dtool configuration file
+    :returns: URI of new dataset
+    """
+    dataset = DataSet.from_uri(src_uri)
+
+    # Generate the URI of the destination proto dataset.
+    dest_uri = _generate_uri(dataset._admin_metadata, dest_base_uri)
+    proto_dataset = ProtoDataSet.from_uri(dest_uri)
+    _copy_content(dataset, proto_dataset, progressbar)
+    proto_dataset.freeze(progressbar=progressbar)
+
+    return proto_dataset.uri
+
+
 class DtoolCoreTypeError(TypeError):
     pass
 
