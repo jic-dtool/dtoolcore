@@ -101,7 +101,7 @@ def test_copy_resume(tmp_dir_fixture):  # NOQA
 
     # Create a partial copy.
     src_dataset = dtoolcore.DataSet.from_uri(proto_dataset.uri)
-    dest_proto_dataset = dtoolcore._copy_create_proto_dataset(
+    dtoolcore._copy_create_proto_dataset(
         src_dataset,
         dest_dir
     )
