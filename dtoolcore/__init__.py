@@ -168,7 +168,9 @@ def copy_resume(src_uri, dest_base_uri, config_path=None, progressbar=None):
 
     # Generate the URI of the destination proto dataset.
     dest_uri = _generate_uri(dataset._admin_metadata, dest_base_uri)
+
     proto_dataset = ProtoDataSet.from_uri(dest_uri)
+
     _copy_content(dataset, proto_dataset, progressbar)
     proto_dataset.freeze(progressbar=progressbar)
 
