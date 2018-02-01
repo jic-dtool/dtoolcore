@@ -142,3 +142,7 @@ def test_copy_resume(tmp_dir_fixture):  # NOQA
 
     assert src_ds.list_overlay_names() == dest_ds.list_overlay_names()
     assert src_ds.get_overlay(overlay) == dest_ds.get_overlay(overlay)
+
+    # Copy resume should fail on frozen dataset.
+    with pytest.raises(dtoolcore.DtoolCoreTypeError):
+        dest_uri = dtoolcore.copy_resume(src_uri, dest_dir)
