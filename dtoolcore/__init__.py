@@ -118,10 +118,28 @@ def _copy_create_proto_dataset(
 
 
 def _copy_content(src_dataset, dest_proto_dataset, progressbar=None):
+
+    def get_dest_sizes(dest_proto_dataset):
+        sizes = {}
+        for handle in dest_proto_dataset._storage_broker.iter_item_handles():
+            identifier = dtoolcore.utils.generate_identifier(handle)
+            props = dest_proto_dataset._storage_broker.item_properties(handle)
+            sizes[identifier] = props["size_in_bytes"]
+        return sizes
+
+    dest_sizes = get_dest_sizes(dest_proto_dataset)
+    dest_identifiers = set(dest_sizes.keys())
     for identifier in src_dataset.identifiers:
-        item_properties = src_dataset.item_properties(identifier)
+        src_properties = src_dataset.item_properties(identifier)
+        if identifier in dest_identifiers:
+            src_size = src_properties["size_in_bytes"]
+            dest_size = dest_sizes[identifier]
+            if src_size == dest_size:
+                if progressbar:
+                    progressbar.update(1)
+                continue
         src_abspath = src_dataset.item_content_abspath(identifier)
-        relpath = item_properties["relpath"]
+        relpath = src_properties["relpath"]
         dest_proto_dataset.put_item(src_abspath, relpath)
         if progressbar:
             progressbar.item_show_func = lambda x: relpath
