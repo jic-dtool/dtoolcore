@@ -88,20 +88,16 @@ def generate_proto_dataset(admin_metadata, base_uri, config_path=None):
     return ProtoDataSet(uri, admin_metadata, config_path)
 
 
-def copy(src_uri, dest_base_uri, config_path=None, progressbar=None):
-    """Copy a dataset to another location.
-
-    :param src_uri: URI of dataset to be copied
-    :param dest_base_uri: base of URI for copy target
-    :param config_path: path to dtool configuration file
-    :returns: URI of new dataset
-    """
-    dataset = DataSet.from_uri(src_uri)
-
+def _copy_create_proto_dataset(
+    src_dataset,
+    dest_base_uri,
+    config_path=None,
+    progressbar=None
+):
     if progressbar:
         progressbar.label = "Copying dataset"
 
-    admin_metadata = dataset._admin_metadata
+    admin_metadata = src_dataset._admin_metadata
     admin_metadata["type"] = "protodataset"
     del admin_metadata["frozen_at"]
 
@@ -118,21 +114,43 @@ def copy(src_uri, dest_base_uri, config_path=None, progressbar=None):
 
     proto_dataset.create()
 
-    for identifier in dataset.identifiers:
-        item_properties = dataset.item_properties(identifier)
-        src_abspath = dataset.item_content_abspath(identifier)
+    return proto_dataset
+
+
+def _copy_content(src_dataset, dest_proto_dataset, progressbar=None):
+    for identifier in src_dataset.identifiers:
+        item_properties = src_dataset.item_properties(identifier)
+        src_abspath = src_dataset.item_content_abspath(identifier)
         relpath = item_properties["relpath"]
-        proto_dataset.put_item(src_abspath, relpath)
+        dest_proto_dataset.put_item(src_abspath, relpath)
         if progressbar:
             progressbar.item_show_func = lambda x: relpath
             progressbar.update(1)
 
-    proto_dataset.put_readme(dataset.get_readme_content())
+    dest_proto_dataset.put_readme(src_dataset.get_readme_content())
 
-    for overlay_name in dataset.list_overlay_names():
-        overlay = dataset.get_overlay(overlay_name)
-        proto_dataset._put_overlay(overlay_name, overlay)
+    for overlay_name in src_dataset.list_overlay_names():
+        overlay = src_dataset.get_overlay(overlay_name)
+        dest_proto_dataset._put_overlay(overlay_name, overlay)
 
+
+def copy(src_uri, dest_base_uri, config_path=None, progressbar=None):
+    """Copy a dataset to another location.
+
+    :param src_uri: URI of dataset to be copied
+    :param dest_base_uri: base of URI for copy target
+    :param config_path: path to dtool configuration file
+    :returns: URI of new dataset
+    """
+    dataset = DataSet.from_uri(src_uri)
+
+    proto_dataset = _copy_create_proto_dataset(
+        dataset,
+        dest_base_uri,
+        config_path,
+        progressbar
+    )
+    _copy_content(dataset, proto_dataset, progressbar)
     proto_dataset.freeze(progressbar=progressbar)
 
     return proto_dataset.uri
