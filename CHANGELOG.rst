@@ -7,14 +7,8 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 [Unreleased]
 ------------
 
-This release starts making more use of URIs in the core API. It also adds more
-metadata to describe the structure of the dataset and fixes a defect in how
-timestamps were handled on Windows.
-
 Added
 ^^^^^
-
-- Add ``dtoolcore.copy_resume`` function
 
 
 Changed
@@ -35,6 +29,15 @@ Fixed
 
 Security
 ^^^^^^^^
+
+
+[3.1.0] - 2018-02-05
+--------------------
+
+Added
+^^^^^
+
+- Add ``dtoolcore.copy_resume`` function
 
 
 [3.0.0] - 2018-01-18
