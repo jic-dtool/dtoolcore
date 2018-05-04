@@ -328,7 +328,9 @@ class DiskStorageBroker(object):
         """Return properties of the item with the given handle."""
 
         fpath = os.path.join(self._data_abspath, handle)
-        datetime_obj = datetime.datetime.fromtimestamp(os.stat(fpath).st_mtime)
+        datetime_obj = datetime.datetime.utcfromtimestamp(
+            os.stat(fpath).st_mtime
+        )
         properties = {
             'size_in_bytes': os.stat(fpath).st_size,
             'utc_timestamp': timestamp(datetime_obj),

@@ -28,6 +28,8 @@ Removed
 Fixed
 ^^^^^
 
+- Fixed timestamp defect in DiskStoragBroker
+
 
 Security
 ^^^^^^^^
