@@ -10,6 +10,8 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 Added
 ^^^^^
 
+- Add "created_at" key to the administrative metadata
+
 
 Changed
 ^^^^^^^
