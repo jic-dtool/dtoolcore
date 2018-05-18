@@ -10,8 +10,6 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 Added
 ^^^^^
 
-- Add "created_at" key to the administrative metadata
-
 
 Changed
 ^^^^^^^
@@ -28,11 +26,22 @@ Removed
 Fixed
 ^^^^^
 
-- Fixed timestamp defect in DiskStoragBroker
-
 
 Security
 ^^^^^^^^
+
+[3.2.0] - 2018-05-18
+--------------------
+
+Added
+^^^^^
+
+- Add "created_at" key to the administrative metadata
+
+Fixed
+^^^^^
+
+- Fixed timestamp defect in DiskStoragBroker
 
 
 [3.1.0] - 2018-02-05
