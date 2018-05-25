@@ -55,6 +55,10 @@ class StorageBrokerOSError(OSError):
     pass
 
 
+class DiskStorageBrokerValidationWarning(Warning):
+    pass
+
+
 class DiskStorageBroker(object):
     """
     Storage broker to interact with datasets on local disk storage.
@@ -401,6 +405,11 @@ class DiskStorageBroker(object):
         It may be useful for remote storage backends to generate
         caches to remove repetitive time consuming calls
         """
+        allowed = set([v[0] for v in _STRUCTURE_PARAMETERS.values()])
+        for d in os.listdir(self._abspath):
+            if d not in allowed:
+                msg = "Rogue content in base of dataset: {}".format(d)
+                raise(DiskStorageBrokerValidationWarning(msg))
 
     def post_freeze_hook(self):
         """Post :meth:`dtoolcore.ProtoDataSet.freeze` cleanup actions.

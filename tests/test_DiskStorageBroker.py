@@ -297,3 +297,30 @@ def test_list_dataset_uris(tmp_dir_fixture):  # NOQA
     )
 
     assert set(expected_uris) == set(actual_uris)
+
+
+def test_pre_freeze_hook(tmp_dir_fixture):  # NOQA
+    from dtoolcore.storagebroker import DiskStorageBroker
+
+    destination_path = os.path.join(tmp_dir_fixture, 'my_proto_dataset')
+    storagebroker = DiskStorageBroker(destination_path)
+
+    storagebroker.create_structure()
+
+    # Add a data file.
+    data_fpath = os.path.join(storagebroker._data_abspath, "sample.txt")
+    with open(data_fpath, "w") as fh:
+        fh.write("some sample data")
+
+    # The below should not raise an DiskStorageBrokerValidationError
+    # because the structure is correct.
+    storagebroker.pre_freeze_hook()
+
+    # Now we add a rogue file.
+    rogue_fpath = os.path.join(destination_path, "rogue.txt")
+    with open(rogue_fpath, "w") as fh:
+        fh.write("I should not be here")
+
+    from dtoolcore.storagebroker import DiskStorageBrokerValidationWarning
+    with pytest.raises(DiskStorageBrokerValidationWarning):
+        storagebroker.pre_freeze_hook()
