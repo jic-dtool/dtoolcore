@@ -10,8 +10,6 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 Added
 ^^^^^
 
-- Added rogue content validation check to DiskStorageBroker.pre_freeze hook
-
 
 Changed
 ^^^^^^^
@@ -31,6 +29,15 @@ Fixed
 
 Security
 ^^^^^^^^
+
+[3.3.0] - 2018-05-18
+--------------------
+
+Added
+^^^^^
+
+- Added rogue content validation check to DiskStorageBroker.pre_freeze hook
+
 
 [3.2.0] - 2018-05-18
 --------------------
