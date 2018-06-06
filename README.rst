@@ -10,10 +10,6 @@ Manage scientific data sets
    :target: https://travis-ci.org/jic-dtool/dtoolcore
    :alt: Travis CI build status (Linux)
 
-.. image:: https://ci.appveyor.com/api/projects/status/cbv7ecvl8rb251xt/branch/master?svg=true
-   :target: https://ci.appveyor.com/project/tjelvar-olsson/dtoolcore/branch/master
-   :alt: AppVeyor CI build status (Windows)
-
 .. image:: https://codecov.io/github/JIC-CSB/dtoolcore/coverage.svg?branch=master
    :target: https://codecov.io/github/JIC-CSB/dtoolcore?branch=master
    :alt: Code Coverage
@@ -40,7 +36,6 @@ Features
   generated using this API can be accessed without special tools
 - Ability to create plugins for custom storage solutions
 - Plugins for iRODS and Microsoft Azure storage backends available
-- Cross-platform: Linux, Mac and Windows are all supported
 - Works with Python 2.7, 3.5 and 3.6
 - No external dependencies
 
