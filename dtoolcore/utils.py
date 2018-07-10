@@ -16,6 +16,9 @@ except ImportError:
     from urllib.parse import urlparse, urlunparse
 
 
+DEFAULT_CONFIG_PATH = os.path.expanduser("~/.config/dtool/dtool.json")
+
+
 def generous_parse_uri(uri):
     """Return a urlparse.ParseResult object with the results of parsing the
     given URI. This has the same properties as the result of parse_uri.
@@ -71,11 +74,19 @@ def get_config_value(key, config_path=None, default=None):
     :param default: default fall back value
     :returns: value associated with the key
     """
+    if config_path is None:
+        config_path = DEFAULT_CONFIG_PATH
+
+    # Start by setting default value
     value = default
-    if config_path is not None and os.path.isfile(config_path):
+
+    # Update from config file
+    if os.path.isfile(config_path):
         with open(config_path, "r") as fh:
             config = json.load(fh)
             value = config.get(key, value)
+
+    # Update from environment variable
     value = os.environ.get(key, value)
     return value
 
