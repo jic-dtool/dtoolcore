@@ -26,10 +26,20 @@ Removed
 Fixed
 ^^^^^
 
-- Default config file now set in ``dtoolcore.utils.get_config_value`` if not provided in caller 
 
 Security
 ^^^^^^^^
+
+
+[3.3.1] - 2018-07-10
+--------------------
+
+Fixed
+^^^^^
+
+- Default config file now set in ``dtoolcore.utils.get_config_value`` if not provided in caller 
+
+
 
 [3.3.0] - 2018-06-06
 --------------------
