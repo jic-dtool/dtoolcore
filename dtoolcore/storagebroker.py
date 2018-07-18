@@ -65,7 +65,11 @@ class BaseStorageBroker(object):
     # Methods to override.
 
     def get_text(self, key):
-        """Return the content associated with the key."""
+        """Return the text associated with the key."""
+        raise(NotImplementedError())
+
+    def put_text(self, key, text):
+        """Put the text into the storage associated with the key."""
         raise(NotImplementedError())
 
     def get_admin_metadata_key(self):
@@ -105,6 +109,12 @@ class BaseStorageBroker(object):
         overlay_key = self.get_overlay_key(overlay_name)
         text = self.get_text(overlay_key)
         return json.loads(text)
+
+    def put_admin_metadata(self, admin_metadata):
+        """Store the admin metadata."""
+        text = json.dumps(admin_metadata)
+        key = self.get_admin_metadata_key()
+        self.put_text(key, text)
 
 
 class DiskStorageBroker(BaseStorageBroker):
@@ -197,8 +207,14 @@ class DiskStorageBroker(BaseStorageBroker):
 #############################################################################
 
     def get_text(self, key):
+        """Return the text associated with the key."""
         with open(key) as fh:
             return fh.read()
+
+    def put_text(self, key, text):
+        """Put the text into the storage associated with the key."""
+        with open(key, "w") as fh:
+            fh.write(text)
 
     def get_admin_metadata_key(self):
         "Return the path to the admin metadata file."""
@@ -293,17 +309,6 @@ class DiskStorageBroker(BaseStorageBroker):
             json.dump(_STRUCTURE_PARAMETERS, fh, indent=2, sort_keys=True)
         with open(self._dtool_readme_abspath, "w") as fh:
             fh.write(_DTOOL_README_TXT)
-
-    def put_admin_metadata(self, admin_metadata):
-        """Store the admin metadata by writing to disk.
-
-        It is the client's responsibility to ensure that the admin metadata
-        provided is a dictionary with valid contents.
-
-        :param admin_metadata: dictionary with administrative metadata
-        """
-        with open(self._admin_metadata_fpath, 'w') as fh:
-            json.dump(admin_metadata, fh)
 
     def put_manifest(self, manifest):
         """Store the manifest by writing it to disk.
