@@ -72,12 +72,20 @@ class BaseStorageBroker(object):
         """Return the admin metadata key."""
         raise(NotImplementedError())
 
+    def get_readme_key(self):
+        """Return the admin metadata key."""
+        raise(NotImplementedError())
+
     # Reusable methods.
 
     def get_admin_metadata(self):
         """Return the admin metadata as a dictionary."""
         text = self.get_text(self.get_admin_metadata_key())
         return json.loads(text)
+
+    def get_readme_content(self):
+        """Return the README descriptive metadata as a string."""
+        return self.get_text(self.get_readme_key())
 
 
 class DiskStorageBroker(BaseStorageBroker):
@@ -177,6 +185,10 @@ class DiskStorageBroker(BaseStorageBroker):
         "Return the path to the admin metadata file."""
         return self._admin_metadata_fpath
 
+    def get_readme_key(self):
+        "Return the path to the readme file."""
+        return self._readme_abspath
+
     def has_admin_metadata(self):
         """Return True if the administrative metadata exists.
 
@@ -184,13 +196,13 @@ class DiskStorageBroker(BaseStorageBroker):
         """
         return os.path.isfile(self._admin_metadata_fpath)
 
-    def get_readme_content(self):
-        """Return content of the README file as a string.
+#   def get_readme_content(self):
+#       """Return content of the README file as a string.
 
-        :returns: readme content as a string
-        """
-        with open(self._readme_abspath) as fh:
-            return fh.read()
+#       :returns: readme content as a string
+#       """
+#       with open(self._readme_abspath) as fh:
+#           return fh.read()
 
     def put_overlay(self, overlay_name, overlay):
         """Store the overlay by writing it to disk.
