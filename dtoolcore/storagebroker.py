@@ -196,14 +196,6 @@ class DiskStorageBroker(BaseStorageBroker):
         """
         return os.path.isfile(self._admin_metadata_fpath)
 
-#   def get_readme_content(self):
-#       """Return content of the README file as a string.
-
-#       :returns: readme content as a string
-#       """
-#       with open(self._readme_abspath) as fh:
-#           return fh.read()
-
     def put_overlay(self, overlay_name, overlay):
         """Store the overlay by writing it to disk.
 
