@@ -62,6 +62,18 @@ class DiskStorageBrokerValidationWarning(Warning):
 class BaseStorageBroker(object):
     """Base storage broker class defining the required interface."""
 
+    # Class methods to override.
+
+    @classmethod
+    def list_dataset_uris(cls, base_uri, config_path):
+        """Return list containing URIs in location given by base_uri."""
+        raise(NotImplementedError())
+
+    @classmethod
+    def generate_uri(cls, name, uuid, base_uri):
+        """Return dataset URI."""
+        raise(NotImplementedError())
+
     # Methods to override.
 
     def get_text(self, key):
@@ -86,6 +98,50 @@ class BaseStorageBroker(object):
 
     def get_overlay_key(self, overlay_name):
         """Return the manifest key."""
+        raise(NotImplementedError())
+
+    def list_overlay_names(self):
+        """Return list of overlay names."""
+        raise(NotImplementedError())
+
+    def get_item_abspath(self, identifier):
+        """Return absolute path at which item content can be accessed.
+
+        :param identifier: item identifier
+        :returns: absolute path from which the item content can be accessed
+        """
+        raise(NotImplementedError())
+
+    def create_structure(self):
+        """Create necessary structure to hold a dataset."""
+        raise(NotImplementedError())
+
+    def put_item(self, fpath, relpath):
+        """Put item with content from fpath at relpath in dataset.
+
+        Missing directories in relpath are created on the fly.
+
+        :param fpath: path to the item on disk
+        :param relpath: relative path name given to the item in the dataset as
+                        a handle
+        :returns: the handle given to the item
+        """
+        raise(NotImplementedError())
+
+    def iter_item_handles(self):
+        """Return iterator over item handles."""
+        raise(NotImplementedError())
+
+    def get_size_in_bytes(self, handle):
+        """Return the size in bytes."""
+        raise(NotImplementedError())
+
+    def get_utc_timestamp(self, handle):
+        """Return the UTC timestamp."""
+        raise(NotImplementedError())
+
+    def get_hash(self, handle):
+        """Return the hash."""
         raise(NotImplementedError())
 
     # Reusable methods.
@@ -132,6 +188,20 @@ class BaseStorageBroker(object):
         key = self.get_overlay_key(overlay_name)
         text = json.dumps(overlay, indent=2)
         self.put_text(key, text)
+
+    def get_relpath(self, handle):
+        """Return the relative path."""
+        return handle
+
+    def item_properties(self, handle):
+        """Return properties of the item with the given handle."""
+        properties = {
+            'size_in_bytes': self.get_size_in_bytes(handle),
+            'utc_timestamp': self.get_utc_timestamp(handle),
+            'hash': self.get_hash(handle),
+            'relpath': self.get_relpath(handle)
+        }
+        return properties
 
 
 class DiskStorageBroker(BaseStorageBroker):
@@ -249,6 +319,27 @@ class DiskStorageBroker(BaseStorageBroker):
         "Return the path to the overlay file."""
         return os.path.join(self._overlays_abspath, overlay_name + '.json')
 
+    def _fpath_from_handle(self, handle):
+        return os.path.join(self._data_abspath, handle)
+
+    def get_size_in_bytes(self, handle):
+        """Return the size in bytes."""
+        fpath = self._fpath_from_handle(handle)
+        return os.stat(fpath).st_size
+
+    def get_utc_timestamp(self, handle):
+        """Return the UTC timestamp."""
+        fpath = self._fpath_from_handle(handle)
+        datetime_obj = datetime.datetime.utcfromtimestamp(
+            os.stat(fpath).st_mtime
+        )
+        return timestamp(datetime_obj)
+
+    def get_hash(self, handle):
+        """Return the hash."""
+        fpath = self._fpath_from_handle(handle)
+        return DiskStorageBroker.hasher(fpath)
+
     def has_admin_metadata(self):
         """Return True if the administrative metadata exists.
 
@@ -345,21 +436,6 @@ class DiskStorageBroker(BaseStorageBroker):
                 path = os.path.join(dirpath, fn)
                 relative_path = path[path_length:]
                 yield relative_path
-
-    def item_properties(self, handle):
-        """Return properties of the item with the given handle."""
-
-        fpath = os.path.join(self._data_abspath, handle)
-        datetime_obj = datetime.datetime.utcfromtimestamp(
-            os.stat(fpath).st_mtime
-        )
-        properties = {
-            'size_in_bytes': os.stat(fpath).st_size,
-            'utc_timestamp': timestamp(datetime_obj),
-            'hash': DiskStorageBroker.hasher(fpath),
-            'relpath': handle
-        }
-        return properties
 
     def _handle_to_fragment_absprefixpath(self, handle):
         stem = generate_identifier(handle)
