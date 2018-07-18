@@ -62,6 +62,23 @@ class DiskStorageBrokerValidationWarning(Warning):
 class BaseStorageBroker(object):
     """Base storage broker class defining the required interface."""
 
+    # Methods to override.
+
+    def get_text(self, key):
+        """Return the content associated with the key."""
+        raise(NotImplementedError())
+
+    def get_admin_metadata_key(self):
+        """Return the admin metadata key."""
+        raise(NotImplementedError())
+
+    # Reusable methods.
+
+    def get_admin_metadata(self):
+        """Return the admin metadata as a dictionary."""
+        text = self.get_text(self.get_admin_metadata_key())
+        return json.loads(text)
+
 
 class DiskStorageBroker(BaseStorageBroker):
     """
@@ -152,13 +169,13 @@ class DiskStorageBroker(BaseStorageBroker):
 # Methods used by both ProtoDataSet and DataSet.
 #############################################################################
 
-    def get_admin_metadata(self):
-        """Return admin metadata from disk.
+    def get_text(self, key):
+        with open(key) as fh:
+            return fh.read()
 
-        :returns: administrative metadata as a dictionary
-        """
-        with open(self._admin_metadata_fpath) as fh:
-            return json.load(fh)
+    def get_admin_metadata_key(self):
+        "Return the path to the admin metadata file."""
+        return self._admin_metadata_fpath
 
     def has_admin_metadata(self):
         """Return True if the administrative metadata exists.
