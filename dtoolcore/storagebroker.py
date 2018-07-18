@@ -127,6 +127,12 @@ class BaseStorageBroker(object):
         key = self.get_readme_key()
         self.put_text(key, content)
 
+    def put_overlay(self, overlay_name, overlay):
+        """Store the overlay."""
+        key = self.get_overlay_key(overlay_name)
+        text = json.dumps(overlay, indent=2)
+        self.put_text(key, text)
+
 
 class DiskStorageBroker(BaseStorageBroker):
     """
@@ -249,20 +255,6 @@ class DiskStorageBroker(BaseStorageBroker):
         This is the definition of being a "dataset".
         """
         return os.path.isfile(self._admin_metadata_fpath)
-
-    def put_overlay(self, overlay_name, overlay):
-        """Store the overlay by writing it to disk.
-
-        It is the client's responsibility to ensure that the overlay provided
-        is a dictionary with valid contents.
-
-        :param overlay_name: name of the overlay
-        :overlay: overlay dictionary
-        """
-
-        fpath = os.path.join(self._overlays_abspath, overlay_name + '.json')
-        with open(fpath, 'w') as fh:
-            json.dump(overlay, fh)
 
 #############################################################################
 # Methods only used by DataSet.
