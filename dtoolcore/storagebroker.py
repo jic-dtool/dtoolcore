@@ -59,7 +59,11 @@ class DiskStorageBrokerValidationWarning(Warning):
     pass
 
 
-class DiskStorageBroker(object):
+class BaseStorageBroker(object):
+    """Base storage broker class defining the required interface."""
+
+
+class DiskStorageBroker(BaseStorageBroker):
     """
     Storage broker to interact with datasets on local disk storage.
 
