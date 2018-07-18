@@ -76,6 +76,10 @@ class BaseStorageBroker(object):
         """Return the admin metadata key."""
         raise(NotImplementedError())
 
+    def get_manifest_key(self):
+        """Return the manifest key."""
+        raise(NotImplementedError())
+
     # Reusable methods.
 
     def get_admin_metadata(self):
@@ -86,6 +90,11 @@ class BaseStorageBroker(object):
     def get_readme_content(self):
         """Return the README descriptive metadata as a string."""
         return self.get_text(self.get_readme_key())
+
+    def get_manifest(self):
+        """Return the manifest as a dictionary."""
+        text = self.get_text(self.get_manifest_key())
+        return json.loads(text)
 
 
 class DiskStorageBroker(BaseStorageBroker):
@@ -189,6 +198,10 @@ class DiskStorageBroker(BaseStorageBroker):
         "Return the path to the readme file."""
         return self._readme_abspath
 
+    def get_manifest_key(self):
+        "Return the path to the readme file."""
+        return self._manifest_abspath
+
     def has_admin_metadata(self):
         """Return True if the administrative metadata exists.
 
@@ -213,15 +226,6 @@ class DiskStorageBroker(BaseStorageBroker):
 #############################################################################
 # Methods only used by DataSet.
 #############################################################################
-
-    def get_manifest(self):
-        """Return the manifest contents from disk.
-
-        :returns: manifest as a dictionary
-        """
-
-        with open(self._manifest_abspath) as fh:
-            return json.load(fh)
 
     def list_overlay_names(self):
         """Return list of overlay names."""
