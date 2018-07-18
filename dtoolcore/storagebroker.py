@@ -116,6 +116,12 @@ class BaseStorageBroker(object):
         key = self.get_admin_metadata_key()
         self.put_text(key, text)
 
+    def put_manifest(self, manifest):
+        """Store the manifest."""
+        text = json.dumps(manifest, indent=2, sort_keys=True)
+        key = self.get_manifest_key()
+        self.put_text(key, text)
+
 
 class DiskStorageBroker(BaseStorageBroker):
     """
@@ -309,17 +315,6 @@ class DiskStorageBroker(BaseStorageBroker):
             json.dump(_STRUCTURE_PARAMETERS, fh, indent=2, sort_keys=True)
         with open(self._dtool_readme_abspath, "w") as fh:
             fh.write(_DTOOL_README_TXT)
-
-    def put_manifest(self, manifest):
-        """Store the manifest by writing it to disk.
-
-        It is the client's responsibility to ensure that the manifest provided
-        is a dictionary with valid contents.
-
-        :param manifest: dictionary with manifest structural metadata
-        """
-        with open(self._manifest_abspath, 'w') as fh:
-            json.dump(manifest, fh, indent=2, sort_keys=True)
 
     def put_readme(self, content):
         """
