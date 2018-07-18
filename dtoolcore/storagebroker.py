@@ -80,6 +80,10 @@ class BaseStorageBroker(object):
         """Return the manifest key."""
         raise(NotImplementedError())
 
+    def get_overlay_key(self, overlay_name):
+        """Return the manifest key."""
+        raise(NotImplementedError())
+
     # Reusable methods.
 
     def get_admin_metadata(self):
@@ -94,6 +98,12 @@ class BaseStorageBroker(object):
     def get_manifest(self):
         """Return the manifest as a dictionary."""
         text = self.get_text(self.get_manifest_key())
+        return json.loads(text)
+
+    def get_overlay(self, overlay_name):
+        """Return overlay as a dictionary."""
+        overlay_key = self.get_overlay_key(overlay_name)
+        text = self.get_text(overlay_key)
         return json.loads(text)
 
 
@@ -202,6 +212,10 @@ class DiskStorageBroker(BaseStorageBroker):
         "Return the path to the readme file."""
         return self._manifest_abspath
 
+    def get_overlay_key(self, overlay_name):
+        "Return the path to the overlay file."""
+        return os.path.join(self._overlays_abspath, overlay_name + '.json')
+
     def has_admin_metadata(self):
         """Return True if the administrative metadata exists.
 
@@ -236,17 +250,6 @@ class DiskStorageBroker(BaseStorageBroker):
             name, ext = os.path.splitext(fname)
             overlay_names.append(name)
         return overlay_names
-
-    def get_overlay(self, overlay_name):
-        """Return overlay as a dictionary.
-
-        :param overlay_name: name of the overlay
-        :returns: overlay as a dictionary
-        """
-
-        fpath = os.path.join(self._overlays_abspath, overlay_name + '.json')
-        with open(fpath) as fh:
-            return json.load(fh)
 
     def get_item_abspath(self, identifier):
         """Return absolute path at which item content can be accessed.
