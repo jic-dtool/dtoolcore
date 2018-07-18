@@ -122,6 +122,11 @@ class BaseStorageBroker(object):
         key = self.get_manifest_key()
         self.put_text(key, text)
 
+    def put_readme(self, content):
+        """Store the admin metadata."""
+        key = self.get_readme_key()
+        self.put_text(key, content)
+
 
 class DiskStorageBroker(BaseStorageBroker):
     """
@@ -315,17 +320,6 @@ class DiskStorageBroker(BaseStorageBroker):
             json.dump(_STRUCTURE_PARAMETERS, fh, indent=2, sort_keys=True)
         with open(self._dtool_readme_abspath, "w") as fh:
             fh.write(_DTOOL_README_TXT)
-
-    def put_readme(self, content):
-        """
-        Put content into the README of the dataset.
-
-        The client is responsible for ensuring that the content is valid YAML.
-
-        :param content: string to put into the README
-        """
-        with open(self._readme_abspath, 'w') as fh:
-            fh.write(content)
 
     def put_item(self, fpath, relpath):
         """Put item with content from fpath at relpath in dataset.
