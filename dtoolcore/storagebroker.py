@@ -144,6 +144,57 @@ class BaseStorageBroker(object):
         """Return the hash."""
         raise(NotImplementedError())
 
+    def has_admin_metadata(self):
+        """Return True if the administrative metadata exists.
+
+        This is the definition of being a "dataset".
+        """
+        raise(NotImplementedError())
+
+    def add_item_metadata(self, handle, key, value):
+        """Store the given key:value pair for the item associated with handle.
+
+        :param handle: handle for accessing an item before the dataset is
+                       frozen
+        :param key: metadata key
+        :param value: metadata value
+        """
+        raise(NotImplementedError())
+
+    def get_item_metadata(self, handle):
+        """Return dictionary containing all metadata associated with handle.
+
+        In other words all the metadata added using the ``add_item_metadata``
+        method.
+
+        :param handle: handle for accessing an item before the dataset is
+                       frozen
+        :returns: dictionary containing item metadata
+        """
+        raise(NotImplementedError())
+
+    def pre_freeze_hook(self):
+        """Pre :meth:`dtoolcore.ProtoDataSet.freeze` actions.
+
+        This method is called at the beginning of the
+        :meth:`dtoolcore.ProtoDataSet.freeze` method.
+
+        It may be useful for remote storage backends to generate
+        caches to remove repetitive time consuming calls
+        """
+        raise(NotImplementedError())
+
+    def post_freeze_hook(self):
+        """Post :meth:`dtoolcore.ProtoDataSet.freeze` cleanup actions.
+
+        This method is called at the end of the
+        :meth:`dtoolcore.ProtoDataSet.freeze` method.
+
+        In the :class:`dtoolcore.storage_broker.DiskStorageBroker` it removes
+        the temporary directory for storing item metadata fragment files.
+        """
+        raise(NotImplementedError())
+
     # Reusable methods.
 
     def get_admin_metadata(self):
