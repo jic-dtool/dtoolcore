@@ -10,9 +10,6 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 Added
 ^^^^^
 
-- ``dtoolcore.storagebroker.BaseStorageBroker`` class
-- ``dtoolcore.storagebroker.BaseStorageBroker.document_structure`` method
-
 
 Changed
 ^^^^^^^

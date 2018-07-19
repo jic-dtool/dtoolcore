@@ -112,7 +112,7 @@ class BaseStorageBroker(object):
         """
         raise(NotImplementedError())
 
-    def create_structure(self):
+    def _create_structure(self):
         """Create necessary structure to hold a dataset."""
         raise(NotImplementedError())
 
@@ -254,7 +254,7 @@ class BaseStorageBroker(object):
         }
         return properties
 
-    def document_structure(self):
+    def _document_structure(self):
         """Document the structure of the dataset."""
         key = self.get_structure_key()
         text = json.dumps(self._structure_parameters, indent=2, sort_keys=True)
@@ -262,6 +262,11 @@ class BaseStorageBroker(object):
 
         key = self.get_dtool_readme_key()
         self.put_text(key, self._dtool_readme_txt)
+
+    def create_structure(self):
+        """Create necessary structure to hold a dataset."""
+        self._create_structure()
+        self._document_structure()
 
 
 class DiskStorageBroker(BaseStorageBroker):
@@ -447,7 +452,7 @@ class DiskStorageBroker(BaseStorageBroker):
 # Methods only used by ProtoDataSet.
 #############################################################################
 
-    def create_structure(self):
+    def _create_structure(self):
         """Create necessary structure to hold a dataset."""
 
         # Ensure that the specified path does not exist and create it.
