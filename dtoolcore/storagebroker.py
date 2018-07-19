@@ -286,7 +286,10 @@ class DiskStorageBroker(BaseStorageBroker):
     #: function name to the manifest.
     hasher = FileHasher(md5sum_hexdigest)
 
+    # Attribute used to define the structure of the dataset.
     _structure_parameters = _STRUCTURE_PARAMETERS
+
+    # Attribute used to document the structure of the dataset.
     _dtool_readme_txt = _DTOOL_README_TXT
 
     def __init__(self, uri, config_path=None):
