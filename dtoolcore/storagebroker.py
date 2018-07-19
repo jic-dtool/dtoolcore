@@ -254,6 +254,15 @@ class BaseStorageBroker(object):
         }
         return properties
 
+    def document_structure(self):
+        """Document the structure of the dataset."""
+        key = self.get_structure_key()
+        text = json.dumps(self._structure_parameters, indent=2, sort_keys=True)
+        self.put_text(key, text)
+
+        key = self.get_dtool_readme_key()
+        self.put_text(key, self._dtool_readme_txt)
+
 
 class DiskStorageBroker(BaseStorageBroker):
     """
@@ -271,6 +280,9 @@ class DiskStorageBroker(BaseStorageBroker):
     #: Attribute used by :class:`dtoolcore.ProtoDataSet` to write the hash
     #: function name to the manifest.
     hasher = FileHasher(md5sum_hexdigest)
+
+    _structure_parameters = _STRUCTURE_PARAMETERS
+    _dtool_readme_txt = _DTOOL_README_TXT
 
     def __init__(self, uri, config_path=None):
 
@@ -366,6 +378,14 @@ class DiskStorageBroker(BaseStorageBroker):
         "Return the path to the readme file."""
         return self._manifest_abspath
 
+    def get_structure_key(self):
+        "Return the path to the structure parameter file."""
+        return self._structure_metadata_fpath
+
+    def get_dtool_readme_key(self):
+        "Return the path to the dtool readme file."""
+        return self._dtool_readme_abspath
+
     def get_overlay_key(self, overlay_name):
         "Return the path to the overlay file."""
         return os.path.join(self._overlays_abspath, overlay_name + '.json')
@@ -448,12 +468,6 @@ class DiskStorageBroker(BaseStorageBroker):
         for abspath in self._essential_subdirectories:
             if not os.path.isdir(abspath):
                 os.mkdir(abspath)
-
-        # Write out self descriptive metadata.
-        with open(self._structure_metadata_fpath, "w") as fh:
-            json.dump(_STRUCTURE_PARAMETERS, fh, indent=2, sort_keys=True)
-        with open(self._dtool_readme_abspath, "w") as fh:
-            fh.write(_DTOOL_README_TXT)
 
     def put_item(self, fpath, relpath):
         """Put item with content from fpath at relpath in dataset.
