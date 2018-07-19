@@ -325,6 +325,20 @@ class DiskStorageBroker(BaseStorageBroker):
             self._overlays_abspath
         ]
 
+    # Generic helper functions.
+
+    def _generate_abspath(self, key):
+        return os.path.join(self._abspath, *self._structure_parameters[key])
+
+    def _fpath_from_handle(self, handle):
+        return os.path.join(self._data_abspath, handle)
+
+    def _handle_to_fragment_absprefixpath(self, handle):
+        stem = generate_identifier(handle)
+        return os.path.join(self._metadata_fragments_abspath, stem)
+
+    # Class methods to override.
+
     @classmethod
     def list_dataset_uris(cls, base_uri, config_path):
         """Return list containing URIs in location given by base_uri."""
@@ -359,12 +373,7 @@ class DiskStorageBroker(BaseStorageBroker):
         dataset_abspath = os.path.abspath(dataset_path)
         return "{}://{}".format(cls.key, dataset_abspath)
 
-    def _generate_abspath(self, key):
-        return os.path.join(self._abspath, *self._structure_parameters[key])
-
-#############################################################################
-# Methods used by both ProtoDataSet and DataSet.
-#############################################################################
+    # Methods to override.
 
     def get_text(self, key):
         """Return the text associated with the key."""
@@ -400,9 +409,6 @@ class DiskStorageBroker(BaseStorageBroker):
         "Return the path to the overlay file."""
         return os.path.join(self._overlays_abspath, overlay_name + '.json')
 
-    def _fpath_from_handle(self, handle):
-        return os.path.join(self._data_abspath, handle)
-
     def get_size_in_bytes(self, handle):
         """Return the size in bytes."""
         fpath = self._fpath_from_handle(handle)
@@ -428,10 +434,6 @@ class DiskStorageBroker(BaseStorageBroker):
         """
         return os.path.isfile(self.get_admin_metadata_key())
 
-#############################################################################
-# Methods only used by DataSet.
-#############################################################################
-
     def list_overlay_names(self):
         """Return list of overlay names."""
         overlay_names = []
@@ -452,10 +454,6 @@ class DiskStorageBroker(BaseStorageBroker):
         item = manifest["items"][identifier]
         item_abspath = os.path.join(self._data_abspath, item["relpath"])
         return item_abspath
-
-#############################################################################
-# Methods only used by ProtoDataSet.
-#############################################################################
 
     def _create_structure(self):
         """Create necessary structure to hold a dataset."""
@@ -511,10 +509,6 @@ class DiskStorageBroker(BaseStorageBroker):
                 path = os.path.join(dirpath, fn)
                 relative_path = path[path_length:]
                 yield relative_path
-
-    def _handle_to_fragment_absprefixpath(self, handle):
-        stem = generate_identifier(handle)
-        return os.path.join(self._metadata_fragments_abspath, stem)
 
     def add_item_metadata(self, handle, key, value):
         """Store the given key:value pair for the item associated with handle.
