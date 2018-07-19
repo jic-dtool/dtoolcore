@@ -124,7 +124,7 @@ def test_store_and_retrieve_manifest(tmp_dir_fixture):  # NOQA
         '}'
     ]
 
-    with open(storagebroker._manifest_abspath) as fh:
+    with open(storagebroker.get_manifest_key()) as fh:
         for i, actual in enumerate(fh):
             actual = actual.rstrip()
             expected = expected_lines[i]

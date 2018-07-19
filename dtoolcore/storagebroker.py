@@ -291,37 +291,24 @@ class DiskStorageBroker(BaseStorageBroker):
 
     def __init__(self, uri, config_path=None):
 
-        self._set_abspaths(uri)
-
-        self._essential_subdirectories = [
-            self._dtool_abspath,
-            self._data_abspath,
-            self._overlays_abspath
-        ]
-
-    def _set_abspaths(self, uri):
-        """Define useful absolute paths for future reference."""
-
+        # Get the abspath to the dataset.
         parse_result = generous_parse_uri(uri)
         path = parse_result.path
         self._abspath = os.path.abspath(path)
 
-        def generate_abspath(key):
-            return os.path.join(self._abspath, *_STRUCTURE_PARAMETERS[key])
-
-        self._dtool_abspath = generate_abspath("dtool_directory")
-        self._data_abspath = generate_abspath("data_directory")
-        self._admin_metadata_fpath = generate_abspath("admin_metadata_relpath")
-        self._structure_metadata_fpath = generate_abspath(
-            "structure_metadata_relpath"
-        )
-        self._dtool_readme_abspath = generate_abspath("dtool_readme_relpath")
-        self._manifest_abspath = generate_abspath("manifest_relpath")
-        self._readme_abspath = generate_abspath("dataset_readme_relpath")
-        self._overlays_abspath = generate_abspath("overlays_directory")
-        self._metadata_fragments_abspath = generate_abspath(
+        # Define some other more abspaths.
+        self._data_abspath = self._generate_abspath("data_directory")
+        self._overlays_abspath = self._generate_abspath("overlays_directory")
+        self._metadata_fragments_abspath = self._generate_abspath(
             "metadata_fragments_directory"
         )
+
+        # Define some essential directories to be created.
+        self._essential_subdirectories = [
+            self._generate_abspath("dtool_directory"),
+            self._data_abspath,
+            self._overlays_abspath
+        ]
 
     @classmethod
     def list_dataset_uris(cls, base_uri, config_path):
@@ -357,6 +344,9 @@ class DiskStorageBroker(BaseStorageBroker):
         dataset_abspath = os.path.abspath(dataset_path)
         return "{}://{}".format(cls.key, dataset_abspath)
 
+    def _generate_abspath(self, key):
+        return os.path.join(self._abspath, *self._structure_parameters[key])
+
 #############################################################################
 # Methods used by both ProtoDataSet and DataSet.
 #############################################################################
@@ -373,23 +363,23 @@ class DiskStorageBroker(BaseStorageBroker):
 
     def get_admin_metadata_key(self):
         "Return the path to the admin metadata file."""
-        return self._admin_metadata_fpath
+        return self._generate_abspath("admin_metadata_relpath")
 
     def get_readme_key(self):
         "Return the path to the readme file."""
-        return self._readme_abspath
+        return self._generate_abspath("dataset_readme_relpath")
 
     def get_manifest_key(self):
         "Return the path to the readme file."""
-        return self._manifest_abspath
+        return self._generate_abspath("manifest_relpath")
 
     def get_structure_key(self):
         "Return the path to the structure parameter file."""
-        return self._structure_metadata_fpath
+        return self._generate_abspath("structure_metadata_relpath")
 
     def get_dtool_readme_key(self):
         "Return the path to the dtool readme file."""
-        return self._dtool_readme_abspath
+        return self._generate_abspath("dtool_readme_relpath")
 
     def get_overlay_key(self, overlay_name):
         "Return the path to the overlay file."""
@@ -421,7 +411,7 @@ class DiskStorageBroker(BaseStorageBroker):
 
         This is the definition of being a "dataset".
         """
-        return os.path.isfile(self._admin_metadata_fpath)
+        return os.path.isfile(self.get_admin_metadata_key())
 
 #############################################################################
 # Methods only used by DataSet.
