@@ -10,6 +10,9 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 Added
 ^^^^^
 
+- Added ``dtoolcore.storagebroker.BaseStorageBroker``
+- Added logging to the reusable ``BaseStorageBroker`` methods
+
 
 Changed
 ^^^^^^^
