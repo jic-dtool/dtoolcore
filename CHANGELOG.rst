@@ -12,6 +12,18 @@ Added
 
 - Added ``dtoolcore.storagebroker.BaseStorageBroker``
 - Added logging to the reusable ``BaseStorageBroker`` methods
+- ``get_text`` new method on ``BaseStorageBroker`` class
+- ``put_text`` new method on ``BaseStorageBroker`` class
+- ``get_admin_metadata_key`` new method on ``BaseStorageBroker`` class
+- ``get_readme_key`` new method on ``BaseStorageBroker`` class
+- ``get_manifest_key`` new method on ``BaseStorageBroker`` class
+- ``get_overlay_key`` new method on ``BaseStorageBroker`` class
+- ``get_structure_key`` new method on ``BaseStorageBroker`` class
+- ``get_dtool_readme_key`` new method on ``BaseStorageBroker`` class
+- ``get_size_in_bytes`` new method on ``BaseStorageBroker`` class
+- ``get_utc_timestamp`` new method on ``BaseStorageBroker`` class
+- ``get_hash`` new method on ``BaseStorageBroker`` class
+- ``get_relpath`` new method on ``BaseStorageBroker`` class
 
 
 Changed
