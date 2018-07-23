@@ -57,6 +57,34 @@ def test_store_and_retrieve_readme(tmp_dir_fixture):  # NOQA
     assert storagebroker.get_readme_content() == 'Hello world'
 
 
+def test_update_readme(tmp_dir_fixture):  # NOQA
+
+    from dtoolcore.storagebroker import DiskStorageBroker
+
+    destination_path = os.path.join(tmp_dir_fixture, 'my_proto_dataset')
+    storagebroker = DiskStorageBroker(destination_path)
+
+    storagebroker.create_structure()
+
+    storagebroker.put_readme('Hello world')
+    assert storagebroker.get_readme_content() == 'Hello world'
+
+    assert len(storagebroker.list_historical_readme_keys()) == 0
+
+    storagebroker.update_readme('Updated')
+    assert storagebroker.get_readme_content() == 'Updated'
+
+    assert len(storagebroker.list_historical_readme_keys()) == 1
+
+    with open(storagebroker.list_historical_readme_keys()[0]) as fh:
+        assert fh.read() == 'Hello world'
+
+    storagebroker.update_readme('Updated again')
+    assert storagebroker.get_readme_content() == 'Updated again'
+
+    assert len(storagebroker.list_historical_readme_keys()) == 2
+
+
 def test_store_and_retrieve_admin_metadata(tmp_dir_fixture):  # NOQA
 
     from dtoolcore.storagebroker import DiskStorageBroker

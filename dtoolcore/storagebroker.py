@@ -195,6 +195,10 @@ class BaseStorageBroker(object):
         """
         raise(NotImplementedError())
 
+    def list_historical_readme_keys(self):
+        """Return list of historical README.yml keys."""
+        raise(NotImplementedError())
+
     # Reusable methods.
 
     def get_admin_metadata(self):
@@ -236,9 +240,24 @@ class BaseStorageBroker(object):
         self.put_text(key, text)
 
     def put_readme(self, content):
-        """Store the admin metadata."""
+        """Store the readme descriptive metadata."""
         logger.debug("Putting readme")
         key = self.get_readme_key()
+        self.put_text(key, content)
+
+    def update_readme(self, content):
+        """Update the readme descriptive metadata."""
+        logger.debug("Updating readme")
+        key = self.get_readme_key()
+
+        # Back up old README content.
+        backup_content = self.get_readme_content()
+        backup_key = key + "-{}".format(
+            timestamp(datetime.datetime.now())
+        )
+        logger.debug("README.yml backup key: {}".format(backup_key))
+        self.put_text(backup_key, backup_content)
+
         self.put_text(key, content)
 
     def put_overlay(self, overlay_name, overlay):
@@ -585,3 +604,11 @@ class DiskStorageBroker(BaseStorageBroker):
         """
         if os.path.isdir(self._metadata_fragments_abspath):
             shutil.rmtree(self._metadata_fragments_abspath)
+
+    def list_historical_readme_keys(self):
+        historical_readme_keys = []
+        for name in os.listdir(self._abspath):
+            if name.startswith("README.yml-"):
+                key = os.path.join(self._abspath, name)
+                historical_readme_keys.append(key)
+        return historical_readme_keys
