@@ -383,6 +383,16 @@ class DataSet(_BaseDataSet):
         """
         self._put_overlay(overlay_name, overlay)
 
+    def put_readme(self, content):
+        """
+        Update the README of the dataset, storing a backup of the previous README.
+
+        The client is responsible for ensuring that the content is valid YAML.
+
+        :param content: string to put into the README
+        """
+        self._storage_broker.update_readme(content)
+
 
 class ProtoDataSet(_BaseDataSet):
     """
