@@ -3,6 +3,7 @@
 import os
 import pytz
 import datetime
+import time
 
 import pytest
 
@@ -78,6 +79,8 @@ def test_update_readme(tmp_dir_fixture):  # NOQA
 
     with open(storagebroker.list_historical_readme_keys()[0]) as fh:
         assert fh.read() == 'Hello world'
+
+    time.sleep(0.1)
 
     storagebroker.update_readme('Updated again')
     assert storagebroker.get_readme_content() == 'Updated again'
