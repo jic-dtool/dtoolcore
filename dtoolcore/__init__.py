@@ -385,7 +385,7 @@ class DataSet(_BaseDataSet):
 
     def put_readme(self, content):
         """
-        Update the README of the dataset, storing a backup of the previous README.
+        Update the README of the dataset and backup the previous README.
 
         The client is responsible for ensuring that the content is valid YAML.
 
