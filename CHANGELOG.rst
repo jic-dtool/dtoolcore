@@ -28,6 +28,7 @@ Added
 - ``DataSet.put_readme`` method that can be used to update descriptive metadata
    in (frozen) dataset README whilst keeping a copy of the historical README
    content
+- Add ``storage_broker_version`` key to structure parameters
 
 
 Changed

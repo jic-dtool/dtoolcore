@@ -3,6 +3,8 @@
 import os
 import json
 
+from dtoolcore import __version__
+
 from . import tmp_dir_fixture  # NOQA
 
 
@@ -38,6 +40,7 @@ def test_writing_of_dtool_structure_file(tmp_dir_fixture):  # NOQA
         "manifest_relpath": [".dtool", "manifest.json"],
         "overlays_directory": [".dtool", "overlays"],
         "metadata_fragments_directory": [".dtool", "tmp_fragments"],
+        "storage_broker_version": __version__,
     }
 
     with open(expected_dtool_structure_fpath) as fh:

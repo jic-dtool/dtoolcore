@@ -6,6 +6,7 @@ import shutil
 import logging
 import datetime
 
+from dtoolcore import __version__
 from dtoolcore.utils import (
     mkdir_parents,
     generate_identifier,
@@ -27,6 +28,7 @@ _STRUCTURE_PARAMETERS = {
     "manifest_relpath": [".dtool", "manifest.json"],
     "overlays_directory": [".dtool", "overlays"],
     "metadata_fragments_directory": [".dtool", "tmp_fragments"],
+    "storage_broker_version": __version__,
 }
 
 _DTOOL_README_TXT = """README
