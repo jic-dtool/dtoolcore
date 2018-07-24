@@ -70,14 +70,14 @@ def test_update_readme(tmp_dir_fixture):  # NOQA
     storagebroker.put_readme('Hello world')
     assert storagebroker.get_readme_content() == 'Hello world'
 
-    assert len(storagebroker.list_historical_readme_keys()) == 0
+    assert len(storagebroker._list_historical_readme_keys()) == 0
 
     storagebroker.update_readme('Updated')
     assert storagebroker.get_readme_content() == 'Updated'
 
-    assert len(storagebroker.list_historical_readme_keys()) == 1
+    assert len(storagebroker._list_historical_readme_keys()) == 1
 
-    with open(storagebroker.list_historical_readme_keys()[0]) as fh:
+    with open(storagebroker._list_historical_readme_keys()[0]) as fh:
         assert fh.read() == 'Hello world'
 
     time.sleep(0.1)
@@ -85,7 +85,7 @@ def test_update_readme(tmp_dir_fixture):  # NOQA
     storagebroker.update_readme('Updated again')
     assert storagebroker.get_readme_content() == 'Updated again'
 
-    assert len(storagebroker.list_historical_readme_keys()) == 2
+    assert len(storagebroker._list_historical_readme_keys()) == 2
 
 
 def test_store_and_retrieve_admin_metadata(tmp_dir_fixture):  # NOQA
