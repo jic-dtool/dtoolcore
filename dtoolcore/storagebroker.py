@@ -195,7 +195,7 @@ class BaseStorageBroker(object):
         """
         raise(NotImplementedError())
 
-    def list_historical_readme_keys(self):
+    def _list_historical_readme_keys(self):
         """Return list of historical README.yml keys."""
         raise(NotImplementedError())
 
@@ -605,7 +605,7 @@ class DiskStorageBroker(BaseStorageBroker):
         if os.path.isdir(self._metadata_fragments_abspath):
             shutil.rmtree(self._metadata_fragments_abspath)
 
-    def list_historical_readme_keys(self):
+    def _list_historical_readme_keys(self):
         historical_readme_keys = []
         for name in os.listdir(self._abspath):
             if name.startswith("README.yml-"):

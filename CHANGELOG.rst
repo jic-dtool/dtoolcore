@@ -25,7 +25,6 @@ Added
 - ``get_hash`` new method on ``BaseStorageBroker`` class
 - ``get_relpath`` new method on ``BaseStorageBroker`` class
 - ``update_readme`` new method on ``BaseStorageBroker`` class
-- ``list_historical_readme_keys`` new method on ``BaseStorageBroker`` class
 - ``DataSet.put_readme`` method that can be used to update descriptive metadata
    in (frozen) dataset README whilst keeping a copy of the historical README
    content
