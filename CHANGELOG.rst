@@ -10,26 +10,6 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 Added
 ^^^^^
 
-- Added ``dtoolcore.storagebroker.BaseStorageBroker``
-- Added logging to the reusable ``BaseStorageBroker`` methods
-- ``get_text`` new method on ``BaseStorageBroker`` class
-- ``put_text`` new method on ``BaseStorageBroker`` class
-- ``get_admin_metadata_key`` new method on ``BaseStorageBroker`` class
-- ``get_readme_key`` new method on ``BaseStorageBroker`` class
-- ``get_manifest_key`` new method on ``BaseStorageBroker`` class
-- ``get_overlay_key`` new method on ``BaseStorageBroker`` class
-- ``get_structure_key`` new method on ``BaseStorageBroker`` class
-- ``get_dtool_readme_key`` new method on ``BaseStorageBroker`` class
-- ``get_size_in_bytes`` new method on ``BaseStorageBroker`` class
-- ``get_utc_timestamp`` new method on ``BaseStorageBroker`` class
-- ``get_hash`` new method on ``BaseStorageBroker`` class
-- ``get_relpath`` new method on ``BaseStorageBroker`` class
-- ``update_readme`` new method on ``BaseStorageBroker`` class
-- ``DataSet.put_readme`` method that can be used to update descriptive metadata
-   in (frozen) dataset README whilst keeping a copy of the historical README
-   content
-- Add ``storage_broker_version`` key to structure parameters
-
 
 Changed
 ^^^^^^^
@@ -49,6 +29,32 @@ Fixed
 
 Security
 ^^^^^^^^
+
+[3.4.0] - 2018-07-24
+--------------------
+
+Added
+^^^^^
+
+- Added ``dtoolcore.storagebroker.BaseStorageBroker``
+- Added logging to the reusable ``BaseStorageBroker`` methods
+- ``get_text`` new method on ``BaseStorageBroker`` class
+- ``put_text`` new method on ``BaseStorageBroker`` class
+- ``get_admin_metadata_key`` new method on ``BaseStorageBroker`` class
+- ``get_readme_key`` new method on ``BaseStorageBroker`` class
+- ``get_manifest_key`` new method on ``BaseStorageBroker`` class
+- ``get_overlay_key`` new method on ``BaseStorageBroker`` class
+- ``get_structure_key`` new method on ``BaseStorageBroker`` class
+- ``get_dtool_readme_key`` new method on ``BaseStorageBroker`` class
+- ``get_size_in_bytes`` new method on ``BaseStorageBroker`` class
+- ``get_utc_timestamp`` new method on ``BaseStorageBroker`` class
+- ``get_hash`` new method on ``BaseStorageBroker`` class
+- ``get_relpath`` new method on ``BaseStorageBroker`` class
+- ``update_readme`` new method on ``BaseStorageBroker`` class
+- ``DataSet.put_readme`` method that can be used to update descriptive metadata
+   in (frozen) dataset README whilst keeping a copy of the historical README
+   content
+- Add ``storage_broker_version`` key to structure parameters
 
 
 [3.3.1] - 2018-07-10
