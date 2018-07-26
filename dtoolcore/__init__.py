@@ -134,8 +134,8 @@ def _copy_content(src_dataset, dest_proto_dataset, progressbar=None):
         sizes = {}
         for handle in dest_proto_dataset._storage_broker.iter_item_handles():
             identifier = dtoolcore.utils.generate_identifier(handle)
-            props = dest_proto_dataset._storage_broker.item_properties(handle)
-            sizes[identifier] = props["size_in_bytes"]
+            size = dest_proto_dataset._storage_broker.get_size_in_bytes(handle)
+            sizes[identifier] = size
         return sizes
 
     dest_sizes = get_dest_sizes(dest_proto_dataset)

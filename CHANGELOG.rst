@@ -26,6 +26,8 @@ Removed
 Fixed
 ^^^^^
 
+- Stop ``copy_resume`` function calculating hashes unnecessarily
+
 
 Security
 ^^^^^^^^
