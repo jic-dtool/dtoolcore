@@ -26,11 +26,19 @@ Removed
 Fixed
 ^^^^^
 
-- Stop ``copy_resume`` function calculating hashes unnecessarily
-
 
 Security
 ^^^^^^^^
+
+
+[3.4.1] - 2018-07-26
+--------------------
+
+Fixed
+^^^^^
+
+- Stop ``copy_resume`` function calculating hashes unnecessarily
+
 
 [3.4.0] - 2018-07-24
 --------------------
