@@ -140,6 +140,7 @@ def timestamp(datetime_obj):
 def name_is_valid(name):
     """Return True if the dataset name is valid.
 
-    Valid characters: [0-9a-z-_]
+    Valid characters: Alpha numeric characters [0-9a-zA-Z]
+    Valid special characters: - _ .
     """
     return bool(re.match(r"^[0-9a-zA-Z-_.]+$", name))
