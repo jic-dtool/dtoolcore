@@ -10,6 +10,9 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 Added
 ^^^^^
 
+- ``dtoolcore.utils.name_is_valid`` utility function for checking sanity of
+  dataset names
+
 
 Changed
 ^^^^^^^

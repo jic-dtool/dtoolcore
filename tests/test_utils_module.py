@@ -116,3 +116,31 @@ def test_get_config_value_from_env(tmp_dir_fixture):  # NOQA
             default="hello"
         )
     assert value == "from_env"
+
+
+def test_name_is_valid():
+
+    from dtoolcore.utils import name_is_valid
+
+    assert name_is_valid("this-is-a-good-name")
+    assert name_is_valid("this_is_a_good_name")
+    assert name_is_valid("0-name-1-can-contain-numbers-2")
+    assert name_is_valid("this.is.a.good.name")
+    assert name_is_valid("THIS-IS-A-GOOD-NAME")
+
+    assert not name_is_valid("/root/this-is-a-bad-name")
+    assert not name_is_valid("th\is-is-a-bad-name")
+    assert not name_is_valid("th\\is-is-a-bad-name")
+    assert not name_is_valid("th\nis-is-a-bad-name")
+    assert not name_is_valid("{this-is-a-bad-name}")
+    assert not name_is_valid("^this-is-a-bad-name")
+    assert not name_is_valid("<this-is-a-bad-name>")
+    assert not name_is_valid("`this-is-a-bad-name")
+    assert not name_is_valid("@this-is-a-bad-name")
+    assert not name_is_valid("&this-is-a-bad-name")
+    assert not name_is_valid(",this-is-a-bad-name")
+    assert not name_is_valid("?this-is-a-bad-name")
+    assert not name_is_valid("$this-is-a-bad-name")
+    assert not name_is_valid("=this-is-a-bad-name")
+    assert not name_is_valid("+this-is-a-bad-name")
+    assert not name_is_valid(" this-is-a-bad-name")

@@ -9,6 +9,7 @@ import platform
 import binascii
 import base64
 import datetime
+import re
 
 try:
     from urlparse import urlparse, urlunparse
@@ -134,3 +135,11 @@ def timestamp(datetime_obj):
     start_of_time = datetime.datetime(1970, 1, 1)
     diff = datetime_obj - start_of_time
     return diff.total_seconds()
+
+
+def name_is_valid(name):
+    """Return True if the dataset name is valid.
+
+    Valid characters: [0-9a-z-_]
+    """
+    return bool(re.match(r"^[0-9a-zA-Z-_.]+$", name))
