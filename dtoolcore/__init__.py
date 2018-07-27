@@ -49,6 +49,14 @@ def _is_dataset(uri, config_path):
 
 def generate_admin_metadata(name, creator_username=None):
     """Return admin metadata as a dictionary."""
+
+    if not dtoolcore.utils.name_is_valid(name):
+        msg = " ".join([
+            "Invalid characters in name,",
+            "valid characters: 0-9 a-z A-Z - _ ."
+        ])
+        raise(DtoolCoreInvalidNameError(msg))
+
     if creator_username is None:
         creator_username = dtoolcore.utils.getuser()
 
@@ -215,6 +223,10 @@ def copy_resume(src_uri, dest_base_uri, config_path=None, progressbar=None):
 
 
 class DtoolCoreTypeError(TypeError):
+    pass
+
+
+class DtoolCoreInvalidNameError(ValueError):
     pass
 
 

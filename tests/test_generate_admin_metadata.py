@@ -3,6 +3,8 @@
 import datetime
 import pytz
 
+import pytest
+
 
 def test_generate_admin_metadata():
     import dtoolcore
@@ -23,3 +25,11 @@ def test_generate_admin_metadata():
     time_delta = datetime.datetime.now(tz=pytz.UTC) - time_from_admin_metadata
     assert time_delta.days == 0
     assert time_delta.seconds < 20
+
+
+def test_generate_admin_metadata_raises_invalid_name_error():
+    from dtoolcore import generate_admin_metadata
+    from dtoolcore import DtoolCoreInvalidNameError
+
+    with pytest.raises(DtoolCoreInvalidNameError):
+        generate_admin_metadata("/root/bad-name")
