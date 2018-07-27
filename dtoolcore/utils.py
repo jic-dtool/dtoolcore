@@ -19,6 +19,11 @@ except ImportError:
 
 DEFAULT_CONFIG_PATH = os.path.expanduser("~/.config/dtool/dtool.json")
 
+MAX_NAME_LENGTH = 80
+NAME_VALID_CHARS_LIST = ["0-9", "a-z", "A-Z", "-", "_", "."]
+NAME_VALID_CHARS_STR = "".join(NAME_VALID_CHARS_LIST)
+NAME_VALID_CHARS_REGEX = re.compile(r"^[{}]+$".format(NAME_VALID_CHARS_STR))
+
 
 def generous_parse_uri(uri):
     """Return a urlparse.ParseResult object with the results of parsing the
@@ -140,7 +145,11 @@ def timestamp(datetime_obj):
 def name_is_valid(name):
     """Return True if the dataset name is valid.
 
+    The name can only be 80 characters long.
     Valid characters: Alpha numeric characters [0-9a-zA-Z]
     Valid special characters: - _ .
     """
-    return bool(re.match(r"^[0-9a-zA-Z-_.]+$", name))
+    # The name can only be 80 characters long.
+    if len(name) > MAX_NAME_LENGTH:
+        return False
+    return bool(NAME_VALID_CHARS_REGEX.match(name))

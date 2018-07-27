@@ -51,11 +51,7 @@ def generate_admin_metadata(name, creator_username=None):
     """Return admin metadata as a dictionary."""
 
     if not dtoolcore.utils.name_is_valid(name):
-        msg = " ".join([
-            "Invalid characters in name,",
-            "valid characters: 0-9 a-z A-Z - _ ."
-        ])
-        raise(DtoolCoreInvalidNameError(msg))
+        raise(DtoolCoreInvalidNameError())
 
     if creator_username is None:
         creator_username = dtoolcore.utils.getuser()
