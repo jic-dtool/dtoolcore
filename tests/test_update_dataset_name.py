@@ -53,3 +53,32 @@ def test_update_name_raises_DtoolCoreInvalidName(tmp_dir_fixture):  # NOQA
 
     with pytest.raises(DtoolCoreInvalidNameError):
         proto_dataset.update_name("test_another:new_name")
+
+
+def test_update_name_of_frozen_dataset(tmp_dir_fixture):  # NOQA
+
+    import dtoolcore
+
+    # Create a dataset.
+    admin_metadata = dtoolcore.generate_admin_metadata("test_name")
+    proto_dataset = dtoolcore.generate_proto_dataset(
+        admin_metadata=admin_metadata,
+        base_uri=tmp_dir_fixture
+    )
+    proto_dataset.create()
+    proto_dataset.freeze()
+
+    dataset = dtoolcore.DataSet.from_uri(proto_dataset.uri)
+    assert dataset.name == "test_name"
+
+    dataset.update_name("updated_name")
+    assert dataset.name == "updated_name"
+
+    dataset_again = dtoolcore.DataSet.from_uri(proto_dataset.uri)
+    assert dataset_again.name == "updated_name"
+
+    # Make sure that none of the other admin metadata has been altered.
+    for key, value in admin_metadata.items():
+        if key == "name":
+            continue
+        assert dataset_again._admin_metadata[key] == value

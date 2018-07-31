@@ -10,6 +10,9 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 Added
 ^^^^^
 
+- Added ``update_name`` method to ``DataSet`` class (previously only available
+  on ``ProtoDataSet`` class)
+
 
 Changed
 ^^^^^^^

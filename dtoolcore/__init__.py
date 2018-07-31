@@ -267,6 +267,19 @@ class _BaseDataSet(object):
         """Return the name of the dataset."""
         return self._admin_metadata['name']
 
+    def update_name(self, new_name):
+        """Update the name of the proto dataset.
+
+        :param new_name: the new name of the proto dataset
+        """
+
+        if not dtoolcore.utils.name_is_valid(new_name):
+            raise(DtoolCoreInvalidNameError())
+
+        self._admin_metadata['name'] = new_name
+        if self._storage_broker.has_admin_metadata():
+            self._storage_broker.put_admin_metadata(self._admin_metadata)
+
     def get_readme_content(self):
         """
         Return the content of the README describing the dataset.
@@ -422,19 +435,6 @@ class ProtoDataSet(_BaseDataSet):
         """Return iterable of dataset item identifiers."""
         for handle in self._storage_broker.iter_item_handles():
             yield dtoolcore.utils.generate_identifier(handle)
-
-    def update_name(self, new_name):
-        """Update the name of the proto dataset.
-
-        :param new_name: the new name of the proto dataset
-        """
-
-        if not dtoolcore.utils.name_is_valid(new_name):
-            raise(DtoolCoreInvalidNameError())
-
-        self._admin_metadata['name'] = new_name
-        if self._storage_broker.has_admin_metadata():
-            self._storage_broker.put_admin_metadata(self._admin_metadata)
 
     def create(self):
         """Create the required directory structure and admin metadata."""
