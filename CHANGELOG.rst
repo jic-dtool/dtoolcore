@@ -10,11 +10,6 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 Added
 ^^^^^
 
-- ``dtoolcore.generate_admin_metadata`` function raises
-  ``dtoolcore.DtoolCoreInvalidNameError`` if invalid name is provided
-- ``dtoolcore.utils.name_is_valid`` utility function for checking sanity of
-  dataset names
-
 
 Changed
 ^^^^^^^
@@ -34,6 +29,17 @@ Fixed
 
 Security
 ^^^^^^^^
+
+[3.5.0] - 2018-07-31
+--------------------
+
+Added
+^^^^^
+
+- ``dtoolcore.generate_admin_metadata`` function raises
+  ``dtoolcore.DtoolCoreInvalidNameError`` if invalid name is provided
+- ``dtoolcore.utils.name_is_valid`` utility function for checking sanity of
+  dataset names
 
 
 [3.4.1] - 2018-07-26
