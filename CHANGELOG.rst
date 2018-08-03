@@ -10,9 +10,6 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 Added
 ^^^^^
 
-- Added ``update_name`` method to ``DataSet`` class (previously only available
-  on ``ProtoDataSet`` class)
-
 
 Changed
 ^^^^^^^
@@ -32,6 +29,16 @@ Fixed
 
 Security
 ^^^^^^^^
+
+[3.6.0] - 2018-08-03
+--------------------
+
+Added
+^^^^^
+
+- Added ``update_name`` method to ``DataSet`` class (previously only available
+  on ``ProtoDataSet`` class)
+
 
 [3.5.0] - 2018-07-31
 --------------------
