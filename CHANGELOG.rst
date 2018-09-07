@@ -10,15 +10,9 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 Added
 ^^^^^
 
-- ``dtoolcore.filehasher.hashsum_digest`` helper function
-- ``dtoolcore.filehasher.md5sum_digest`` helper function
-
 
 Changed
 ^^^^^^^
-
-- Improved name from ``dtoolcore.filehasher.hashsum`` to
-  ``dtoolcore.filehasher.hashsum_hexdigest``
 
 
 Deprecated
@@ -36,6 +30,23 @@ Fixed
 
 Security
 ^^^^^^^^
+
+
+[3.6.1] - 2018-09-07
+--------------------
+
+Added
+^^^^^
+
+- ``dtoolcore.filehasher.hashsum_digest`` helper function
+- ``dtoolcore.filehasher.md5sum_digest`` helper function
+
+
+Changed
+^^^^^^^
+
+- Improved name from ``dtoolcore.filehasher.hashsum`` to
+  ``dtoolcore.filehasher.hashsum_hexdigest``
 
 
 [3.6.0] - 2018-08-03
