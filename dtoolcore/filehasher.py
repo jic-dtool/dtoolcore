@@ -14,7 +14,7 @@ class FileHasher(object):
         return self.func(filename)
 
 
-def hashsum(hasher, filename):
+def _hash_the_file(hasher, filename):
     """Helper function for creating hash functions.
 
     See implementation of :func:`dtoolcore.filehasher.shasum`
@@ -26,7 +26,27 @@ def hashsum(hasher, filename):
         while len(buf) > 0:
             hasher.update(buf)
             buf = f.read(BUF_SIZE)
+    return hasher
+
+
+def hashsum_hexdigest(hasher, filename):
+    """Helper function for creating hash functions.
+
+    See implementation of :func:`dtoolcore.filehasher.shasum`
+    for more usage details.
+    """
+    hasher = _hash_the_file(hasher, filename)
     return hasher.hexdigest()
+
+
+def hashsum_digest(hasher, filename):
+    """Helper function for creating hash functions.
+
+    See implementation of :func:`dtoolcore.filehasher.shasum`
+    for more usage details.
+    """
+    hasher = _hash_the_file(hasher, filename)
+    return hasher.digest()
 
 
 def sha1sum_hexdigest(filename):
@@ -36,7 +56,7 @@ def sha1sum_hexdigest(filename):
     :returns: shasum of file
     """
     hasher = hashlib.sha1()
-    return hashsum(hasher, filename)
+    return hashsum_hexdigest(hasher, filename)
 
 
 def sha256sum_hexdigest(filename):
@@ -46,7 +66,7 @@ def sha256sum_hexdigest(filename):
     :returns: shasum of file
     """
     hasher = hashlib.sha256()
-    return hashsum(hasher, filename)
+    return hashsum_hexdigest(hasher, filename)
 
 
 def md5sum_hexdigest(filename):
@@ -56,4 +76,14 @@ def md5sum_hexdigest(filename):
     :returns: shasum of file
     """
     hasher = hashlib.md5()
-    return hashsum(hasher, filename)
+    return hashsum_hexdigest(hasher, filename)
+
+
+def md5sum_digest(filename):
+    """Return digest of MD5sum of file.
+
+    :param filename: path to file
+    :returns: shasum of file
+    """
+    hasher = hashlib.md5()
+    return hashsum_digest(hasher, filename)
