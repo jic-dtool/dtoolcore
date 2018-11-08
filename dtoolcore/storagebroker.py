@@ -5,6 +5,7 @@ import json
 import shutil
 import logging
 import datetime
+import platform
 
 from dtoolcore import __version__
 from dtoolcore.utils import (
@@ -329,7 +330,7 @@ class DiskStorageBroker(BaseStorageBroker):
 
         # Get the abspath to the dataset.
         parse_result = generous_parse_uri(uri)
-        path = parse_result.path
+        path = os.path.join(parse_result.netloc, parse_result.path)
         self._abspath = os.path.abspath(path)
 
         # Define some other more abspaths.
@@ -390,8 +391,11 @@ class DiskStorageBroker(BaseStorageBroker):
     @classmethod
     def generate_uri(cls, name, uuid, base_uri):
         prefix = generous_parse_uri(base_uri).path
-        dataset_path = os.path.join(prefix, name)
+        netloc = generous_parse_uri(base_uri).netloc
+        dataset_path = os.path.join(netloc, prefix, name)
         dataset_abspath = os.path.abspath(dataset_path)
+        if platform.system == 'Windows':
+            dataset_abspath = dataset_abspath.replace("\\", "/")
         return "{}://{}".format(cls.key, dataset_abspath)
 
     # Methods to override.
