@@ -133,7 +133,7 @@ def test_name_is_valid():
     assert not name_is_valid("x" * 81)
 
     assert not name_is_valid("/root/this-is-a-bad-name")
-    assert not name_is_valid("th\is-is-a-bad-name")
+    assert not name_is_valid("th\is-is-a-bad-name")  # NOQA
     assert not name_is_valid("th\\is-is-a-bad-name")
     assert not name_is_valid("th\nis-is-a-bad-name")
     assert not name_is_valid("{this-is-a-bad-name}")
