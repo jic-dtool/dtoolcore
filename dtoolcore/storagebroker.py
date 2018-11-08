@@ -18,6 +18,10 @@ from dtoolcore.filehasher import FileHasher, md5sum_hexdigest
 
 logger = logging.getLogger(__name__)
 
+IS_WINDOWS = False
+if platform.system() == "Windows":
+    IS_WINDOWS = True
+
 
 _STRUCTURE_PARAMETERS = {
     "data_directory": ["data"],
@@ -394,7 +398,7 @@ class DiskStorageBroker(BaseStorageBroker):
         netloc = generous_parse_uri(base_uri).netloc
         dataset_path = os.path.join(netloc, prefix, name)
         dataset_abspath = os.path.abspath(dataset_path)
-        if platform.system == 'Windows':
+        if IS_WINDOWS:
             dataset_abspath = dataset_abspath.replace("\\", "/")
         return "{}://{}".format(cls.key, dataset_abspath)
 
