@@ -7,9 +7,9 @@ from contextlib import contextmanager
 
 import pytest
 
-from dtoolcore.storagebroker import (
+from dtoolcore.utils import (
     IS_WINDOWS,
-    _windows_to_unix_path,
+    windows_to_unix_path,
 )
 
 _HERE = os.path.dirname(__file__)
@@ -55,7 +55,7 @@ def tmp_uri_fixture(request):
         shutil.rmtree(d)
 
     if IS_WINDOWS:
-        return "file://" + _windows_to_unix_path(d)
+        return "file://" + windows_to_unix_path(d)
     return "file://" + d
 
 
