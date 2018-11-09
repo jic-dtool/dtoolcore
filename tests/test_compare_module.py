@@ -2,20 +2,21 @@
 
 import os
 
-from . import tmp_dir_fixture  # NOQA
+from . import uri_to_path
+from . import tmp_uri_fixture  # NOQA
 
 
-def create_test_files(directory):
+def create_test_files(uri):
     fpaths = dict()
     for word in ["he", "she", "cat"]:
-        fpath = os.path.join(directory, word + ".txt")
+        fpath = os.path.join(uri_to_path(uri), word + ".txt")
         with open(fpath, "w") as fh:
             fh.write(word)
         fpaths[word] = fpath
     return fpaths
 
 
-def test_diff_identifiers(tmp_dir_fixture):  # NOQA
+def test_diff_identifiers(tmp_uri_fixture):  # NOQA
 
     from dtoolcore import (
         DataSet,
@@ -25,11 +26,11 @@ def test_diff_identifiers(tmp_dir_fixture):  # NOQA
     from dtoolcore.utils import generate_identifier
     from dtoolcore.compare import diff_identifiers
 
-    fpaths = create_test_files(tmp_dir_fixture)
+    fpaths = create_test_files(tmp_uri_fixture)
 
     proto_ds_a = generate_proto_dataset(
         admin_metadata=generate_admin_metadata("test_compare_1"),
-        base_uri=tmp_dir_fixture
+        base_uri=tmp_uri_fixture
     )
     proto_ds_a.create()
     proto_ds_a.put_item(fpaths["cat"], "a.txt")
@@ -37,7 +38,7 @@ def test_diff_identifiers(tmp_dir_fixture):  # NOQA
 
     proto_ds_b = generate_proto_dataset(
         admin_metadata=generate_admin_metadata("test_compare_2"),
-        base_uri=tmp_dir_fixture
+        base_uri=tmp_uri_fixture
     )
     proto_ds_b.create()
     proto_ds_b.put_item(fpaths["cat"], "b.txt")
@@ -55,7 +56,7 @@ def test_diff_identifiers(tmp_dir_fixture):  # NOQA
     assert diff_identifiers(ds_a, ds_b) == expected
 
 
-def test_diff_sizes(tmp_dir_fixture):  # NOQA
+def test_diff_sizes(tmp_uri_fixture):  # NOQA
 
     from dtoolcore import (
         DataSet,
@@ -65,11 +66,11 @@ def test_diff_sizes(tmp_dir_fixture):  # NOQA
     from dtoolcore.utils import generate_identifier
     from dtoolcore.compare import diff_sizes
 
-    fpaths = create_test_files(tmp_dir_fixture)
+    fpaths = create_test_files(tmp_uri_fixture)
 
     proto_ds_a = generate_proto_dataset(
         admin_metadata=generate_admin_metadata("test_compare_1"),
-        base_uri=tmp_dir_fixture
+        base_uri=tmp_uri_fixture
     )
     proto_ds_a.create()
     proto_ds_a.put_item(fpaths["he"], "file.txt")
@@ -77,7 +78,7 @@ def test_diff_sizes(tmp_dir_fixture):  # NOQA
 
     proto_ds_b = generate_proto_dataset(
         admin_metadata=generate_admin_metadata("test_compare_2"),
-        base_uri=tmp_dir_fixture
+        base_uri=tmp_uri_fixture
     )
     proto_ds_b.create()
     proto_ds_b.put_item(fpaths["she"], "file.txt")
@@ -94,7 +95,7 @@ def test_diff_sizes(tmp_dir_fixture):  # NOQA
     assert diff_sizes(ds_a, ds_b) == expected
 
 
-def test_diff_content(tmp_dir_fixture):  # NOQA
+def test_diff_content(tmp_uri_fixture):  # NOQA
 
     from dtoolcore import (
         DataSet,
@@ -105,11 +106,11 @@ def test_diff_content(tmp_dir_fixture):  # NOQA
     from dtoolcore.compare import diff_content
     from dtoolcore.storagebroker import DiskStorageBroker
 
-    fpaths = create_test_files(tmp_dir_fixture)
+    fpaths = create_test_files(tmp_uri_fixture)
 
     proto_ds_a = generate_proto_dataset(
         admin_metadata=generate_admin_metadata("test_compare_1"),
-        base_uri=tmp_dir_fixture
+        base_uri=tmp_uri_fixture
     )
     proto_ds_a.create()
     proto_ds_a.put_item(fpaths["cat"], "file.txt")
@@ -117,7 +118,7 @@ def test_diff_content(tmp_dir_fixture):  # NOQA
 
     proto_ds_b = generate_proto_dataset(
         admin_metadata=generate_admin_metadata("test_compare_2"),
-        base_uri=tmp_dir_fixture
+        base_uri=tmp_uri_fixture
     )
     proto_ds_b.create()
     proto_ds_b.put_item(fpaths["she"], "file.txt")
