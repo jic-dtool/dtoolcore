@@ -23,7 +23,7 @@ def test_list_overlays_when_dir_missing(chdir_fixture):  # NOQA
     dest_uri = DiskStorageBroker.generate_uri(
         name=name,
         uuid=admin_metadata["uuid"],
-        base_uri=".")
+        base_uri="file://.")
 
     sample_data_path = os.path.join(TEST_SAMPLE_DATA)
     local_file_path = os.path.join(sample_data_path, 'tiny.png')
@@ -43,7 +43,7 @@ def test_list_overlays_when_dir_missing(chdir_fixture):  # NOQA
     os.rmdir(proto_dataset._storage_broker._overlays_abspath)
     assert not os.path.isdir(proto_dataset._storage_broker._overlays_abspath)
 
-    dataset = DataSet.from_uri("./my_dataset")
+    dataset = DataSet.from_uri(proto_dataset.uri)
 
     # This call caused the bug.
     overlay_names = dataset.list_overlay_names()
