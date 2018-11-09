@@ -8,6 +8,7 @@ import time
 import pytest
 
 from . import tmp_dir_fixture  # NOQA
+from . import tmp_uri_fixture  # NOQA
 from . import TEST_SAMPLE_DATA
 
 
@@ -301,13 +302,13 @@ def test_has_admin_metadata(tmp_dir_fixture):  # NOQA
     assert storagebroker.has_admin_metadata()
 
 
-def test_list_dataset_uris(tmp_dir_fixture):  # NOQA
+def test_list_dataset_uris(tmp_uri_fixture):  # NOQA
 
     import dtoolcore
     from dtoolcore.storagebroker import DiskStorageBroker
 
     assert [] == DiskStorageBroker.list_dataset_uris(
-        base_uri=tmp_dir_fixture,
+        base_uri=tmp_uri_fixture,
         config_path=None
     )
 
@@ -317,13 +318,13 @@ def test_list_dataset_uris(tmp_dir_fixture):  # NOQA
         admin_metadata = dtoolcore.generate_admin_metadata(name)
         proto_dataset = dtoolcore.generate_proto_dataset(
             admin_metadata=admin_metadata,
-            base_uri="file://{}".format(tmp_dir_fixture),
+            base_uri=tmp_uri_fixture,
             )
         proto_dataset.create()
         expected_uris.append(proto_dataset.uri)
 
     actual_uris = DiskStorageBroker.list_dataset_uris(
-        base_uri=tmp_dir_fixture,
+        base_uri=tmp_uri_fixture,
         config_path=None
     )
 

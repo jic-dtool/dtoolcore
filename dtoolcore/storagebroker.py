@@ -58,6 +58,14 @@ Per item descriptive metadata: .dtool/overlays/
 """
 
 
+def _windows_to_unix_path(win_path):
+    return win_path.replace("\\", "/")
+
+
+def _unix_to_windows_path(unix_path, netloc):
+    return netloc + unix_path.replace("/", "\\")
+
+
 class StorageBrokerOSError(OSError):
     pass
 
@@ -371,7 +379,11 @@ class DiskStorageBroker(BaseStorageBroker):
 
         parsed_uri = generous_parse_uri(base_uri)
         uri_list = []
+
         path = parsed_uri.path
+        if IS_WINDOWS:
+            path = _unix_to_windows_path(parsed_uri.path, parsed_uri.netloc)
+
         for d in os.listdir(path):
             dir_path = os.path.join(path, d)
 
