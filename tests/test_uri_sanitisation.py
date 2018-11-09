@@ -43,14 +43,16 @@ def test_generous_parse_uri():
 
 def test_sanitise_uri():
 
-    from dtoolcore.utils import sanitise_uri
+    from dtoolcore.utils import sanitise_uri, IS_WINDOWS, windows_to_unix_path
 
     relpath = "./my_data"
 
     abspath = os.path.abspath(relpath)
+    if IS_WINDOWS:
+        abspath = windows_to_unix_path(abspath)
 
     sanitised_uri = sanitise_uri(relpath)
-    expected_uri = "file://localhost{}".format(abspath)
+    expected_uri = "file://{}".format(abspath)
     assert sanitised_uri == expected_uri
 
     s3_uri = "s3://my-bucket/path/to/files"

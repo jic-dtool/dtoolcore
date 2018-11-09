@@ -9,6 +9,7 @@ def test_uri_property_when_using_relpath(chdir_fixture):  # NOQA
     from dtoolcore import ProtoDataSet, generate_admin_metadata
     from dtoolcore import DataSet
     from dtoolcore.storagebroker import DiskStorageBroker
+    from dtoolcore.utils import IS_WINDOWS, windows_to_unix_path
 
     name = "my_dataset"
     admin_metadata = generate_admin_metadata(name)
@@ -31,5 +32,9 @@ def test_uri_property_when_using_relpath(chdir_fixture):  # NOQA
     proto_dataset.freeze()
 
     dataset = DataSet.from_uri("my_dataset")
-    expected_uri = "file://localhost" + os.path.abspath("my_dataset")
+
+    abspath = os.path.abspath("my_dataset")
+    if IS_WINDOWS:
+        abspath = windows_to_unix_path(abspath)
+    expected_uri = "file://" + abspath
     assert dataset.uri == expected_uri
