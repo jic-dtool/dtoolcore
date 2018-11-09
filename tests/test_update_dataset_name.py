@@ -2,17 +2,17 @@
 
 import pytest
 
-from . import tmp_dir_fixture  # NOQA
+from . import tmp_uri_fixture  # NOQA
 
 
-def test_update_name(tmp_dir_fixture):  # NOQA
+def test_update_name(tmp_uri_fixture):  # NOQA
 
     import dtoolcore
 
     admin_metadata = dtoolcore.generate_admin_metadata("test_name")
     proto_dataset = dtoolcore.generate_proto_dataset(
         admin_metadata=admin_metadata,
-        base_uri=tmp_dir_fixture
+        base_uri=tmp_uri_fixture
     )
 
     assert proto_dataset.name == "test_name"
@@ -32,7 +32,7 @@ def test_update_name(tmp_dir_fixture):  # NOQA
     assert read_proto_dataset.name == "test_another_new_name"
 
 
-def test_update_name_raises_DtoolCoreInvalidName(tmp_dir_fixture):  # NOQA
+def test_update_name_raises_DtoolCoreInvalidName(tmp_uri_fixture):  # NOQA
 
     import dtoolcore
     from dtoolcore import DtoolCoreInvalidNameError
@@ -40,7 +40,7 @@ def test_update_name_raises_DtoolCoreInvalidName(tmp_dir_fixture):  # NOQA
     admin_metadata = dtoolcore.generate_admin_metadata("test_name")
     proto_dataset = dtoolcore.generate_proto_dataset(
         admin_metadata=admin_metadata,
-        base_uri=tmp_dir_fixture
+        base_uri=tmp_uri_fixture
     )
 
     assert proto_dataset.name == "test_name"
@@ -55,7 +55,7 @@ def test_update_name_raises_DtoolCoreInvalidName(tmp_dir_fixture):  # NOQA
         proto_dataset.update_name("test_another:new_name")
 
 
-def test_update_name_of_frozen_dataset(tmp_dir_fixture):  # NOQA
+def test_update_name_of_frozen_dataset(tmp_uri_fixture):  # NOQA
 
     import dtoolcore
 
@@ -63,7 +63,7 @@ def test_update_name_of_frozen_dataset(tmp_dir_fixture):  # NOQA
     admin_metadata = dtoolcore.generate_admin_metadata("test_name")
     proto_dataset = dtoolcore.generate_proto_dataset(
         admin_metadata=admin_metadata,
-        base_uri=tmp_dir_fixture
+        base_uri=tmp_uri_fixture
     )
     proto_dataset.create()
     proto_dataset.freeze()
