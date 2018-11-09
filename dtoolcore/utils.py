@@ -16,6 +16,9 @@ try:
 except ImportError:
     from urllib.parse import urlparse, urlunparse
 
+IS_WINDOWS = False
+if platform.system() == "Windows":
+    IS_WINDOWS = True
 
 DEFAULT_CONFIG_PATH = os.path.expanduser("~/.config/dtool/dtool.json")
 
@@ -23,6 +26,16 @@ MAX_NAME_LENGTH = 80
 NAME_VALID_CHARS_LIST = ["0-9", "a-z", "A-Z", "-", "_", "."]
 NAME_VALID_CHARS_STR = "".join(NAME_VALID_CHARS_LIST)
 NAME_VALID_CHARS_REGEX = re.compile(r"^[{}]+$".format(NAME_VALID_CHARS_STR))
+
+
+def windows_to_unix_path(win_path):
+    """Return Unix path."""
+    return win_path.replace("\\", "/")
+
+
+def unix_to_windows_path(unix_path, netloc):
+    """Return Windows path."""
+    return netloc + unix_path.replace("/", "\\")
 
 
 def generous_parse_uri(uri):
@@ -37,7 +50,9 @@ def generous_parse_uri(uri):
 
     if parse_result.scheme == '':
         abspath = os.path.abspath(parse_result.path)
-        fixed_uri = "file://localhost{}".format(abspath)
+        if IS_WINDOWS:
+            abspath = windows_to_unix_path(abspath)
+        fixed_uri = "file://{}".format(abspath)
         parse_result = urlparse(fixed_uri)
 
     return parse_result

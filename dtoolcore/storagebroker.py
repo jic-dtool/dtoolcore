@@ -5,7 +5,6 @@ import json
 import shutil
 import logging
 import datetime
-import platform
 
 from dtoolcore import __version__
 from dtoolcore.utils import (
@@ -13,14 +12,13 @@ from dtoolcore.utils import (
     generate_identifier,
     generous_parse_uri,
     timestamp,
+    IS_WINDOWS,
+    windows_to_unix_path,
+    unix_to_windows_path,
 )
 from dtoolcore.filehasher import FileHasher, md5sum_hexdigest
 
 logger = logging.getLogger(__name__)
-
-IS_WINDOWS = False
-if platform.system() == "Windows":
-    IS_WINDOWS = True
 
 
 _STRUCTURE_PARAMETERS = {
@@ -56,14 +54,6 @@ Structural metadata describing the dataset: .dtool/structure.json
 Structural metadata describing the data items: .dtool/manifest.json
 Per item descriptive metadata: .dtool/overlays/
 """
-
-
-def _windows_to_unix_path(win_path):
-    return win_path.replace("\\", "/")
-
-
-def _unix_to_windows_path(unix_path, netloc):
-    return netloc + unix_path.replace("/", "\\")
 
 
 class StorageBrokerOSError(OSError):
@@ -382,7 +372,7 @@ class DiskStorageBroker(BaseStorageBroker):
 
         path = parsed_uri.path
         if IS_WINDOWS:
-            path = _unix_to_windows_path(parsed_uri.path, parsed_uri.netloc)
+            path = unix_to_windows_path(parsed_uri.path, parsed_uri.netloc)
 
         for d in os.listdir(path):
             dir_path = os.path.join(path, d)
@@ -411,7 +401,7 @@ class DiskStorageBroker(BaseStorageBroker):
         dataset_path = os.path.join(netloc, prefix, name)
         dataset_abspath = os.path.abspath(dataset_path)
         if IS_WINDOWS:
-            dataset_abspath = dataset_abspath.replace("\\", "/")
+            dataset_abspath = windows_to_unix_path(dataset_abspath)
         return "{}://{}".format(cls.key, dataset_abspath)
 
     # Methods to override.
