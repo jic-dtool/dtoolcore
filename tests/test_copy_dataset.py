@@ -4,16 +4,17 @@ import os
 
 import pytest
 
-from . import tmp_dir_fixture  # NOQA
+from . import uri_to_path
+from . import tmp_uri_fixture  # NOQA
 from . import TEST_SAMPLE_DATA
 
 
-def test_copy(tmp_dir_fixture):  # NOQA
+def test_copy(tmp_uri_fixture):  # NOQA
 
     import dtoolcore
 
-    src_dir = os.path.join(tmp_dir_fixture, "src")
-    dest_dir = os.path.join(tmp_dir_fixture, "dest")
+    src_dir = os.path.join(uri_to_path(tmp_uri_fixture), "src")
+    dest_dir = os.path.join(uri_to_path(tmp_uri_fixture), "dest")
     for directory in [src_dir, dest_dir]:
         os.mkdir(directory)
 
@@ -21,7 +22,7 @@ def test_copy(tmp_dir_fixture):  # NOQA
     admin_metadata = dtoolcore.generate_admin_metadata("test_copy")
     proto_dataset = dtoolcore.generate_proto_dataset(
         admin_metadata=admin_metadata,
-        base_uri=src_dir
+        base_uri=tmp_uri_fixture + "/src"
     )
     proto_dataset.create()
     src_uri = proto_dataset.uri
@@ -38,7 +39,7 @@ def test_copy(tmp_dir_fixture):  # NOQA
     proto_dataset.freeze()
 
     # Copy the src dataset to dest.
-    dest_uri = dtoolcore.copy(src_uri, dest_dir)
+    dest_uri = dtoolcore.copy(src_uri, tmp_uri_fixture + "/dest")
 
     # Compare the two datasets.
     src_ds = dtoolcore.DataSet.from_uri(src_uri)
@@ -70,12 +71,12 @@ def test_copy(tmp_dir_fixture):  # NOQA
     assert src_ds.get_overlay(overlay) == dest_ds.get_overlay(overlay)
 
 
-def test_copy_resume(tmp_dir_fixture):  # NOQA
+def test_copy_resume(tmp_uri_fixture):  # NOQA
 
     import dtoolcore
 
-    src_dir = os.path.join(tmp_dir_fixture, "src")
-    dest_dir = os.path.join(tmp_dir_fixture, "dest")
+    src_dir = os.path.join(uri_to_path(tmp_uri_fixture), "src")
+    dest_dir = os.path.join(uri_to_path(tmp_uri_fixture), "dest")
     for directory in [src_dir, dest_dir]:
         os.mkdir(directory)
 
@@ -83,7 +84,7 @@ def test_copy_resume(tmp_dir_fixture):  # NOQA
     admin_metadata = dtoolcore.generate_admin_metadata("test_copy")
     proto_dataset = dtoolcore.generate_proto_dataset(
         admin_metadata=admin_metadata,
-        base_uri=src_dir
+        base_uri=tmp_uri_fixture + "/src"
     )
     proto_dataset.create()
     src_uri = proto_dataset.uri
@@ -103,7 +104,7 @@ def test_copy_resume(tmp_dir_fixture):  # NOQA
     src_dataset = dtoolcore.DataSet.from_uri(proto_dataset.uri)
     dtoolcore._copy_create_proto_dataset(
         src_dataset,
-        dest_dir
+        tmp_uri_fixture + "/dest"
     )
 
     # Copy should fail.
@@ -148,12 +149,12 @@ def test_copy_resume(tmp_dir_fixture):  # NOQA
         dest_uri = dtoolcore.copy_resume(src_uri, dest_dir)
 
 
-def test_copy_resume_fixes_broken_files(tmp_dir_fixture):  # NOQA
+def test_copy_resume_fixes_broken_files(tmp_uri_fixture):  # NOQA
 
     import dtoolcore
 
-    src_dir = os.path.join(tmp_dir_fixture, "src")
-    dest_dir = os.path.join(tmp_dir_fixture, "dest")
+    src_dir = os.path.join(uri_to_path(tmp_uri_fixture), "src")
+    dest_dir = os.path.join(uri_to_path(tmp_uri_fixture), "dest")
     for directory in [src_dir, dest_dir]:
         os.mkdir(directory)
 
@@ -161,7 +162,7 @@ def test_copy_resume_fixes_broken_files(tmp_dir_fixture):  # NOQA
     admin_metadata = dtoolcore.generate_admin_metadata("test_copy")
     proto_dataset = dtoolcore.generate_proto_dataset(
         admin_metadata=admin_metadata,
-        base_uri=src_dir
+        base_uri=tmp_uri_fixture + "/src"
     )
     proto_dataset.create()
     src_uri = proto_dataset.uri
@@ -181,7 +182,7 @@ def test_copy_resume_fixes_broken_files(tmp_dir_fixture):  # NOQA
     src_dataset = dtoolcore.DataSet.from_uri(proto_dataset.uri)
     dest_proto_dataset = dtoolcore._copy_create_proto_dataset(
         src_dataset,
-        dest_dir
+        tmp_uri_fixture + "/dest"
     )
     broken_content_fpath = os.path.join(TEST_SAMPLE_DATA, "another_file.txt")
     dest_proto_dataset.put_item(broken_content_fpath, "random_bytes")
