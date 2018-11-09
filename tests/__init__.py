@@ -22,7 +22,7 @@ def uri_to_path(uri):
     parsed = generous_parse_uri(uri)
     if IS_WINDOWS:
         path = unix_to_windows_path(parsed.path, parsed.netloc)
-    return path
+    return parsed.path
 
 
 @contextmanager
