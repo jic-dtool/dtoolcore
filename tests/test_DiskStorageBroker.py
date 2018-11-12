@@ -195,6 +195,7 @@ def test_item_properties(tmp_dir_fixture):  # NOQA
         tz=pytz.UTC
     )
     time_delta = datetime.datetime.now(tz=pytz.UTC) - time_from_item
+    time.sleep(0.1)   # Make tests more robust on Windows.
     assert time_delta.days == 0
     assert time_delta.seconds < 20
 
