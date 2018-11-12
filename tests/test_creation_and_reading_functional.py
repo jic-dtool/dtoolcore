@@ -192,8 +192,10 @@ def test_creation_and_reading(tmp_dir_fixture):  # NOQA
         float(item_properties['utc_timestamp']),
         tz=pytz.UTC
     )
+
     time.sleep(0.1)  # Make tests more robust on Windows.
     time_delta = datetime.datetime.now(tz=pytz.UTC) - time_from_item
+    
     assert time_delta.days == 0
     assert time_delta.seconds < 20
 
