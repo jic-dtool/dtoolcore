@@ -110,10 +110,10 @@ def test_copy_resume(tmp_uri_fixture):  # NOQA
     # Copy should fail.
     import dtoolcore.storagebroker
     with pytest.raises(dtoolcore.storagebroker.StorageBrokerOSError):
-        dest_uri = dtoolcore.copy(src_uri, dest_dir)
+        dest_uri = dtoolcore.copy(src_uri, tmp_uri_fixture + "/dest")
 
     # Copy resume should work.
-    dest_uri = dtoolcore.copy_resume(src_uri, dest_dir)
+    dest_uri = dtoolcore.copy_resume(src_uri, tmp_uri_fixture + "/dest")
 
     # Compare the two datasets.
     src_ds = dtoolcore.DataSet.from_uri(src_uri)
@@ -146,7 +146,7 @@ def test_copy_resume(tmp_uri_fixture):  # NOQA
 
     # Copy resume should fail on frozen dataset.
     with pytest.raises(dtoolcore.DtoolCoreTypeError):
-        dest_uri = dtoolcore.copy_resume(src_uri, dest_dir)
+        dest_uri = dtoolcore.copy_resume(src_uri, tmp_uri_fixture + "/dest")
 
 
 def test_copy_resume_fixes_broken_files(tmp_uri_fixture):  # NOQA
@@ -188,7 +188,7 @@ def test_copy_resume_fixes_broken_files(tmp_uri_fixture):  # NOQA
     dest_proto_dataset.put_item(broken_content_fpath, "random_bytes")
 
     # Copy resume should work.
-    dest_uri = dtoolcore.copy_resume(src_uri, dest_dir)
+    dest_uri = dtoolcore.copy_resume(src_uri, tmp_uri_fixture + "/dest")
 
     # Compare the two datasets.
     src_ds = dtoolcore.DataSet.from_uri(src_uri)
