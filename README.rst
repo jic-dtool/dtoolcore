@@ -14,8 +14,8 @@ Manage scientific data sets
    :target: https://ci.appveyor.com/project/tjelvar-olsson/dtoolcore
    :alt: AppVeyor CI build status (Windows)
 
-.. image:: https://codecov.io/github/JIC-CSB/dtoolcore/coverage.svg?branch=master
-   :target: https://codecov.io/github/JIC-CSB/dtoolcore?branch=master
+.. image:: https://codecov.io/github/jic-dtool/dtoolcore/coverage.svg?branch=master
+   :target: https://codecov.io/github/jic-dtool/dtoolcore?branch=master
    :alt: Code Coverage
 
 .. image:: https://readthedocs.org/projects/dtoolcore/badge/?version=latest
