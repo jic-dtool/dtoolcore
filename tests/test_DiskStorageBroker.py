@@ -356,3 +356,23 @@ def test_pre_freeze_hook(tmp_dir_fixture):  # NOQA
     from dtoolcore.storagebroker import DiskStorageBrokerValidationWarning
     with pytest.raises(DiskStorageBrokerValidationWarning):
         storagebroker.pre_freeze_hook()
+
+
+def test_unix_relpaths_from_iter_item_handles(tmp_dir_fixture):  # NOQA
+    from dtoolcore.storagebroker import DiskStorageBroker
+
+    destination_path = os.path.join(tmp_dir_fixture, 'my_proto_dataset')
+    storagebroker = DiskStorageBroker(destination_path)
+
+    storagebroker.create_structure()
+
+    # Add a data file.
+    data_subdir = os.path.join(storagebroker._data_abspath, "level")
+    os.mkdir(data_subdir)
+    data_fpath = os.path.join(data_subdir, "sample.txt")
+    with open(data_fpath, "w") as fh:
+        fh.write("some sample data")
+
+    handles = [h for h in storagebroker.iter_item_handles()]
+    assert len(handles) == 1
+    assert handles[0] == "level/sample.txt"
