@@ -48,8 +48,10 @@ Overview
 --------
 
 The dtoolcore project provides a Python API for managing (scientific) data.
-It aims to help in three areas:
+It allows researchers to:
 
-1. Adding structure and meta data to your project and files
-2. Providing programmatic discovery of your data
-3. Verifying the integrity of your data
+- Package data and metadata into a dataset
+- Organise and backup datasets easily
+- Find datasets of interest
+- Verify the contents of datasets
+- Discover and work with data programatically
