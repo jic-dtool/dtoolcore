@@ -10,8 +10,6 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 Added
 ^^^^^
 
-- Support for Windows
-
 
 Changed
 ^^^^^^^
@@ -32,6 +30,15 @@ Fixed
 
 Security
 ^^^^^^^^
+
+
+[3.8.0] - 2018-11-13
+--------------------
+
+Added
+^^^^^
+
+- Support for Windows!   :)
 
 
 [3.7.0] - 2018-09-07
