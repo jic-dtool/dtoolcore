@@ -23,7 +23,7 @@ Manage scientific data sets
    :alt: Documentation Status
 
 - Documentation: http://dtoolcore.readthedocs.io
-- GitHub: https://github.com/JIC-CSB/dtoolcore
+- GitHub: https://github.com/jic-dtool/dtoolcore
 - PyPI: https://pypi.python.org/pypi/dtoolcore
 - Free software: MIT License
 
