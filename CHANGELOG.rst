@@ -11,6 +11,7 @@ Added
 ^^^^^
 
 - dtoolcore.utils.get_config_value_from_file
+- dtoolcore.utils.write_config_value_to_file
 
 
 Changed

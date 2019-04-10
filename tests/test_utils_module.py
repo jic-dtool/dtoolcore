@@ -75,6 +75,39 @@ def test_base64_to_hex():
     assert base64_to_hex(input_string) == e
 
 
+def test_write_config_value_to_file(tmp_dir_fixture):  # NOQA
+    from dtoolcore.utils import write_config_value_to_file
+    config_path = os.path.join(tmp_dir_fixture, "my.conf")
+    assert not os.path.isfile(config_path)
+
+    value = write_config_value_to_file("my-key", "my-value", config_path)
+    assert value == "my-value"
+    assert os.path.isfile(config_path)
+
+    with open(config_path) as fh:
+        config = json.load(fh)
+    assert config == {"my-key": "my-value"}
+
+    value = write_config_value_to_file("my-key", "updated-value", config_path)
+    assert value == "updated-value"
+
+    with open(config_path) as fh:
+        config = json.load(fh)
+    assert config == {"my-key": "updated-value"}
+
+    write_config_value_to_file("another-key", "value", config_path)
+
+    with open(config_path) as fh:
+        config = json.load(fh)
+    assert config == {
+        "my-key": "updated-value",
+        "another-key": "value"
+    }
+
+    # Ensure that the file has 600 permisisons.
+    assert os.stat(config_path).st_mode == 33216
+
+
 def test_get_config_value():
     from dtoolcore.utils import get_config_value
     value = get_config_value(
