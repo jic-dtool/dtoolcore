@@ -85,14 +85,51 @@ def test_get_config_value():
     assert value == "hello"
 
 
-def test_get_config_value_from_file(tmp_dir_fixture):  # NOQA
-    from dtoolcore.utils import get_config_value
+def test_get_config_dict_from_file(tmp_dir_fixture):  # NOQA
+    from dtoolcore.utils import _get_config_dict_from_file
+
+    # Test default file (~/.config/dtool/dtool.json).
+    assert isinstance(_get_config_dict_from_file(), dict)
+
+    config_path = os.path.join(tmp_dir_fixture, "my.conf")
+
+    # Test when config file is missing.
+    assert {} == _get_config_dict_from_file(
+        config_path=config_path
+    )
 
     config = {"MY_KEY": "from_file"}
-    config_path = os.path.join(tmp_dir_fixture, "my.conf")
     with open(config_path, "w") as fh:
         json.dump(config, fh)
 
+    # Test when config file exists.
+    assert {"MY_KEY": "from_file"} == _get_config_dict_from_file(
+        config_path=config_path
+    )
+
+
+def test_get_config_value_from_file(tmp_dir_fixture):  # NOQA
+    from dtoolcore.utils import get_config_value, get_config_value_from_file
+
+    config_path = os.path.join(tmp_dir_fixture, "my.conf")
+
+    # Test when config file is missing.
+    assert get_config_value_from_file(
+        key="MY_KEY",
+        config_path=config_path
+    ) is None
+
+    config = {"MY_KEY": "from_file"}
+    with open(config_path, "w") as fh:
+        json.dump(config, fh)
+
+    # Test when config file exists.
+    assert "from_file" == get_config_value_from_file(
+        key="MY_KEY",
+        config_path=config_path
+    )
+
+    # Test use in get_config_value function.
     value = get_config_value(
         key="MY_KEY",
         config_path=config_path,

@@ -82,6 +82,36 @@ def getuser():
     return cross_platform_getuser(is_windows, no_username_in_env)
 
 
+def _get_config_dict_from_file(config_path=None):
+    """Return value if key exists in file.
+
+    Return empty string ("") if key or file does not exist.
+    """
+    if config_path is None:
+        config_path = DEFAULT_CONFIG_PATH
+
+    # Default (empty) content will be used if config file does not exist.
+    config_content = {}
+
+    # If the config file exists we use that content.
+    if os.path.isfile(config_path):
+        with open(config_path) as fh:
+            config_content = json.load(fh)
+
+    return config_content
+
+
+def get_config_value_from_file(key, config_path=None, default=None):
+    """Return value if key exists in file.
+
+    Return default if key not in config.
+    """
+    config = _get_config_dict_from_file(config_path)
+    if key not in config:
+        return default
+    return config[key]
+
+
 def get_config_value(key, config_path=None, default=None):
     """Get a configuration value.
 
@@ -102,10 +132,11 @@ def get_config_value(key, config_path=None, default=None):
     value = default
 
     # Update from config file
-    if os.path.isfile(config_path):
-        with open(config_path, "r") as fh:
-            config = json.load(fh)
-            value = config.get(key, value)
+    value = get_config_value_from_file(
+        key=key,
+        config_path=config_path,
+        default=value
+    )
 
     # Update from environment variable
     value = os.environ.get(key, value)
