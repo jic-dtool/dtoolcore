@@ -10,9 +10,6 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 Added
 ^^^^^
 
-- dtoolcore.utils.get_config_value_from_file
-- dtoolcore.utils.write_config_value_to_file
-
 
 Changed
 ^^^^^^^
@@ -33,6 +30,18 @@ Fixed
 
 Security
 ^^^^^^^^
+
+
+[3.9.0] - 2019-04-10
+--------------------
+
+Helper functions for making it easier to update the dtool config file.
+
+Added
+^^^^^
+
+- dtoolcore.utils.get_config_value_from_file
+- dtoolcore.utils.write_config_value_to_file
 
 
 [3.8.0] - 2018-11-13
