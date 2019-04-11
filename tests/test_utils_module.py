@@ -1,6 +1,7 @@
 """Test the dtoolcore.utils module."""
 
 import os
+import sys
 import json
 
 try:
@@ -104,8 +105,10 @@ def test_write_config_value_to_file(tmp_dir_fixture):  # NOQA
         "another-key": "value"
     }
 
-    # Ensure that the file has 600 permisisons.
-    assert os.stat(config_path).st_mode == 33216
+    # Ensure that the file has 600 permissions.
+    if sys.platform != "win32":
+        # Don't do this check on windows
+        assert os.stat(config_path).st_mode == 33216
 
 
 def test_get_config_value():
