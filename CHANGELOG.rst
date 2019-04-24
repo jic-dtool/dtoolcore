@@ -10,6 +10,8 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 Added
 ^^^^^
 
+- ``dtoolcore.utils.DEFAULT_CACHE_PATH`` global helper variable
+
 
 Changed
 ^^^^^^^
@@ -25,7 +27,6 @@ Removed
 
 Fixed
 ^^^^^
-
 
 
 Security

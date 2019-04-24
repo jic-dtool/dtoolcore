@@ -21,6 +21,7 @@ if platform.system() == "Windows":
     IS_WINDOWS = True
 
 DEFAULT_CONFIG_PATH = os.path.expanduser("~/.config/dtool/dtool.json")
+DEFAULT_CACHE_PATH = os.path.expanduser("~/.cache/dtool")
 
 MAX_NAME_LENGTH = 80
 NAME_VALID_CHARS_LIST = ["0-9", "a-z", "A-Z", "-", "_", "."]
