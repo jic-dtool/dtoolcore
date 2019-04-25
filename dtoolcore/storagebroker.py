@@ -206,6 +206,11 @@ class BaseStorageBroker(object):
 
     # Reusable methods.
 
+    def generate_base_uri(self, uri):
+        """Return dataset base URI given a uri."""
+        base_uri = uri.rsplit("/", 1)[0]
+        return base_uri
+
     def get_admin_metadata(self):
         """Return the admin metadata as a dictionary."""
         logger.debug("Getting admin metdata")

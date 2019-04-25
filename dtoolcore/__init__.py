@@ -253,6 +253,11 @@ class _BaseDataSet(object):
         return cls(uri, admin_metadata, config_path)
 
     @property
+    def base_uri(self):
+        """Return the base URI of the dataset."""
+        return self._storage_broker.generate_base_uri(self.uri)
+
+    @property
     def uri(self):
         """Return the URI of the dataset."""
         return self._uri

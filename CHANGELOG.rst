@@ -10,6 +10,8 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 Added
 ^^^^^
 
+- ``dtoolcore._BaseDataSet.base_uri`` property
+- ``dtoolcore.storagebroker.BaseStorageBroker.generate_base_uri`` method
 - ``dtoolcore.utils.DEFAULT_CACHE_PATH`` global helper variable
 
 
