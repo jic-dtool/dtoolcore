@@ -10,10 +10,6 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 Added
 ^^^^^
 
-- ``dtoolcore._BaseDataSet.base_uri`` property
-- ``dtoolcore.storagebroker.BaseStorageBroker.generate_base_uri`` method
-- ``dtoolcore.utils.DEFAULT_CACHE_PATH`` global helper variable
-
 
 Changed
 ^^^^^^^
@@ -33,6 +29,17 @@ Fixed
 
 Security
 ^^^^^^^^
+
+
+[3.10.0] - 2019-04-25
+---------------------
+
+Added
+^^^^^
+
+- ``dtoolcore._BaseDataSet.base_uri`` property
+- ``dtoolcore.storagebroker.BaseStorageBroker.generate_base_uri`` method
+- ``dtoolcore.utils.DEFAULT_CACHE_PATH`` global helper variable
 
 
 [3.9.0] - 2019-04-10
