@@ -3,6 +3,7 @@
 """
 
 import datetime
+import logging
 import uuid
 
 from pkg_resources import iter_entry_points
@@ -12,6 +13,8 @@ import dtoolcore.utils
 
 
 __version__ = "3.10.0"
+
+logger = logging.getLogger(__name__)
 
 
 def _generate_storage_broker_lookup():
