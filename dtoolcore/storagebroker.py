@@ -213,51 +213,51 @@ class BaseStorageBroker(object):
 
     def get_admin_metadata(self):
         """Return the admin metadata as a dictionary."""
-        logger.debug("{} Getting admin metdata".format(self))
+        logger.debug("Getting admin metdata {}".format(self))
         text = self.get_text(self.get_admin_metadata_key())
         return json.loads(text)
 
     def get_readme_content(self):
         """Return the README descriptive metadata as a string."""
-        logger.debug("{} Getting readme content".format(self))
+        logger.debug("Getting readme content {}".format(self))
         return self.get_text(self.get_readme_key())
 
     def get_manifest(self):
         """Return the manifest as a dictionary."""
-        logger.debug("{} Getting manifest".format(self))
+        logger.debug("Getting manifest {}".format(self))
         text = self.get_text(self.get_manifest_key())
         return json.loads(text)
 
     def get_overlay(self, overlay_name):
         """Return overlay as a dictionary."""
-        logger.debug("{} Getting overlay: {}".format(self, overlay_name))
+        logger.debug("Getting overlay: {} {}".format(overlay_name, self))
         overlay_key = self.get_overlay_key(overlay_name)
         text = self.get_text(overlay_key)
         return json.loads(text)
 
     def put_admin_metadata(self, admin_metadata):
         """Store the admin metadata."""
-        logger.debug("{} Putting admin metdata".format(self))
+        logger.debug("Putting admin metdata {}".format(self))
         text = json.dumps(admin_metadata)
         key = self.get_admin_metadata_key()
         self.put_text(key, text)
 
     def put_manifest(self, manifest):
         """Store the manifest."""
-        logger.debug("{} Putting manifest".format(self))
+        logger.debug("Putting manifest {}".format(self))
         text = json.dumps(manifest, indent=2, sort_keys=True)
         key = self.get_manifest_key()
         self.put_text(key, text)
 
     def put_readme(self, content):
         """Store the readme descriptive metadata."""
-        logger.debug("{} Putting readme".format(self))
+        logger.debug("Putting readme {}".format(self))
         key = self.get_readme_key()
         self.put_text(key, content)
 
     def update_readme(self, content):
         """Update the readme descriptive metadata."""
-        logger.debug("{} Updating readme".format(self))
+        logger.debug("Updating readme {}".format(self))
         key = self.get_readme_key()
 
         # Back up old README content.
@@ -265,14 +265,14 @@ class BaseStorageBroker(object):
         backup_key = key + "-{}".format(
             timestamp(datetime.datetime.now())
         )
-        logger.debug("{} README.yml backup key: {}".format(self, backup_key))
+        logger.debug("README.yml backup key: {} {}".format(backup_key, self))
         self.put_text(backup_key, backup_content)
 
         self.put_text(key, content)
 
     def put_overlay(self, overlay_name, overlay):
         """Store the overlay."""
-        logger.debug("{} Putting overlay: {}".format(self, overlay_name))
+        logger.debug("Putting overlay: {} {}".format(overlay_name, self))
         key = self.get_overlay_key(overlay_name)
         text = json.dumps(overlay, indent=2)
         self.put_text(key, text)
@@ -283,19 +283,19 @@ class BaseStorageBroker(object):
 
     def item_properties(self, handle):
         """Return properties of the item with the given handle."""
-        logger.debug("{} Getting properties for handle: {}".format(self, handle))  # NOQA
+        logger.debug("Getting properties for handle: {} {}".format(handle, self))  # NOQA
         properties = {
             'size_in_bytes': self.get_size_in_bytes(handle),
             'utc_timestamp': self.get_utc_timestamp(handle),
             'hash': self.get_hash(handle),
             'relpath': self.get_relpath(handle)
         }
-        logger.debug("{} {} properties: {}".format(self, handle, properties))
+        logger.debug("{} properties: {} {}".format(handle, properties, self))
         return properties
 
     def _document_structure(self):
         """Document the structure of the dataset."""
-        logger.debug("{} Documenting dataset structure".format(self))
+        logger.debug("Documenting dataset structure {}".format(self))
         key = self.get_structure_key()
         text = json.dumps(self._structure_parameters, indent=2, sort_keys=True)
         self.put_text(key, text)
@@ -305,7 +305,7 @@ class BaseStorageBroker(object):
 
     def create_structure(self):
         """Create necessary structure to hold a dataset."""
-        logger.debug("{} Creating dataset structure".format(self))
+        logger.debug("Creating dataset structure {}".format(self))
         self._create_structure()
         self._document_structure()
 
