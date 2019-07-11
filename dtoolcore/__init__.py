@@ -182,6 +182,7 @@ def copy(src_uri, dest_base_uri, config_path=None, progressbar=None):
     :param config_path: path to dtool configuration file
     :returns: URI of new dataset
     """
+    logger.debug("Copy {} -> {}".format(src_uri, dest_base_uri))
     dataset = DataSet.from_uri(src_uri)
 
     proto_dataset = _copy_create_proto_dataset(
@@ -208,6 +209,7 @@ def copy_resume(src_uri, dest_base_uri, config_path=None, progressbar=None):
     :param config_path: path to dtool configuration file
     :returns: URI of new dataset
     """
+    logger.debug("Copy resume {} -> {}".format(src_uri, dest_base_uri))
     dataset = DataSet.from_uri(src_uri)
 
     # Generate the URI of the destination proto dataset.
@@ -280,6 +282,11 @@ class _BaseDataSet(object):
 
         :param new_name: the new name of the proto dataset
         """
+        logger.debug("Update name form '{}' to '{}' {}".format(
+            self.name,
+            new_name,
+            self
+        ))
 
         if not dtoolcore.utils.name_is_valid(new_name):
             raise(DtoolCoreInvalidNameError())
@@ -294,6 +301,7 @@ class _BaseDataSet(object):
 
         :returns: content of README as a string
         """
+        logger.debug("Get readme content {}".format(self))
         return self._storage_broker.get_readme_content()
 
     def _put_overlay(self, overlay_name, overlay):
@@ -305,6 +313,8 @@ class _BaseDataSet(object):
         :raises: TypeError if the overlay is not a dictionary,
                  ValueError if identifiers in overlay and dataset do not match
         """
+        logger.debug("Put readme content {}".format(self))
+
         if not isinstance(overlay, dict):
             raise TypeError("Overlay must be dict")
 
@@ -315,6 +325,7 @@ class _BaseDataSet(object):
 
     def generate_manifest(self, progressbar=None):
         """Return manifest generated from knowledge about contents."""
+        logger.debug("Generate manifest {}".format(self))
         items = dict()
 
         if progressbar:
@@ -363,11 +374,13 @@ class DataSet(_BaseDataSet):
     @property
     def identifiers(self):
         """Return iterable of dataset item identifiers."""
+        logger.debug("Return identifiers {}".format(self))
         return self._identifiers()
 
     @property
     def _manifest(self):
         """Return manifest content."""
+        logger.debug("Return manifest content {}".format(self))
         if self._manifest_cache is None:
             self._manifest_cache = self._storage_broker.get_manifest()
 
@@ -379,6 +392,7 @@ class DataSet(_BaseDataSet):
         :param identifier: item identifier
         :returns: dictionary of item properties from the manifest
         """
+        logger.debug("Get item properties for {} {}".format(identifier, self))
         return self._manifest["items"][identifier]
 
     def item_content_abspath(self, identifier):
@@ -387,10 +401,12 @@ class DataSet(_BaseDataSet):
         :param identifier: item identifier
         :returns: absolute path from which the item content can be accessed
         """
+        logger.debug("Get item content abspath for {} {}".format(identifier, self))  # NOQA
         return self._storage_broker.get_item_abspath(identifier)
 
     def list_overlay_names(self):
         """Return list of overlay names."""
+        logger.debug("List overlay names {}".format(self))
         return self._storage_broker.list_overlay_names()
 
     def get_overlay(self, overlay_name):
@@ -399,6 +415,7 @@ class DataSet(_BaseDataSet):
         :param overlay_name: name of the overlay
         :returns: overlay as a dictionary
         """
+        logger.debug("Get overlay {} {}".format(overlay_name, self))
         return self._storage_broker.get_overlay(overlay_name)
 
     def put_overlay(self, overlay_name, overlay):
@@ -410,6 +427,7 @@ class DataSet(_BaseDataSet):
         :raises: TypeError if the overlay is not a dictionary,
                  ValueError if identifiers in overlay and dataset do not match
         """
+        logger.debug("Put overlay {} {}".format(overlay_name, self))
         self._put_overlay(overlay_name, overlay)
 
     def put_readme(self, content):
@@ -446,6 +464,7 @@ class ProtoDataSet(_BaseDataSet):
 
     def create(self):
         """Create the required directory structure and admin metadata."""
+        logger.debug("Create structure and admin metadata {}".format(self))
         self._storage_broker.create_structure()
         self._storage_broker.put_admin_metadata(self._admin_metadata)
 
@@ -457,6 +476,7 @@ class ProtoDataSet(_BaseDataSet):
 
         :param content: string to put into the README
         """
+        logger.debug("Put readme {}".format(self))
         self._storage_broker.put_readme(content)
 
     def put_item(self, fpath, relpath):
@@ -468,6 +488,7 @@ class ProtoDataSet(_BaseDataSet):
                         a handle
         :returns: the handle given to the item
         """
+        logger.debug("Put item with handle {} {}".format(relpath, self))
         return self._storage_broker.put_item(fpath, relpath)
 
     def add_item_metadata(self, handle, key, value):
@@ -479,6 +500,7 @@ class ProtoDataSet(_BaseDataSet):
         :param key: metadata key
         :param value: metadata value
         """
+        logger.debug("Add item metadata {} {} {}".format(handle, key, self))
         self._storage_broker.add_item_metadata(handle, key, value)
 
     def _generate_overlays(self):
@@ -496,6 +518,7 @@ class ProtoDataSet(_BaseDataSet):
         """
         Convert :class:`dtoolcore.ProtoDataSet` to :class:`dtoolcore.DataSet`.
         """
+        logger.debug("Freeze dataset {}".format(self))
         # Call the storage broker pre_freeze hook.
         self._storage_broker.pre_freeze_hook()
 
