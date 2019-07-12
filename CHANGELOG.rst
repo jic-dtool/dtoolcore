@@ -10,8 +10,6 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 Added
 ^^^^^
 
-- Added more debug logging
-
 
 Changed
 ^^^^^^^
@@ -31,6 +29,14 @@ Fixed
 
 Security
 ^^^^^^^^
+
+[3.11.0] - 2019-07-12
+---------------------
+
+Added
+^^^^^
+
+- Added more debug logging
 
 
 [3.10.0] - 2019-04-25
