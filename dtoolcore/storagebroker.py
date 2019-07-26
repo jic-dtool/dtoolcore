@@ -5,6 +5,7 @@ import json
 import shutil
 import logging
 import datetime
+import socket
 
 from dtoolcore import __version__
 from dtoolcore.utils import (
@@ -407,7 +408,11 @@ class DiskStorageBroker(BaseStorageBroker):
         dataset_abspath = os.path.abspath(dataset_path)
         if IS_WINDOWS:
             dataset_abspath = windows_to_unix_path(dataset_abspath)
-        return "{}://{}".format(cls.key, dataset_abspath)
+        return "{}://{}{}".format(
+            cls.key,
+            socket.gethostname(),
+            dataset_abspath
+        )
 
     # Methods to override.
 
