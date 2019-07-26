@@ -1,20 +1,15 @@
-build: false
-
+---
 environment:
   matrix:
-    - PYTHON: "C:\\Python27" 
-      TOX_ENV: "py27"
+  - TOXENV: py27
+  - TOXENV: py35
+  - TOXENV: py36
+  - TOXENV: py37
 
-    - PYTHON: "C:\\Python35"
-      TOX_ENV: "py35"
-
-
-init:
-  - "ECHO %PYTHON%"
+build: off
 
 install:
-  - "%PYTHON%/Scripts/pip.exe install -U pip"
-  - "%PYTHON%/Scripts/pip.exe install tox"
+- pip install tox
 
 test_script:
-  - "%PYTHON%/Scripts/tox -e %TOX_ENV%"
+- tox
