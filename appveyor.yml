@@ -13,6 +13,7 @@ init:
   - "ECHO %PYTHON%"
 
 install:
+  - "%PYTHON%/Scripts/pip.exe install -U pip"
   - "%PYTHON%/Scripts/pip.exe install tox"
 
 test_script:
