@@ -10,6 +10,7 @@ import binascii
 import base64
 import datetime
 import re
+import socket
 
 try:
     from urlparse import urlparse, urlunparse
@@ -53,7 +54,10 @@ def generous_parse_uri(uri):
         abspath = os.path.abspath(parse_result.path)
         if IS_WINDOWS:
             abspath = windows_to_unix_path(abspath)
-        fixed_uri = "file://{}".format(abspath)
+        fixed_uri = "file://{}{}".format(
+            socket.gethostname(),
+            abspath
+        )
         parse_result = urlparse(fixed_uri)
 
     return parse_result

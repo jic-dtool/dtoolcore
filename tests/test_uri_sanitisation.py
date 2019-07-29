@@ -52,8 +52,8 @@ def test_sanitise_uri():
         abspath = windows_to_unix_path(abspath)
 
     sanitised_uri = sanitise_uri(relpath)
-    expected_uri = "file://{}".format(abspath)
-    assert sanitised_uri == expected_uri
+    assert sanitised_uri.startswith("file://")
+    assert sanitised_uri.endswith(abspath)
 
     s3_uri = "s3://my-bucket/path/to/files"
     sanitised_uri = sanitise_uri(s3_uri)
