@@ -10,8 +10,6 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 Added
 ^^^^^
 
-- Added support for host name in file URI.
-
 
 Changed
 ^^^^^^^
@@ -31,6 +29,16 @@ Fixed
 
 Security
 ^^^^^^^^
+
+
+[3.12.0] - 2019-08-06
+---------------------
+
+Added
+^^^^^
+
+- Added support for host name in file URI.
+
 
 [3.11.0] - 2019-07-12
 ---------------------
