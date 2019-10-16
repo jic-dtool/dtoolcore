@@ -13,8 +13,8 @@ def test_annotation_functional(tmp_dir_fixture):  # NOQA
     from dtoolcore import (
         DataSet,
         ProtoDataSet,
-        AnnotationKeyError,
-        AnnotationTypeError,
+        DtoolCoreAnnotationKeyError,
+        DtoolCoreAnnotationInvalidKeyNameError,
         generate_admin_metadata,
     )
 
@@ -39,35 +39,42 @@ def test_annotation_functional(tmp_dir_fixture):  # NOQA
     proto_dataset.put_item(local_file_path, 'tiny.png')
 
     # Test working on annotations with a ProtoDataset.
-    with pytest.raises(AnnotationKeyError):
-        proto_dataset.get_annotation(key="project")
+    with pytest.raises(DtoolCoreAnnotationKeyError):
+        proto_dataset.get_annotation(annotation_name="project")
 
-    proto_dataset.set_annotation(key="project", value="world-peace")
+    proto_dataset.put_annotation(
+        annotation_name="project",
+        annotation="world-peace"
+    )
     assert proto_dataset.get_annotation("project") == "world-peace"
 
-    proto_dataset.set_annotation("project", "food-sustainability")
+    proto_dataset.put_annotation("project", "food-sustainability")
     assert proto_dataset.get_annotation("project") == "food-sustainability"
 
-    with pytest.raises(AnnotationTypeError):
-        proto_dataset.set_annotation("invalid_type", {})
-
-    assert proto_dataset.list_annotation_keys() == ["project"]
+    assert proto_dataset.list_annotation_names() == ["project"]
 
     # Freeze the dataset
     proto_dataset.freeze()
 
     # Test working on annotations with a frozen DataSet.
     dataset = DataSet.from_uri(dest_uri)
-    with pytest.raises(AnnotationKeyError):
-        dataset.get_annotation(key="stars")
+    with pytest.raises(DtoolCoreAnnotationKeyError):
+        dataset.get_annotation(annotation_name="stars")
 
-    dataset.set_annotation(key="stars", value=0)
+    dataset.put_annotation(annotation_name="stars", annotation=0)
     assert dataset.get_annotation("stars") == 0
 
-    dataset.set_annotation("stars", 5)
+    dataset.put_annotation("stars", 5)
     assert dataset.get_annotation("stars") == 5
 
-    with pytest.raises(AnnotationTypeError):
-        dataset.set_annotation("invalid_type", {})
+    assert dataset.list_annotation_names() == ["project", "stars"]
 
-    assert dataset.list_annotation_keys() == ["project", "stars"]
+    # Test invalid keys, no spaces allowed.
+    invalid_keys = ["with space", "with,comma", "with/slash", "X"*81]
+    for invalid_key in invalid_keys:
+        with pytest.raises(DtoolCoreAnnotationInvalidKeyNameError):
+            dataset.put_annotation(invalid_key, "bad")
+
+    # Test invalid keys, name too long.
+    with pytest.raises(DtoolCoreAnnotationInvalidKeyNameError):
+        dataset.put_annotation("x"*81, "bad")

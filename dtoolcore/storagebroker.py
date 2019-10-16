@@ -31,6 +31,7 @@ _STRUCTURE_PARAMETERS = {
     "dtool_readme_relpath": [".dtool", "README.txt"],
     "manifest_relpath": [".dtool", "manifest.json"],
     "overlays_directory": [".dtool", "overlays"],
+    "annotations_directory": [".dtool", "annotations"],
     "metadata_fragments_directory": [".dtool", "tmp_fragments"],
     "storage_broker_version": __version__,
 }
@@ -103,11 +104,19 @@ class BaseStorageBroker(object):
         raise(NotImplementedError())
 
     def get_overlay_key(self, overlay_name):
-        """Return the manifest key."""
+        """Return the overlay key."""
+        raise(NotImplementedError())
+
+    def get_annotation_key(self, annotation_name):
+        """Return the annotation key."""
         raise(NotImplementedError())
 
     def list_overlay_names(self):
         """Return list of overlay names."""
+        raise(NotImplementedError())
+
+    def list_annotation_names(self):
+        """Return list of annotation names."""
         raise(NotImplementedError())
 
     def get_item_abspath(self, identifier):
@@ -236,6 +245,17 @@ class BaseStorageBroker(object):
         text = self.get_text(overlay_key)
         return json.loads(text)
 
+    def get_annotation(self, annotation_name):
+        """Return value of the annotation associated with the key.
+
+        :returns: annotation (string, int, float, bool)
+        :raises: DtoolCoreAnnotationKeyError if the annotation does not exist
+        """
+        logger.debug("Getting annotation: {} {}".format(annotation_name, self))
+        annotation_key = self.get_annotation_key(annotation_name)
+        text = self.get_text(annotation_key)
+        return json.loads(text)
+
     def put_admin_metadata(self, admin_metadata):
         """Store the admin metadata."""
         logger.debug("Putting admin metdata {}".format(self))
@@ -276,6 +296,17 @@ class BaseStorageBroker(object):
         logger.debug("Putting overlay: {} {}".format(overlay_name, self))
         key = self.get_overlay_key(overlay_name)
         text = json.dumps(overlay, indent=2)
+        self.put_text(key, text)
+
+    def put_annotation(self, annotation_name, annotation):
+        """Set/update value of the annotation associated with the key.
+
+        :raises: DtoolCoreAnnotationTypeError if the type of the value is not
+                 str, int, float or bool.
+        """
+        logger.debug("Putting annotation: {} {}".format(annotation_name, self))
+        key = self.get_annotation_key(annotation_name)
+        text = json.dumps(annotation, indent=2)
         self.put_text(key, text)
 
     def get_relpath(self, handle):
@@ -344,6 +375,9 @@ class DiskStorageBroker(BaseStorageBroker):
         # Define some other more abspaths.
         self._data_abspath = self._generate_abspath("data_directory")
         self._overlays_abspath = self._generate_abspath("overlays_directory")
+        self._annotations_abspath = self._generate_abspath(
+            "annotations_directory"
+        )
         self._metadata_fragments_abspath = self._generate_abspath(
             "metadata_fragments_directory"
         )
@@ -352,7 +386,8 @@ class DiskStorageBroker(BaseStorageBroker):
         self._essential_subdirectories = [
             self._generate_abspath("dtool_directory"),
             self._data_abspath,
-            self._overlays_abspath
+            self._overlays_abspath,
+            self._annotations_abspath
         ]
 
     # Generic helper functions.
@@ -450,6 +485,13 @@ class DiskStorageBroker(BaseStorageBroker):
         "Return the path to the overlay file."""
         return os.path.join(self._overlays_abspath, overlay_name + '.json')
 
+    def get_annotation_key(self, annotation_name):
+        "Return the path to the annotation file."""
+        return os.path.join(
+            self._annotations_abspath,
+            annotation_name + '.json'
+        )
+
     def get_size_in_bytes(self, handle):
         """Return the size in bytes."""
         fpath = self._fpath_from_handle(handle)
@@ -484,6 +526,16 @@ class DiskStorageBroker(BaseStorageBroker):
             name, ext = os.path.splitext(fname)
             overlay_names.append(name)
         return overlay_names
+
+    def list_annotation_names(self):
+        """Return list of annotation names."""
+        annotation_names = []
+        if not os.path.isdir(self._annotations_abspath):
+            return annotation_names
+        for fname in os.listdir(self._annotations_abspath):
+            name, ext = os.path.splitext(fname)
+            annotation_names.append(name)
+        return annotation_names
 
     def get_item_abspath(self, identifier):
         """Return absolute path at which item content can be accessed.

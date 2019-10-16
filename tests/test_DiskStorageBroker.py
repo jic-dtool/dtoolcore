@@ -379,3 +379,35 @@ def test_unix_relpaths_from_iter_item_handles(tmp_dir_fixture):  # NOQA
     handles = [h for h in storagebroker.iter_item_handles()]
     assert len(handles) == 1
     assert handles[0] == "level/sample.txt"
+
+
+def test_put_get_annotation(tmp_dir_fixture):  # NOQA
+    from dtoolcore.storagebroker import DiskStorageBroker
+
+    destination_path = os.path.join(tmp_dir_fixture, 'my_proto_dataset')
+    storagebroker = DiskStorageBroker(destination_path)
+
+    storagebroker.create_structure()
+
+    # Test list annotation names.
+    assert storagebroker.list_annotation_names() == []
+
+    # Test various types of values.
+    storagebroker.put_annotation("project", "value")
+    assert storagebroker.get_annotation("project") == "value"
+
+    storagebroker.put_annotation("project", 1)
+    assert storagebroker.get_annotation("project") == 1
+    assert type(storagebroker.get_annotation("project")) is int
+
+    storagebroker.put_annotation("project", True)
+    assert storagebroker.get_annotation("project") is True
+
+    storagebroker.put_annotation("project", [1, 2, 3])
+    assert storagebroker.get_annotation("project") == [1, 2, 3]
+
+    storagebroker.put_annotation("project", {"a": 1})
+    assert storagebroker.get_annotation("project") == {"a": 1}
+
+    # Test list annotation names.
+    assert storagebroker.list_annotation_names() == ["project"]

@@ -231,6 +231,14 @@ class DtoolCoreInvalidNameError(ValueError):
     pass
 
 
+class DtoolCoreAnnotationKeyError(KeyError):
+    pass
+
+
+class DtoolCoreAnnotationInvalidKeyNameError(ValueError):
+    pass
+
+
 class _BaseDataSet(object):
     """Base class for datasets."""
 
@@ -346,6 +354,30 @@ class _BaseDataSet(object):
         }
 
         return manifest
+
+    def get_annotation(self, annotation_name):
+        """Return value of the annotation associated with the key.
+
+        :raises: DtoolCoreAnnotationKeyError if the annotation does not exist
+        """
+        if annotation_name not in self.list_annotation_names():
+            raise(DtoolCoreAnnotationKeyError())
+        return self._storage_broker.get_annotation(annotation_name)
+
+    def put_annotation(self, annotation_name, annotation):
+        """Set/update value of the annotation associated with the key.
+
+        :raises: DtoolCoreAnnotationInvalidKeyNameError if the annotation name
+                 is invalid
+        """
+        if not dtoolcore.utils.name_is_valid(annotation_name):
+            raise(DtoolCoreAnnotationInvalidKeyNameError())
+        self._storage_broker.put_annotation(annotation_name, annotation)
+
+    def list_annotation_names(self):
+        """Return list of annotation names."""
+        logger.debug("List annotation names {}".format(self))
+        return self._storage_broker.list_annotation_names()
 
 
 class DataSet(_BaseDataSet):

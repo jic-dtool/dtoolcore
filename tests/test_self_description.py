@@ -40,6 +40,7 @@ def test_writing_of_dtool_structure_file(tmp_uri_fixture):  # NOQA
         "dtool_readme_relpath": [".dtool", "README.txt"],
         "manifest_relpath": [".dtool", "manifest.json"],
         "overlays_directory": [".dtool", "overlays"],
+        "annotations_directory": [".dtool", "annotations"],
         "metadata_fragments_directory": [".dtool", "tmp_fragments"],
         "storage_broker_version": __version__,
     }
