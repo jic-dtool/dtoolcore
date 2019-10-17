@@ -173,6 +173,10 @@ def _copy_content(src_dataset, dest_proto_dataset, progressbar=None):
         overlay = src_dataset.get_overlay(overlay_name)
         dest_proto_dataset._put_overlay(overlay_name, overlay)
 
+    for annotation_name in src_dataset.list_annotation_names():
+        annotation = src_dataset.get_annotation(annotation_name)
+        dest_proto_dataset.put_annotation(annotation_name, annotation)
+
 
 def copy(src_uri, dest_base_uri, config_path=None, progressbar=None):
     """Copy a dataset to another location.

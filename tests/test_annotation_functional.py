@@ -16,6 +16,7 @@ def test_annotation_functional(tmp_dir_fixture):  # NOQA
         DtoolCoreAnnotationKeyError,
         DtoolCoreAnnotationInvalidKeyNameError,
         generate_admin_metadata,
+        copy,
     )
 
     from dtoolcore.storagebroker import DiskStorageBroker
@@ -54,6 +55,7 @@ def test_annotation_functional(tmp_dir_fixture):  # NOQA
     assert proto_dataset.list_annotation_names() == ["project"]
 
     # Freeze the dataset
+    proto_dataset.put_readme("")
     proto_dataset.freeze()
 
     # Test working on annotations with a frozen DataSet.
@@ -78,3 +80,13 @@ def test_annotation_functional(tmp_dir_fixture):  # NOQA
     # Test invalid keys, name too long.
     with pytest.raises(DtoolCoreAnnotationInvalidKeyNameError):
         dataset.put_annotation("x"*81, "bad")
+
+    # Test copy.
+    copy_dataset_directory = os.path.join(tmp_dir_fixture, "copy")
+    os.mkdir(copy_dataset_directory)
+    copy_uri = copy(dataset.uri, copy_dataset_directory)
+
+    copy_dataset = DataSet.from_uri(copy_uri)
+    assert copy_dataset.list_annotation_names() == ["project", "stars"]
+    assert copy_dataset.get_annotation("stars") == 5
+    assert copy_dataset.get_annotation("project") == "food-sustainability"
