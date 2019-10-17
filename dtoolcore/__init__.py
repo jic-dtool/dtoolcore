@@ -386,7 +386,7 @@ class _BaseDataSet(object):
     def list_annotation_names(self):
         """Return list of annotation names."""
         logger.debug("List annotation names {}".format(self))
-        return self._storage_broker.list_annotation_names()
+        return sorted(self._storage_broker.list_annotation_names())
 
 
 class DataSet(_BaseDataSet):
@@ -448,7 +448,7 @@ class DataSet(_BaseDataSet):
     def list_overlay_names(self):
         """Return list of overlay names."""
         logger.debug("List overlay names {}".format(self))
-        return self._storage_broker.list_overlay_names()
+        return sorted(self._storage_broker.list_overlay_names())
 
     def get_overlay(self, overlay_name):
         """Return overlay as a dictionary.
