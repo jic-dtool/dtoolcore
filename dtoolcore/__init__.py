@@ -356,20 +356,25 @@ class _BaseDataSet(object):
         return manifest
 
     def get_annotation(self, annotation_name):
-        """Return value of the annotation associated with the key.
+        """Return annotation.
 
+        :param annotation_name: name of the annotation
         :raises: DtoolCoreAnnotationKeyError if the annotation does not exist
+        :returns: annotation
         """
         if annotation_name not in self.list_annotation_names():
             raise(DtoolCoreAnnotationKeyError())
         return self._storage_broker.get_annotation(annotation_name)
 
     def put_annotation(self, annotation_name, annotation):
-        """Set/update value of the annotation associated with the key.
+        """Store annotation so that it is accessible by the given name.
 
+        :param annotation_name: name of the annotation
+        :param annotation: JSON serialisable value or data structure
         :raises: DtoolCoreAnnotationInvalidKeyNameError if the annotation name
                  is invalid
         """
+        logger.debug("Put annotation {} {}".format(annotation_name, self))
         if not dtoolcore.utils.name_is_valid(annotation_name):
             raise(DtoolCoreAnnotationInvalidKeyNameError())
         self._storage_broker.put_annotation(annotation_name, annotation)
