@@ -231,15 +231,15 @@ class DtoolCoreTypeError(TypeError):
     pass
 
 
+class DtoolCoreKeyError(KeyError):
+    pass
+
+
+class DtoolCoreValueError(ValueError):
+    pass
+
+
 class DtoolCoreInvalidNameError(ValueError):
-    pass
-
-
-class DtoolCoreAnnotationKeyError(KeyError):
-    pass
-
-
-class DtoolCoreAnnotationInvalidKeyNameError(ValueError):
     pass
 
 
@@ -322,16 +322,23 @@ class _BaseDataSet(object):
         :param overlay_name: name of the overlay
         :param overlay: overlay must be a dictionary where the keys are
                         identifiers in the dataset
-        :raises: TypeError if the overlay is not a dictionary,
-                 ValueError if identifiers in overlay and dataset do not match
+        :raises: DtoolCoreTypeError if the overlay is not a dictionary,
+                 DtoolCoreValueError if identifiers in overlay and dataset do
+                 not match
+                 DtoolCoreInvalidNameError if the overlay name is invalid
         """
         logger.debug("Put readme content {}".format(self))
 
+        if not dtoolcore.utils.name_is_valid(overlay_name):
+            raise(DtoolCoreInvalidNameError())
+
         if not isinstance(overlay, dict):
-            raise TypeError("Overlay must be dict")
+            raise DtoolCoreTypeError("Overlay must be dict")
 
         if set(self._identifiers()) != set(overlay.keys()):
-            raise ValueError("Overlay keys must be dataset identifiers")
+            raise DtoolCoreValueError(
+                "Overlay keys must be dataset identifiers"
+            )
 
         self._storage_broker.put_overlay(overlay_name, overlay)
 
@@ -363,11 +370,11 @@ class _BaseDataSet(object):
         """Return annotation.
 
         :param annotation_name: name of the annotation
-        :raises: DtoolCoreAnnotationKeyError if the annotation does not exist
+        :raises: DtoolCoreKeyError if the annotation does not exist
         :returns: annotation
         """
         if annotation_name not in self.list_annotation_names():
-            raise(DtoolCoreAnnotationKeyError())
+            raise(DtoolCoreKeyError())
         return self._storage_broker.get_annotation(annotation_name)
 
     def put_annotation(self, annotation_name, annotation):
@@ -375,12 +382,12 @@ class _BaseDataSet(object):
 
         :param annotation_name: name of the annotation
         :param annotation: JSON serialisable value or data structure
-        :raises: DtoolCoreAnnotationInvalidKeyNameError if the annotation name
+        :raises: DtoolCoreInvalidNameError if the annotation name
                  is invalid
         """
         logger.debug("Put annotation {} {}".format(annotation_name, self))
         if not dtoolcore.utils.name_is_valid(annotation_name):
-            raise(DtoolCoreAnnotationInvalidKeyNameError())
+            raise(DtoolCoreInvalidNameError())
         self._storage_broker.put_annotation(annotation_name, annotation)
 
     def list_annotation_names(self):
@@ -457,6 +464,8 @@ class DataSet(_BaseDataSet):
         :returns: overlay as a dictionary
         """
         logger.debug("Get overlay {} {}".format(overlay_name, self))
+        if overlay_name not in self.list_overlay_names():
+            raise(DtoolCoreKeyError())
         return self._storage_broker.get_overlay(overlay_name)
 
     def put_overlay(self, overlay_name, overlay):
@@ -465,8 +474,10 @@ class DataSet(_BaseDataSet):
         :param overlay_name: name of the overlay
         :param overlay: overlay must be a dictionary where the keys are
                         identifiers in the dataset
-        :raises: TypeError if the overlay is not a dictionary,
-                 ValueError if identifiers in overlay and dataset do not match
+        :raises: DtoolCoreTypeError if the overlay is not a dictionary,
+                 DtoolCoreValueError if identifiers in overlay and dataset do
+                 not match
+                 DtoolCoreInvalidNameError if the overlay name is invalid
         """
         logger.debug("Put overlay {} {}".format(overlay_name, self))
         self._put_overlay(overlay_name, overlay)

@@ -13,8 +13,8 @@ def test_annotation_functional(tmp_dir_fixture):  # NOQA
     from dtoolcore import (
         DataSet,
         ProtoDataSet,
-        DtoolCoreAnnotationKeyError,
-        DtoolCoreAnnotationInvalidKeyNameError,
+        DtoolCoreKeyError,
+        DtoolCoreInvalidNameError,
         generate_admin_metadata,
         copy,
     )
@@ -40,7 +40,7 @@ def test_annotation_functional(tmp_dir_fixture):  # NOQA
     proto_dataset.put_item(local_file_path, 'tiny.png')
 
     # Test working on annotations with a ProtoDataset.
-    with pytest.raises(DtoolCoreAnnotationKeyError):
+    with pytest.raises(DtoolCoreKeyError):
         proto_dataset.get_annotation(annotation_name="project")
 
     proto_dataset.put_annotation(
@@ -60,7 +60,7 @@ def test_annotation_functional(tmp_dir_fixture):  # NOQA
 
     # Test working on annotations with a frozen DataSet.
     dataset = DataSet.from_uri(dest_uri)
-    with pytest.raises(DtoolCoreAnnotationKeyError):
+    with pytest.raises(DtoolCoreKeyError):
         dataset.get_annotation(annotation_name="stars")
 
     dataset.put_annotation(annotation_name="stars", annotation=0)
@@ -74,17 +74,18 @@ def test_annotation_functional(tmp_dir_fixture):  # NOQA
     # Test invalid keys, no spaces allowed.
     invalid_keys = ["with space", "with,comma", "with/slash", "X"*81]
     for invalid_key in invalid_keys:
-        with pytest.raises(DtoolCoreAnnotationInvalidKeyNameError):
+        with pytest.raises(DtoolCoreInvalidNameError):
             dataset.put_annotation(invalid_key, "bad")
 
     # Test invalid keys, name too long.
-    with pytest.raises(DtoolCoreAnnotationInvalidKeyNameError):
+    with pytest.raises(DtoolCoreInvalidNameError):
         dataset.put_annotation("x"*81, "bad")
 
     # Test copy.
     copy_dataset_directory = os.path.join(tmp_dir_fixture, "copy")
     os.mkdir(copy_dataset_directory)
-    copy_uri = copy(dataset.uri, copy_dataset_directory)
+    dest_uri = dataset.base_uri + "/copy"
+    copy_uri = copy(dataset.uri, dest_uri)
 
     copy_dataset = DataSet.from_uri(copy_uri)
     assert copy_dataset.list_annotation_names() == ["project", "stars"]
