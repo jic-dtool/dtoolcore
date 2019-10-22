@@ -26,6 +26,9 @@ Removed
 Fixed
 ^^^^^
 
+- Made DiskStorageBroker.put_text more robust in cases of missing parent
+  directories
+
 
 Security
 ^^^^^^^^

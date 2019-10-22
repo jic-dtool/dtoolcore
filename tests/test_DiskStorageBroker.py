@@ -411,3 +411,29 @@ def test_put_get_annotation(tmp_dir_fixture):  # NOQA
 
     # Test list annotation names.
     assert storagebroker.list_annotation_names() == ["project"]
+
+
+def test_put_text_creates_missing_subdirectories(tmp_dir_fixture):  # NOQA
+    from dtoolcore.storagebroker import DiskStorageBroker
+
+    destination_path = os.path.join(tmp_dir_fixture, 'my_proto_dataset')
+
+    storagebroker = DiskStorageBroker(destination_path)
+
+    assert not os.path.exists(destination_path)
+    storagebroker.create_structure()
+    assert os.path.isdir(destination_path)
+
+    assert os.path.isdir(storagebroker._annotations_abspath)
+    os.rmdir(storagebroker._annotations_abspath)
+    assert not os.path.isdir(storagebroker._annotations_abspath)
+
+    annotation_key = os.path.join(
+        storagebroker._annotations_abspath,
+        "a.json"
+    )
+    storagebroker.put_text(annotation_key, "{}")
+    assert os.path.isdir(storagebroker._annotations_abspath)
+
+    assert os.path.isfile(annotation_key)
+    assert not os.path.isdir(annotation_key)

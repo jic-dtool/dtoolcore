@@ -458,6 +458,8 @@ class DiskStorageBroker(BaseStorageBroker):
 
     def put_text(self, key, text):
         """Put the text into the storage associated with the key."""
+        parent_directory = os.path.dirname(key)
+        mkdir_parents(parent_directory)
         with open(key, "w") as fh:
             fh.write(text)
 
