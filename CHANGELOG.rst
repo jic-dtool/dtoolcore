@@ -7,8 +7,20 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 [Unreleased]
 ------------
 
+This release introduces the concept of annotations. Annotations are per dataset
+metadata. The difference between annotations and the existing README
+descriptive metadata is that the former is easier to interact with
+programmatically.
+
 Added
 ^^^^^
+
+- Added ``dtoolcore._BaseDataSet.put_annotation`` method
+- Added ``dtoolcore._BaseDataSet.get_annotation`` method
+- Added ``dtoolcore._BaseDataSet.list_annotation_names`` method
+- Added ``dtoolcore.DtoolCoreKeyError`` class
+- Added ``dtoolcore.DtoolCoreValueError`` class
+- Added name validation to ``_BaseDataSet.put_overlay`` method
 
 
 Changed
