@@ -7,20 +7,8 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 [Unreleased]
 ------------
 
-This release introduces the concept of annotations. Annotations are per dataset
-metadata. The difference between annotations and the existing README
-descriptive metadata is that the former is easier to interact with
-programmatically.
-
 Added
 ^^^^^
-
-- Added ``dtoolcore._BaseDataSet.put_annotation`` method
-- Added ``dtoolcore._BaseDataSet.get_annotation`` method
-- Added ``dtoolcore._BaseDataSet.list_annotation_names`` method
-- Added ``dtoolcore.DtoolCoreKeyError`` class
-- Added ``dtoolcore.DtoolCoreValueError`` class
-- Added name validation to ``_BaseDataSet.put_overlay`` method
 
 
 Changed
@@ -38,12 +26,35 @@ Removed
 Fixed
 ^^^^^
 
-- Made DiskStorageBroker.put_text more robust in cases of missing parent
-  directories
-
 
 Security
 ^^^^^^^^
+
+
+[3.13.0] - 2019-10-25
+---------------------
+
+This release introduces the concept of annotations. Annotations are per dataset
+metadata. The difference between annotations and the existing README
+descriptive metadata is that the former is easier to interact with
+programmatically.
+
+Added
+^^^^^
+
+- Added ``dtoolcore._BaseDataSet.put_annotation`` method
+- Added ``dtoolcore._BaseDataSet.get_annotation`` method
+- Added ``dtoolcore._BaseDataSet.list_annotation_names`` method
+- Added ``dtoolcore.DtoolCoreKeyError`` class
+- Added ``dtoolcore.DtoolCoreValueError`` class
+- Added name validation to ``_BaseDataSet.put_overlay`` method
+
+
+Fixed
+^^^^^
+
+- Made DiskStorageBroker.put_text more robust in cases of missing parent
+  directories
 
 
 [3.12.0] - 2019-08-06
