@@ -55,6 +55,7 @@ Administrative metadata describing the dataset: .dtool/dtool
 Structural metadata describing the dataset: .dtool/structure.json
 Structural metadata describing the data items: .dtool/manifest.json
 Per item descriptive metadata: .dtool/overlays/
+Dataset key/value pairs metadata: .dtool/annotations/
 """
 
 

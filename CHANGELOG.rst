@@ -26,6 +26,8 @@ Removed
 Fixed
 ^^^^^
 
+- Included .dtool/annotations directory in DiskStorageBroker self description file
+
 
 Security
 ^^^^^^^^
