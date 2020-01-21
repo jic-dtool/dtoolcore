@@ -13,7 +13,7 @@ from collections import defaultdict
 import dtoolcore.utils
 
 
-__version__ = "3.13.0"
+__version__ = "3.14.0"
 
 logger = logging.getLogger(__name__)
 
