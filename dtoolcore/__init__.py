@@ -381,12 +381,15 @@ class _BaseDataSet(object):
         # Create pool of processes.
         pool = mp.Pool(num_processes)
 
-        # Create data structure to pass into process pool.
+        # Create data structure to pass into the processing pool.
         handles = self._storage_broker.iter_item_handles()
         to_process = [(self, h) for h in handles]
 
         # Process items in parallel.
         results = pool.map(_get_identifier_and_item_properties, to_process)
+
+        # Close the processing pool.
+        pool.close()
 
         # Create the item dictionary for the manifest.
         for key, value in results:
