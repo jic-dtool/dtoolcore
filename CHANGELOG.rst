@@ -10,10 +10,6 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 Added
 ^^^^^
 
-- Ability to use multiple processes (cores) to generate item properties for
-  manifest files in parallel.  Set the environment variable
-  ``DTOOL_NUM_PROCESSES`` to specify the number of processes to use.
-
 
 Changed
 ^^^^^^^
@@ -30,11 +26,25 @@ Removed
 Fixed
 ^^^^^
 
-- Included .dtool/annotations directory in DiskStorageBroker self description file
-
 
 Security
 ^^^^^^^^
+
+
+[3.14.0] - 2020-01-21
+---------------------
+
+Added
+^^^^^
+
+- Ability to use multiple processes (cores) to generate item properties for
+  manifest files in parallel.  Set the environment variable
+  ``DTOOL_NUM_PROCESSES`` to specify the number of processes to use.
+
+Fixed
+^^^^^
+
+- Included .dtool/annotations directory in DiskStorageBroker self description file
 
 
 [3.13.0] - 2019-10-25
