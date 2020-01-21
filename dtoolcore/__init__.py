@@ -378,25 +378,36 @@ class _BaseDataSet(object):
             )
         )
 
-        # Create pool of processes.
-        pool = mp.Pool(num_processes)
+        if num_processes > 1:
 
-        # Create data structure to pass into the processing pool.
-        handles = self._storage_broker.iter_item_handles()
-        to_process = [(self, h) for h in handles]
+            # Create pool of processes.
+            pool = mp.Pool(num_processes)
 
-        # Process items in parallel.
-        results = pool.map(_get_identifier_and_item_properties, to_process)
+            # Create data structure to pass into the processing pool.
+            handles = self._storage_broker.iter_item_handles()
+            to_process = [(self, h) for h in handles]
 
-        # Close the processing pool.
-        pool.close()
+            # Process items in parallel.
+            results = pool.map(_get_identifier_and_item_properties, to_process)
 
-        # Create the item dictionary for the manifest.
-        for key, value in results:
-            items[key] = value
-            if progressbar:
-                progressbar.item_show_func = lambda x: value["relpath"]
-                progressbar.update(1)
+            # Close the processing pool.
+            pool.close()
+
+            # Create the item dictionary for the manifest.
+            for key, value in results:
+                items[key] = value
+                if progressbar:
+                    progressbar.item_show_func = lambda x: value["relpath"]
+                    progressbar.update(1)
+
+        else:
+            for handle in self._storage_broker.iter_item_handles():
+                key = dtoolcore.utils.generate_identifier(handle)
+                value = self._storage_broker.item_properties(handle)
+                items[key] = value
+                if progressbar:
+                    progressbar.item_show_func = lambda x: handle
+                    progressbar.update(1)
 
         manifest = {
             "items": items,
