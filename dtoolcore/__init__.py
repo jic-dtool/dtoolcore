@@ -4,6 +4,7 @@
 
 import datetime
 import logging
+import multiprocessing as mp
 import uuid
 
 from pkg_resources import iter_entry_points
@@ -15,6 +16,21 @@ import dtoolcore.utils
 __version__ = "3.13.0"
 
 logger = logging.getLogger(__name__)
+
+
+def _get_identifier_and_item_properties(d):
+    """Return identifier and item properties dict.
+
+    This is a helper function to make it possible to generate a dataset
+    manifest using in parallel using the multiprocessing module.
+
+    :param d: tuple containing dataset and handle
+    :returns: identifier and item properties as a dict
+    """
+    dataset, handle = d
+    key = dtoolcore.utils.generate_identifier(handle)
+    value = dataset._storage_broker.item_properties(handle)
+    return key, value
 
 
 def _generate_storage_broker_lookup():
@@ -350,12 +366,33 @@ class _BaseDataSet(object):
         if progressbar:
             progressbar.label = "Generating manifest"
 
-        for handle in self._storage_broker.iter_item_handles():
-            key = dtoolcore.utils.generate_identifier(handle)
-            value = self._storage_broker.item_properties(handle)
+        # Determine the number of processes to use when generating the
+        # manifest.
+        num_processes = int(dtoolcore.utils.get_config_value(
+            "DTOOL_NUM_PROCESSES",
+            default=1
+        ))
+        logging.info(
+            "Using {} process(es) to generate manifest".format(
+                num_processes
+            )
+        )
+
+        # Create pool of processes.
+        pool = mp.Pool(num_processes)
+
+        # Create data structure to pass into process pool.
+        handles = self._storage_broker.iter_item_handles()
+        to_process = [(self, h) for h in handles]
+
+        # Process items in parallel.
+        results = pool.map(_get_identifier_and_item_properties, to_process)
+
+        # Create the item dictionary for the manifest.
+        for key, value in results:
             items[key] = value
             if progressbar:
-                progressbar.item_show_func = lambda x: handle
+                progressbar.item_show_func = lambda x: value["relpath"]
                 progressbar.update(1)
 
         manifest = {

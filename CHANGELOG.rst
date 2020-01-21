@@ -10,6 +10,10 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 Added
 ^^^^^
 
+- Ability to use multiple processes (cores) to generate item properties for
+  manifest files in parallel.  Set the environment variable
+  ``DTOOL_NUM_PROCESSES`` to specify the number of processes to use.
+
 
 Changed
 ^^^^^^^

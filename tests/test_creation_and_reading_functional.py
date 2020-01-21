@@ -7,11 +7,6 @@ import time
 import pytz
 import pytest
 
-try:
-    from unittest.mock import MagicMock
-except ImportError:
-    from mock import MagicMock
-
 from . import tmp_dir_fixture  # NOQA
 from . import TEST_SAMPLE_DATA
 
@@ -41,9 +36,7 @@ def test_basic_workflow(tmp_dir_fixture):  # NOQA
     proto_dataset.create()
     proto_dataset.put_item(local_file_path, 'tiny.png')
 
-    proto_dataset._storage_broker.pre_freeze_hook = MagicMock()
     proto_dataset.freeze()
-    assert proto_dataset._storage_broker.pre_freeze_hook.call_count == 1
 
     # Read in a dataset
     dataset = DataSet.from_uri(dest_uri)
