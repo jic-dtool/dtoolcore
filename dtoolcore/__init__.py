@@ -115,6 +115,26 @@ def generate_proto_dataset(admin_metadata, base_uri, config_path=None):
     return ProtoDataSet(uri, admin_metadata, config_path)
 
 
+def create_proto_dataset(
+    name,
+    base_uri,
+    readme_content="",
+    creator_username=None
+):
+    """Return :class:`dtoolcore.ProtoDataSet` instance.
+
+    :param name: dataset name
+    :param base_uri: base URI for proto dataset
+    :param readme_content: content of README as a string
+    :param creator_username: creator username
+    """
+    admin_metadata = generate_admin_metadata(name, creator_username)
+    proto_dataset = generate_proto_dataset(admin_metadata, base_uri)
+    proto_dataset.create()
+    proto_dataset.put_readme(readme_content)
+    return proto_dataset
+
+
 def _copy_create_proto_dataset(
     src_dataset,
     dest_base_uri,
@@ -651,3 +671,38 @@ class ProtoDataSet(_BaseDataSet):
 
         # Clean up using the storage broker's post freeze hook.
         self._storage_broker.post_freeze_hook()
+
+
+class DataSetCreator(object):
+    """Context manager for creating a dataset.
+
+    Inside the context manager one works on a proto dataset.  When exiting the
+    context manager the proto dataset is automatically frozen into a dataset,
+    unless an exception has been raised in the context manager.
+    """
+
+    def __init__(
+        self,
+        name,
+        base_uri,
+        readme_content="",
+        creator_username=None
+    ):
+        self.proto_dataset = create_proto_dataset(
+            name=name,
+            base_uri=base_uri,
+            readme_content=readme_content,
+            creator_username=creator_username
+        )
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exception_type, exception_value, traceback):
+        if exception_type is None:
+            self.proto_dataset.freeze()
+
+    @property
+    def uri(self):
+        """Return the dataset URI."""
+        return self.proto_dataset.uri
