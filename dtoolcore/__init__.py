@@ -766,7 +766,6 @@ class DataSetCreator(object):
         :returns: item handle
         """
         staging_abspath = os.path.join(self._tmpdir, relpath)
-        print("Staging abspath: {}".format(staging_abspath))
         self._to_stage.append((staging_abspath, relpath))
         handle = dtoolcore.utils.relpath_to_handle(
             relpath,
@@ -792,7 +791,6 @@ class DataSetCreator(object):
             self.staging_directory,
             os.path.dirname(relpath)
         )
-        print("Parent dirs: {}".format(parent_dirs))
         dtoolcore.utils.mkdir_parents(parent_dirs)
         staging_abspath = os.path.join(parent_dirs, relpath)
 
