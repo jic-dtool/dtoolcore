@@ -139,6 +139,49 @@ def create_proto_dataset(
     return proto_dataset
 
 
+def create_derived_proto_dataset(
+    name,
+    base_uri,
+    source_dataset,
+    readme_content="",
+    creator_username=None
+):
+    """Return :class:`dtoolcore.ProtoDataSet` instance.
+
+    It adds the "source_name", "source_uri", and "source_uuid" as
+    annotations and to the descriptive metadata in the readme.
+
+    :param name: dataset name
+    :param base_uri: base URI for proto dataset
+    :param source_dataset: source dataset
+    :param readme_content: content of README as a string
+    :param creator_username: creator username
+    """
+    admin_metadata = generate_admin_metadata(name, creator_username)
+    proto_dataset = generate_proto_dataset(admin_metadata, base_uri)
+    proto_dataset.create()
+
+    # Add derived info as annotations.
+    proto_dataset.put_annotation("source_name", source_dataset.name)
+    proto_dataset.put_annotation("source_uri", source_dataset.uri)
+    proto_dataset.put_annotation("source_uuid", source_dataset.uuid)
+
+    # Add derived info to the readme.
+    derived_info = """source_name: {}
+source_uri: {}
+source_uuid: {}
+""".format(source_dataset.name, source_dataset.uri, source_dataset.uuid)
+    readme_content = readme_content.strip()
+    if readme_content == "":
+        readme_content = "\n".join(["---", derived_info])
+    else:
+        readme_content = "\n".join([readme_content, derived_info])
+    print(readme_content)
+    proto_dataset.put_readme(readme_content)
+
+    return proto_dataset
+
+
 def _copy_create_proto_dataset(
     src_dataset,
     dest_base_uri,
@@ -823,3 +866,35 @@ class DataSetCreator(object):
         :param value: metadata value
         """
         self.proto_dataset.add_item_metadata(handle, key, value)
+
+
+class DerivedDataSetCreator(DataSetCreator):
+    """Context manager for creating a derived dataset.
+
+    A derived dataset automatically has information about the source dataset
+    (name, URI and UUID) automatically added to the readme and to annotations.
+    It adds the "source_name", "source_uri", and "source_uuid" as annotations
+    and to the descriptive metadata in the readme.
+
+    Inside the context manager one works on a proto dataset.  When exiting the
+    context manager the proto dataset is automatically frozen into a dataset,
+    unless an exception has been raised in the context manager.
+    """
+
+    def __init__(
+        self,
+        name,
+        base_uri,
+        source_dataset,
+        readme_content="",
+        creator_username=None
+    ):
+        base_uri = dtoolcore.utils.sanitise_uri(base_uri)
+        self.proto_dataset = create_derived_proto_dataset(
+            name=name,
+            base_uri=base_uri,
+            source_dataset=source_dataset,
+            readme_content=readme_content,
+            creator_username=creator_username
+        )
+        self._tmpdir = None

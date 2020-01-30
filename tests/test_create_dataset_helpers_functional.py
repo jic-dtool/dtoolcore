@@ -41,6 +41,43 @@ def test_create_proto_dataset(tmp_dir_fixture):  # NOQA
     assert proto_dataset.get_readme_content() == readme_content
 
 
+def test_create_derived_proto_dataset(tmp_dir_fixture):  # NOQA
+    import dtoolcore
+
+    name = "derived-data-ds"
+    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    readme_content = "---\ndescription: a test dataset"
+    creator_username = "tester"
+
+    with dtoolcore.DataSetCreator("raw-data-ds", base_uri) as dataset_creator:
+        source_dataset_uri = dataset_creator.uri
+    source_dataset = dtoolcore.DataSet.from_uri(source_dataset_uri)
+
+    proto_dataset = dtoolcore.create_derived_proto_dataset(
+        name=name,
+        base_uri=base_uri,
+        source_dataset=source_dataset,
+        readme_content=readme_content,
+        creator_username=creator_username
+    )
+    assert isinstance(proto_dataset, dtoolcore.ProtoDataSet)
+    assert proto_dataset._admin_metadata["creator_username"] == creator_username  # NOQA
+    assert proto_dataset.name == name
+
+    # Test the README content.
+    expected_readme_content = readme_content.strip() + """
+source_name: {}
+source_uri: {}
+source_uuid: {}
+""".format(source_dataset.name, source_dataset.uri, source_dataset.uuid)
+    assert proto_dataset.get_readme_content() == expected_readme_content
+
+    # Test the annotations.
+    assert proto_dataset.get_annotation("source_name") == source_dataset.name
+    assert proto_dataset.get_annotation("source_uri") == source_dataset.uri
+    assert proto_dataset.get_annotation("source_uuid") == source_dataset.uuid
+
+
 def test_DataSetCreator(tmp_dir_fixture):  # NOQA
 
     import dtoolcore
@@ -196,3 +233,34 @@ def test_DataSetCreator_staging_api_auto_item_add(tmp_dir_fixture):  # NOQA
     assert manual_item_props["size_in_bytes"] == 12
 
     assert len(dataset.identifiers) == 1
+
+
+def test_DerivedDataSetCreator(tmp_dir_fixture):  # NOQA
+
+    import dtoolcore
+
+    name = "derived-data-ds"
+    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    creator_username = "tester"
+
+    with dtoolcore.DataSetCreator("raw-data-ds", base_uri) as dataset_creator:
+        source_dataset_uri = dataset_creator.uri
+    source_dataset = dtoolcore.DataSet.from_uri(source_dataset_uri)
+
+    with dtoolcore.DerivedDataSetCreator(
+        name=name,
+        base_uri=base_uri,
+        source_dataset=source_dataset,
+        creator_username=creator_username
+    ) as derived_dataset_creator:
+        derived_dataset_uri = derived_dataset_creator.uri
+
+    # The below would raise if the dataset was not frozen.
+    derived_dataset = dtoolcore.DataSet.from_uri(derived_dataset_uri)
+
+    expected_readme_content = """---
+source_name: {}
+source_uri: {}
+source_uuid: {}
+""".format(source_dataset.name, source_dataset.uri, source_dataset.uuid)
+    assert derived_dataset.get_readme_content() == expected_readme_content
