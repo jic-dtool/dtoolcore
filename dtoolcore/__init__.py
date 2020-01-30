@@ -814,3 +814,14 @@ class DataSetCreator(object):
         :returns: the handle given to the item
         """
         return self.proto_dataset.put_item(fpath, relpath)
+
+    def add_item_metadata(self, handle, key, value):
+        """
+        Add metadata to a specific item in the :class:`dtoolcore.ProtoDataSet`.
+
+        :param handle: handle representing the relative path of the item in the
+                       :class:`dtoolcore.ProtoDataSet`
+        :param key: metadata key
+        :param value: metadata value
+        """
+        self.proto_dataset.add_item_metadata(handle, key, value)

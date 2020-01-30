@@ -60,7 +60,8 @@ def test_DataSetCreator(tmp_dir_fixture):  # NOQA
     ) as dataset_creator:
         assert dataset_creator.name == name
         uri = dataset_creator.uri
-        dataset_creator.put_item(local_file_path, "tiny.png")
+        handle = dataset_creator.put_item(local_file_path, "tiny.png")
+        dataset_creator.add_item_metadata(handle, "ext", ".png")
 
     # The below would raise if the dataset was not frozen.
     dataset = dtoolcore.DataSet.from_uri(uri)
@@ -69,6 +70,10 @@ def test_DataSetCreator(tmp_dir_fixture):  # NOQA
     expected_identifier = generate_identifier("tiny.png")
     assert expected_identifier in dataset.identifiers
     assert len(dataset.identifiers) == 1
+
+    # Check item metadata
+    expected_ext_overlay = {expected_identifier: ".png"}
+    assert dataset.get_overlay("ext") == expected_ext_overlay
 
 
 def test_DataSetCreator_does_not_freeze_if_raises(tmp_dir_fixture):  # NOQA
