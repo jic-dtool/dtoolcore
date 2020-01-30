@@ -5,6 +5,12 @@ import os
 from . import tmp_dir_fixture  # NOQA
 from . import TEST_SAMPLE_DATA
 
+from dtoolcore.utils import (
+    IS_WINDOWS,
+    generous_parse_uri,
+    windows_to_unix_path,
+)
+
 
 def test_create_proto_dataset(tmp_dir_fixture):  # NOQA
     import dtoolcore
@@ -12,6 +18,13 @@ def test_create_proto_dataset(tmp_dir_fixture):  # NOQA
     name = "my-test-ds"
     readme_content = "---\ndescription: a test dataset"
     creator_username = "tester"
+
+    base_uri = tmp_dir_fixture
+    if IS_WINDOWS:
+        parsed_base_uri = generous_parse_uri(tmp_dir_fixture)
+        unix_path = windows_to_unix_path(parsed_base_uri.path)
+        base_uri = "file://{}".format(unix_path)
+
 
     proto_dataset = dtoolcore.create_proto_dataset(
         name=name,
