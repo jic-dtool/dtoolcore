@@ -688,6 +688,7 @@ class DataSetCreator(object):
         readme_content="",
         creator_username=None
     ):
+        base_uri = dtoolcore.utils.sanitise_uri(base_uri)
         self.proto_dataset = create_proto_dataset(
             name=name,
             base_uri=base_uri,
