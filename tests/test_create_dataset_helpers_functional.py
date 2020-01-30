@@ -1,6 +1,9 @@
 """Test the helper functions and classes for creating datasets."""
 
+import os
+
 from . import tmp_dir_fixture  # NOQA
+from . import TEST_SAMPLE_DATA
 
 
 def test_create_proto_dataset(tmp_dir_fixture):  # NOQA
@@ -25,10 +28,12 @@ def test_create_proto_dataset(tmp_dir_fixture):  # NOQA
 def test_DataSetCreator(tmp_dir_fixture):  # NOQA
 
     import dtoolcore
+    from dtoolcore.utils import generate_identifier
 
     name = "my-test-ds"
     readme_content = "---\ndescription: a test dataset"
     creator_username = "tester"
+    local_file_path = os.path.join(TEST_SAMPLE_DATA, "tiny.png")
 
     with dtoolcore.DataSetCreator(
         name=name,
@@ -37,9 +42,15 @@ def test_DataSetCreator(tmp_dir_fixture):  # NOQA
         creator_username=creator_username
     ) as dataset_creator:
         uri = dataset_creator.uri
+        dataset_creator.put_item(local_file_path, "tiny.png")
 
     # The below would raise if the dataset was not frozen
-    dtoolcore.DataSet.from_uri(uri)
+    dataset = dtoolcore.DataSet.from_uri(uri)
+
+    # Check the content.
+    expected_identifier = generate_identifier("tiny.png")
+    assert expected_identifier in dataset.identifiers
+    assert len(dataset.identifiers) == 1
 
 
 def test_DataSetCreator_does_not_freeze_if_raises(tmp_dir_fixture):  # NOQA

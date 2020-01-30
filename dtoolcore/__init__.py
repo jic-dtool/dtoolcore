@@ -703,7 +703,20 @@ class DataSetCreator(object):
         if exception_type is None:
             self.proto_dataset.freeze()
 
+
     @property
     def uri(self):
         """Return the dataset URI."""
         return self.proto_dataset.uri
+
+
+    def put_item(self, fpath, relpath):
+        """
+        Put an item into the dataset.
+
+        :param fpath: path to the item on disk
+        :param relpath: relative path name given to the item in the dataset as
+                        a handle
+        :returns: the handle given to the item
+        """
+        return self.proto_dataset.put_item(fpath, relpath)
