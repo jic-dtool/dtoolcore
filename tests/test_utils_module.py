@@ -224,3 +224,12 @@ def test_name_is_valid():
     assert not name_is_valid(" this is a bad name")
     assert not name_is_valid(":this:is-a-bad-name")
     assert not name_is_valid("this-is-a-bad-name+")
+
+
+def test_relpath_to_handle():
+    from dtoolcore.utils import relpath_to_handle
+    assert relpath_to_handle("subdir/test.txt") == "subdir/test.txt"
+    assert relpath_to_handle("./subdir/test.txt") == "subdir/test.txt"
+    assert relpath_to_handle(
+        "subdir\\test.txt",
+        is_windows=True) == "subdir/test.txt"

@@ -229,3 +229,17 @@ def name_is_valid(name):
     if len(name) > MAX_NAME_LENGTH:
         return False
     return bool(NAME_VALID_CHARS_REGEX.match(name))
+
+
+def relpath_to_handle(relpath, is_windows=False):
+    """Return handle from relpath.
+
+    Handles are Unix style relpaths.
+    Converts Windows relpath to Unix style relpath.
+    Strips "./" prefix.
+    """
+    if is_windows:
+        relpath = windows_to_unix_path(relpath)
+    if relpath.startswith("./"):
+        relpath = relpath[2:]
+    return relpath
