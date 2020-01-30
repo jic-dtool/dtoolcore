@@ -93,7 +93,7 @@ def test_DataSetCreator_does_not_freeze_if_raises(tmp_dir_fixture):  # NOQA
         dtoolcore.ProtoDataSet.from_uri(uri)
 
 
-def test_DataSetCreator_staging_api(tmp_dir_fixture):  # NOQA
+def test_DataSetCreator_staging_api_manaul_item_add(tmp_dir_fixture):  # NOQA
 
     import dtoolcore
     from dtoolcore.utils import generate_identifier
@@ -133,6 +133,55 @@ def test_DataSetCreator_staging_api(tmp_dir_fixture):  # NOQA
 
     # Check the content.
     expected_identifier = generate_identifier(manual_relpath)
+    assert expected_identifier in dataset.identifiers
+    manual_item_props = dataset.item_properties(expected_identifier)
+    assert manual_item_props["size_in_bytes"] == 12
+
+    assert len(dataset.identifiers) == 1
+
+
+def test_DataSetCreator_staging_api_auto_item_add(tmp_dir_fixture):  # NOQA
+
+    import dtoolcore
+    from dtoolcore.utils import generate_identifier
+
+    name = "my-test-ds"
+    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    readme_content = "---\ndescription: a test dataset"
+    creator_username = "tester"
+
+    # relpath = os.path.join("subdir", "test.txt")
+    relpath = "test.txt"
+    expected_handle = "test.txt"
+
+    with dtoolcore.DataSetCreator(
+        name=name,
+        base_uri=base_uri,
+        readme_content=readme_content,
+        creator_username=creator_username
+    ) as dataset_creator:
+
+        # Ensure that the staging directory exists.
+        assert os.path.isdir(dataset_creator.staging_directory)
+
+        # Add an item more programatically.
+        staging_abspath, handle = dataset_creator.generate_staging_info(
+            relpath
+        )
+        assert handle == expected_handle
+        with open(staging_abspath, "w") as fh:
+            fh.write("Hello world!")
+
+        uri = dataset_creator.uri
+
+    # Ensure that the staging directory has been removed.
+    assert not os.path.isdir(dataset_creator.staging_directory)
+
+    # The below would raise if the dataset was not frozen.
+    dataset = dtoolcore.DataSet.from_uri(uri)
+
+    # Check the content.
+    expected_identifier = generate_identifier(handle)
     assert expected_identifier in dataset.identifiers
     manual_item_props = dataset.item_properties(expected_identifier)
     assert manual_item_props["size_in_bytes"] == 12
