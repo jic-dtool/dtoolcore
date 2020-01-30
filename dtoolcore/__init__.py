@@ -689,6 +689,10 @@ class DataSetCreator(object):
         creator_username=None
     ):
         print("Base URI: {}".format(base_uri))
+        parsed_base_uri = dtoolcore.utils.generous_parse_uri(base_uri)
+        print("Parsed base URI: {}".format(parsed_base_uri))
+        unparsed_base_uri = dtoolcore.utils.urlunparse(parsed_base_uri)
+        print("Unparsed base URI: {}".format(unparsed_base_uri))
         base_uri = dtoolcore.utils.sanitise_uri(base_uri)
         print("Sanitised base URI: {}".format(base_uri))
         self.proto_dataset = create_proto_dataset(
