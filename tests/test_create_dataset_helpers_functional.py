@@ -11,24 +11,27 @@ from dtoolcore.utils import (
     windows_to_unix_path,
 )
 
+def _sanitise_base_uri(tmp_dir):
+    base_uri = tmp_dir
+    if IS_WINDOWS:
+        parsed_base_uri = generous_parse_uri(tmp_dir)
+        unix_path = windows_to_unix_path(parsed_base_uri.path)
+        base_uri = "file://{}".format(unix_path)
+    return base_uri
+
+
 
 def test_create_proto_dataset(tmp_dir_fixture):  # NOQA
     import dtoolcore
 
     name = "my-test-ds"
+    base_uri = _sanitise_base_uri(tmp_dir_fixture)
     readme_content = "---\ndescription: a test dataset"
     creator_username = "tester"
 
-    base_uri = tmp_dir_fixture
-    if IS_WINDOWS:
-        parsed_base_uri = generous_parse_uri(tmp_dir_fixture)
-        unix_path = windows_to_unix_path(parsed_base_uri.path)
-        base_uri = "file://{}".format(unix_path)
-
-
     proto_dataset = dtoolcore.create_proto_dataset(
         name=name,
-        base_uri=tmp_dir_fixture,
+        base_uri=base_uri,
         readme_content=readme_content,
         creator_username=creator_username
     )
@@ -44,13 +47,14 @@ def test_DataSetCreator(tmp_dir_fixture):  # NOQA
     from dtoolcore.utils import generate_identifier
 
     name = "my-test-ds"
+    base_uri = _sanitise_base_uri(tmp_dir_fixture)
     readme_content = "---\ndescription: a test dataset"
     creator_username = "tester"
     local_file_path = os.path.join(TEST_SAMPLE_DATA, "tiny.png")
 
     with dtoolcore.DataSetCreator(
         name=name,
-        base_uri=tmp_dir_fixture,
+        base_uri=base_uri,
         readme_content=readme_content,
         creator_username=creator_username
     ) as dataset_creator:
@@ -71,13 +75,14 @@ def test_DataSetCreator_does_not_freeze_if_raises(tmp_dir_fixture):  # NOQA
     import dtoolcore
 
     name = "my-test-ds"
+    base_uri = _sanitise_base_uri(tmp_dir_fixture)
     readme_content = "---\ndescription: a test dataset"
     creator_username = "tester"
 
     try:
         with dtoolcore.DataSetCreator(
             name=name,
-            base_uri=tmp_dir_fixture,
+            base_uri=base_uri,
             readme_content=readme_content,
             creator_username=creator_username
         ) as dataset_creator:
