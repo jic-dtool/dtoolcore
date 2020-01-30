@@ -61,7 +61,7 @@ def test_DataSetCreator(tmp_dir_fixture):  # NOQA
         uri = dataset_creator.uri
         dataset_creator.put_item(local_file_path, "tiny.png")
 
-    # The below would raise if the dataset was not frozen
+    # The below would raise if the dataset was not frozen.
     dataset = dtoolcore.DataSet.from_uri(uri)
 
     # Check the content.
@@ -96,11 +96,13 @@ def test_DataSetCreator_does_not_freeze_if_raises(tmp_dir_fixture):  # NOQA
 def test_DataSetCreator_staging_api(tmp_dir_fixture):  # NOQA
 
     import dtoolcore
+    from dtoolcore.utils import generate_identifier
 
     name = "my-test-ds"
     base_uri = _sanitise_base_uri(tmp_dir_fixture)
     readme_content = "---\ndescription: a test dataset"
     creator_username = "tester"
+    manual_relpath = "test.txt"
 
     with dtoolcore.DataSetCreator(
         name=name,
@@ -112,5 +114,27 @@ def test_DataSetCreator_staging_api(tmp_dir_fixture):  # NOQA
         # Ensure that the staging directory exists.
         assert os.path.isdir(dataset_creator.staging_directory)
 
+        # Add an item manually.
+        manual_fpath = os.path.join(
+            dataset_creator.staging_directory,
+            manual_relpath
+        )
+        with open(manual_fpath, "w") as fh:
+            fh.write("Hello world!")
+        dataset_creator.register_staged_file(manual_relpath)
+
+        uri = dataset_creator.uri
+
     # Ensure that the staging directory has been removed.
     assert not os.path.isdir(dataset_creator.staging_directory)
+
+    # The below would raise if the dataset was not frozen.
+    dataset = dtoolcore.DataSet.from_uri(uri)
+
+    # Check the content.
+    expected_identifier = generate_identifier(manual_relpath)
+    assert expected_identifier in dataset.identifiers
+    manual_item_props = dataset.item_properties(expected_identifier)
+    assert manual_item_props["size_in_bytes"] == 12
+
+    assert len(dataset.identifiers) == 1

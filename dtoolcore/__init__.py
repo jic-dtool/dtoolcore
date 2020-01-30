@@ -2,6 +2,8 @@
 
 """
 
+import os
+
 import datetime
 import logging
 import multiprocessing as mp
@@ -701,6 +703,9 @@ class DataSetCreator(object):
 
     def __enter__(self):
 
+        self._to_stage = []
+
+        # Create the staging directory.
         tmpdir_prefix = dtoolcore.utils.get_config_value(
             "DTOOL_TMPDIR_PREFIX",
             None
@@ -713,6 +718,12 @@ class DataSetCreator(object):
         return self
 
     def __exit__(self, exception_type, exception_value, traceback):
+
+        # Add any staged files to the dataset.
+        for abspath, relpath in self._to_stage:
+            self.proto_dataset.put_item(abspath, relpath)
+
+        # If everything has been successful freeze the dataset.
         if exception_type is None:
             self.proto_dataset.freeze()
 
@@ -743,6 +754,23 @@ class DataSetCreator(object):
         method.
         """
         return self._tmpdir
+
+    def _generate_staging_abspath(self, relpath):
+        parent_dirs = os.path.join(
+            self.staging_directory,
+            os.path.dirname(relpath)
+        )
+        print("Parent dirs: {}".format(parent_dirs))
+        dtoolcore.utils.mkdir_parents(parent_dirs)
+        dtoolcore.utils.mkdir_parents(parent_dirs)
+        staging_abspath = os.path.join(parent_dirs, relpath)
+        return staging_abspath
+
+    def register_staged_file(self, relpath):
+        """Register a file that has been created in the staging directory."""
+        staging_abspath = os.path.join(self._tmpdir, relpath)
+        print("Staging abspath: {}".format(staging_abspath))
+        self._to_stage.append((staging_abspath, relpath))
 
     def put_item(self, fpath, relpath):
         """
