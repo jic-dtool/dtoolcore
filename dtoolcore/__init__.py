@@ -5,6 +5,8 @@
 import datetime
 import logging
 import multiprocessing as mp
+import shutil
+import tempfile
 import uuid
 
 from pkg_resources import iter_entry_points
@@ -695,18 +697,52 @@ class DataSetCreator(object):
             readme_content=readme_content,
             creator_username=creator_username
         )
+        self._tmpdir = None
 
     def __enter__(self):
+
+        tmpdir_prefix = dtoolcore.utils.get_config_value(
+            "DTOOL_TMPDIR_PREFIX",
+            None
+        )
+        if tmpdir_prefix is None:
+            self._tmpdir = tempfile.mkdtemp()
+        else:
+            self._tmpdir = tempfile.mkdtemp(prefix=tmpdir_prefix)
+
         return self
 
     def __exit__(self, exception_type, exception_value, traceback):
         if exception_type is None:
             self.proto_dataset.freeze()
 
+        # Remove the staging directory.
+        shutil.rmtree(self._tmpdir)
+
     @property
     def uri(self):
         """Return the dataset URI."""
         return self.proto_dataset.uri
+
+    @property
+    def staging_directory(self):
+        """Return the staging directory.
+
+        An ephemeral directory that only exists within the
+        DataSetCreator context manger. It can be used as
+        a location to write output files that need to be
+        added to the dataset.
+
+        The easiest way to add a file here is to use the
+        :func:`dtoolcore.DataSetCreator.get_staging_fpath`
+        method to get a path to write content to.
+
+        If you write files directly to the staging directory
+        you will need to register them using the
+        :func:`dtoolcore.DataSetCreator.register_output_file`
+        method.
+        """
+        return self._tmpdir
 
     def put_item(self, fpath, relpath):
         """

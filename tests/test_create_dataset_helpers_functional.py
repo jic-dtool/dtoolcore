@@ -91,3 +91,26 @@ def test_DataSetCreator_does_not_freeze_if_raises(tmp_dir_fixture):  # NOQA
     except RuntimeError:
         # The below would raise if the dataset was frozen.
         dtoolcore.ProtoDataSet.from_uri(uri)
+
+
+def test_DataSetCreator_staging_api(tmp_dir_fixture):  # NOQA
+
+    import dtoolcore
+
+    name = "my-test-ds"
+    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    readme_content = "---\ndescription: a test dataset"
+    creator_username = "tester"
+
+    with dtoolcore.DataSetCreator(
+        name=name,
+        base_uri=base_uri,
+        readme_content=readme_content,
+        creator_username=creator_username
+    ) as dataset_creator:
+
+        # Ensure that the staging directory exists.
+        assert os.path.isdir(dataset_creator.staging_directory)
+
+    # Ensure that the staging directory has been removed.
+    assert not os.path.isdir(dataset_creator.staging_directory)
