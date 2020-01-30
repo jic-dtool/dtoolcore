@@ -58,6 +58,7 @@ def test_DataSetCreator(tmp_dir_fixture):  # NOQA
         readme_content=readme_content,
         creator_username=creator_username
     ) as dataset_creator:
+        assert dataset_creator.name == name
         uri = dataset_creator.uri
         dataset_creator.put_item(local_file_path, "tiny.png")
 

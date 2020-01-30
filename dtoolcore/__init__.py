@@ -731,6 +731,11 @@ class DataSetCreator(object):
         shutil.rmtree(self._tmpdir)
 
     @property
+    def name(self):
+        """Return the dataset name."""
+        return self.proto_dataset.name
+
+    @property
     def uri(self):
         """Return the dataset URI."""
         return self.proto_dataset.uri
