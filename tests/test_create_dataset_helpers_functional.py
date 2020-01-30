@@ -102,7 +102,9 @@ def test_DataSetCreator_staging_api_manaul_item_add(tmp_dir_fixture):  # NOQA
     base_uri = _sanitise_base_uri(tmp_dir_fixture)
     readme_content = "---\ndescription: a test dataset"
     creator_username = "tester"
+
     manual_relpath = "test.txt"
+    expected_handle = "test.txt"
 
     with dtoolcore.DataSetCreator(
         name=name,
@@ -121,7 +123,8 @@ def test_DataSetCreator_staging_api_manaul_item_add(tmp_dir_fixture):  # NOQA
         )
         with open(manual_fpath, "w") as fh:
             fh.write("Hello world!")
-        dataset_creator.register_staged_file(manual_relpath)
+        handle = dataset_creator.register_staged_file(manual_relpath)
+        assert expected_handle == handle
 
         uri = dataset_creator.uri
 
@@ -165,7 +168,7 @@ def test_DataSetCreator_staging_api_auto_item_add(tmp_dir_fixture):  # NOQA
         assert os.path.isdir(dataset_creator.staging_directory)
 
         # Add an item more programatically.
-        staging_abspath, handle = dataset_creator.generate_staging_info(
+        staging_abspath, handle = dataset_creator.generate_item_info_for_staging(  # NOQA
             relpath
         )
         assert handle == expected_handle

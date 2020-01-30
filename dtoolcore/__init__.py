@@ -756,12 +756,33 @@ class DataSetCreator(object):
         return self._tmpdir
 
     def register_staged_file(self, relpath):
-        """Register a file that has been created in the staging directory."""
+        """Register a file that has been created in the staging directory.
+
+        :returns: item handle
+        """
         staging_abspath = os.path.join(self._tmpdir, relpath)
         print("Staging abspath: {}".format(staging_abspath))
         self._to_stage.append((staging_abspath, relpath))
+        handle = dtoolcore.utils.relpath_to_handle(
+            relpath,
+            dtoolcore.utils.IS_WINDOWS
+        )
+        return handle
 
-    def generate_staging_info(self, relpath):
+    def generate_item_info_for_staging(self, relpath):
+        """Return abspath and handle to stage a file.
+
+        Use the abspath to create a file in the staging directory.
+        The file will be added to the dataset when exiting the
+        context handler.
+
+        The handle can be used to generate an identifier for the item in the
+        dataset using the :func:`dtoolcore.utils.generate_identifier` function.
+
+        :params relpath: relative path of the item in the staging area
+        :returns: tuple with absolute path to file in staging area and handle
+                  of the item in the :class:`dtoolcore.ProtoDataSet` class.
+        """
         parent_dirs = os.path.join(
             self.staging_directory,
             os.path.dirname(relpath)
