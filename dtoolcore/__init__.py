@@ -703,12 +703,10 @@ class DataSetCreator(object):
         if exception_type is None:
             self.proto_dataset.freeze()
 
-
     @property
     def uri(self):
         """Return the dataset URI."""
         return self.proto_dataset.uri
-
 
     def put_item(self, fpath, relpath):
         """

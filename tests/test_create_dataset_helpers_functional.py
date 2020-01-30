@@ -11,6 +11,7 @@ from dtoolcore.utils import (
     windows_to_unix_path,
 )
 
+
 def _sanitise_base_uri(tmp_dir):
     base_uri = tmp_dir
     if IS_WINDOWS:
@@ -18,7 +19,6 @@ def _sanitise_base_uri(tmp_dir):
         unix_path = windows_to_unix_path(parsed_base_uri.path)
         base_uri = "file://{}".format(unix_path)
     return base_uri
-
 
 
 def test_create_proto_dataset(tmp_dir_fixture):  # NOQA
