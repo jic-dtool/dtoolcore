@@ -819,12 +819,9 @@ class DataSetCreator(object):
         :returns: tuple with absolute path to the file in staging area
                   that the user promises to create
         """
-        parent_dirs = os.path.join(
-            self.staging_directory,
-            os.path.dirname(handle)
-        )
-        dtoolcore.utils.mkdir_parents(parent_dirs)
-        staging_abspath = os.path.join(parent_dirs, handle)
+        _, ext = os.path.splitext(handle)
+        fname = dtoolcore.utils.generate_identifier(handle) + ext
+        staging_abspath = os.path.join(self.staging_directory, fname)
 
         self._to_stage.append((staging_abspath, handle))
 
