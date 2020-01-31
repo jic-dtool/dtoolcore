@@ -587,8 +587,8 @@ class DiskStorageBroker(BaseStorageBroker):
         """
 
         # Define the destination path and make any missing parent directories.
-        relpath = handle_to_osrelpath(relpath, IS_WINDOWS)
-        dest_path = os.path.join(self._data_abspath, relpath)
+        osrelpath = handle_to_osrelpath(relpath, IS_WINDOWS)
+        dest_path = os.path.join(self._data_abspath, osrelpath)
         dirname = os.path.dirname(dest_path)
         mkdir_parents(dirname)
 
