@@ -12,6 +12,7 @@ Added
 ^^^^^
 
 - dtoolcore.DataSetCreator.put_readme() method
+- dtoolcore.DataSetCreator.put_annotation() method
 
 
 Changed

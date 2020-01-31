@@ -262,7 +262,6 @@ def test_DataSetCreator_put_readme(tmp_dir_fixture):  # NOQA
     base_uri = _sanitise_base_uri(tmp_dir_fixture)
     readme_content = "---\ndescription: a test dataset"
     creator_username = "tester"
-    local_file_path = os.path.join(TEST_SAMPLE_DATA, "tiny.png")
 
     with dtoolcore.DataSetCreator(
         name=name,
@@ -276,3 +275,24 @@ def test_DataSetCreator_put_readme(tmp_dir_fixture):  # NOQA
     # The below would raise if the dataset was not frozen.
     dataset = dtoolcore.DataSet.from_uri(uri)
     assert readme_content == dataset.get_readme_content()
+
+
+def test_DataSetCreator_put_annotation(tmp_dir_fixture):  # NOQA
+
+    import dtoolcore
+
+    name = "my-test-ds"
+    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    creator_username = "tester"
+
+    with dtoolcore.DataSetCreator(
+        name=name,
+        base_uri=base_uri,
+        creator_username=creator_username
+    ) as dataset_creator:
+        uri = dataset_creator.uri
+        dataset_creator.put_annotation("key", "value")
+
+    # The below would raise if the dataset was not frozen.
+    dataset = dtoolcore.DataSet.from_uri(uri)
+    assert dataset.get_annotation("key") == "value"

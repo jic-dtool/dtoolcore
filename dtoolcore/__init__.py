@@ -780,16 +780,6 @@ class DataSetCreator(object):
         """Return the dataset URI."""
         return self.proto_dataset.uri
 
-    def put_readme(self, content):
-        """
-        Update the README of the dataset and backup the previous README.
-
-        The client is responsible for ensuring that the content is valid YAML.
-
-        :param content: string to put into the README
-        """
-        self.proto_dataset.put_readme(content)
-
     @property
     def staging_directory(self):
         """Return the staging directory.
@@ -858,6 +848,26 @@ class DataSetCreator(object):
         :param value: metadata value
         """
         self.proto_dataset.add_item_metadata(handle, key, value)
+
+    def put_readme(self, content):
+        """
+        Update the README of the dataset and backup the previous README.
+
+        The client is responsible for ensuring that the content is valid YAML.
+
+        :param content: string to put into the README
+        """
+        self.proto_dataset.put_readme(content)
+
+    def put_annotation(self, annotation_name, annotation):
+        """Store annotation so that it is accessible by the given name.
+
+        :param annotation_name: name of the annotation
+        :param annotation: JSON serialisable value or data structure
+        :raises: DtoolCoreInvalidNameError if the annotation name
+                 is invalid
+        """
+        self.proto_dataset.put_annotation(annotation_name, annotation)
 
 
 class DerivedDataSetCreator(DataSetCreator):
