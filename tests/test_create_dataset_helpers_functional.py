@@ -2,6 +2,8 @@
 
 import os
 
+import pytest
+
 from . import tmp_dir_fixture  # NOQA
 from . import TEST_SAMPLE_DATA
 
@@ -228,5 +230,26 @@ def test_DerivedDataSetCreator(tmp_dir_fixture):  # NOQA
     dtoolcore.DataSet.from_uri(derived_dataset_uri)
 
 
-def test_promised_abspath_missing_raises():
-    pass
+def test_promised_abspath_missing_raises(tmp_dir_fixture):  # NOQA
+
+    import dtoolcore
+
+    name = "my-test-ds"
+    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    readme_content = "---\ndescription: a test dataset"
+    creator_username = "tester"
+
+    handle = "test.txt"
+
+    with pytest.raises(dtoolcore.DtoolCoreBrokenStagingPromise):
+        with dtoolcore.DataSetCreator(
+            name=name,
+            base_uri=base_uri,
+            readme_content=readme_content,
+            creator_username=creator_username
+        ) as dataset_creator:
+
+            # Add an item more programatically.
+            staging_abspath = dataset_creator.prepare_staging_abspath_promise(  # NOQA
+                handle
+            )

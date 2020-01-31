@@ -315,6 +315,10 @@ class DtoolCoreInvalidNameError(ValueError):
     pass
 
 
+class DtoolCoreBrokenStagingPromise(IOError):
+    pass
+
+
 class _BaseDataSet(object):
     """Base class for datasets."""
 
@@ -753,6 +757,10 @@ class DataSetCreator(object):
 
         # Add any staged files to the dataset.
         for abspath, relpath in self._to_stage:
+            if not os.path.isfile(abspath):
+                raise(DtoolCoreBrokenStagingPromise(
+                    "No such file: {}".format(abspath)
+                ))
             self.proto_dataset.put_item(abspath, relpath)
 
         # If everything has been successful freeze the dataset.
