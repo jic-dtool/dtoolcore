@@ -547,12 +547,10 @@ class DiskStorageBroker(BaseStorageBroker):
         :param identifier: item identifier
         :returns: absolute path from which the item content can be accessed
         """
-        print("In get item abspath")
         manifest = self.get_manifest()
         item = manifest["items"][identifier]
         relpath = handle_to_osrelpath(item["relpath"], IS_WINDOWS)
         item_abspath = os.path.join(self._data_abspath, relpath)
-        print("Item abspath: {}".format(item_abspath))
         return item_abspath
 
     def _create_structure(self):

@@ -91,14 +91,14 @@ def test_DataSetCreator(tmp_dir_fixture):  # NOQA
     ) as dataset_creator:
         assert dataset_creator.name == name
         uri = dataset_creator.uri
-        handle = dataset_creator.put_item(local_file_path, "tiny.png")
+        handle = dataset_creator.put_item(local_file_path, "subdir/tiny.png")
         dataset_creator.add_item_metadata(handle, "ext", ".png")
 
     # The below would raise if the dataset was not frozen.
     dataset = dtoolcore.DataSet.from_uri(uri)
 
     # Check the content.
-    expected_identifier = generate_identifier("tiny.png")
+    expected_identifier = generate_identifier("subdir/tiny.png")
     assert expected_identifier in dataset.identifiers
     assert len(dataset.identifiers) == 1
 
@@ -130,7 +130,7 @@ def test_DataSetCreator_does_not_freeze_if_raises(tmp_dir_fixture):  # NOQA
         dtoolcore.ProtoDataSet.from_uri(uri)
 
 
-def test_DataSetCreator_staging_api_manaul_item_add(tmp_dir_fixture):  # NOQA
+def test_DataSetCreator_staging_api(tmp_dir_fixture):  # NOQA
 
     import dtoolcore
 
@@ -159,7 +159,7 @@ def test_DataSetCreator_staging_api_manaul_item_add(tmp_dir_fixture):  # NOQA
 
 
 
-def test_DataSetCreator_staging_api_auto_item_add(tmp_dir_fixture):  # NOQA
+def test_DataSetCreator_staging_api_stage_item(tmp_dir_fixture):  # NOQA
 
     import dtoolcore
     from dtoolcore.utils import generate_identifier
@@ -169,8 +169,7 @@ def test_DataSetCreator_staging_api_auto_item_add(tmp_dir_fixture):  # NOQA
     readme_content = "---\ndescription: a test dataset"
     creator_username = "tester"
 
-    # relpath = os.path.join("subdir", "test.txt")
-    handle = "test.txt"
+    handle = "subdir/test.txt"
 
     with dtoolcore.DataSetCreator(
         name=name,
