@@ -7,8 +7,16 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 [Unreleased]
 ------------
 
+Release with utilities to make it easier to create datasets using the Python API.
+
 Added
 ^^^^^
+
+
+- dtoolcore.create_proto_dataset() helper function
+- dtoolcore.create_derived_proto_dataset() helper function
+- dtoolcore.DataSetCreator helper context manager class
+- dtoolcore.DerivedDataSetCreator helper context manager class
 
 
 Changed
@@ -25,6 +33,9 @@ Removed
 
 Fixed
 ^^^^^
+
+- Made dtoolcore.DiskStorageBroker.put_item more Windows compatible
+- Made dtoolcore.DiskStorageBroker.get_item_abspath more Windows compatible
 
 
 Security
