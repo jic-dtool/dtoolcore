@@ -547,9 +547,12 @@ class DiskStorageBroker(BaseStorageBroker):
         :param identifier: item identifier
         :returns: absolute path from which the item content can be accessed
         """
+        print("In get item abspath")
         manifest = self.get_manifest()
         item = manifest["items"][identifier]
-        item_abspath = os.path.join(self._data_abspath, item["relpath"])
+        relpath = handle_to_osrelpath(item["relpath"], IS_WINDOWS)
+        item_abspath = os.path.join(self._data_abspath, relpath)
+        print("Item abspath: {}".format(item_abspath))
         return item_abspath
 
     def _create_structure(self):
@@ -586,10 +589,8 @@ class DiskStorageBroker(BaseStorageBroker):
         """
 
         # Define the destination path and make any missing parent directories.
-        print("In put_item")
         relpath = handle_to_osrelpath(relpath, IS_WINDOWS)
         dest_path = os.path.join(self._data_abspath, relpath)
-        print("dest_path: {}".format(dest_path))
         dirname = os.path.dirname(dest_path)
         mkdir_parents(dirname)
 
