@@ -7,16 +7,9 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 [Unreleased]
 ------------
 
-Release with utilities to make it easier to create datasets using the Python API.
 
 Added
 ^^^^^
-
-
-- dtoolcore.create_proto_dataset() helper function
-- dtoolcore.create_derived_proto_dataset() helper function
-- dtoolcore.DataSetCreator helper context manager class
-- dtoolcore.DerivedDataSetCreator helper context manager class
 
 
 Changed
@@ -34,12 +27,28 @@ Removed
 Fixed
 ^^^^^
 
-- Made dtoolcore.DiskStorageBroker.put_item more Windows compatible
-- Made dtoolcore.DiskStorageBroker.get_item_abspath more Windows compatible
-
 
 Security
 ^^^^^^^^
+
+[3.15.0] - 2020-01-31
+---------------------
+
+Release with utilities to make it easier to create datasets using the Python API.
+
+Added
+^^^^^
+
+- dtoolcore.create_proto_dataset() helper function
+- dtoolcore.create_derived_proto_dataset() helper function
+- dtoolcore.DataSetCreator helper context manager class
+- dtoolcore.DerivedDataSetCreator helper context manager class
+
+Fixed
+^^^^^
+
+- Made dtoolcore.DiskStorageBroker.put_item more Windows compatible
+- Made dtoolcore.DiskStorageBroker.get_item_abspath more Windows compatible
 
 
 [3.14.0] - 2020-01-21
