@@ -227,3 +227,54 @@ def test_creation_and_reading(tmp_dir_fixture):  # NOQA
         == second_handle
     assert generated_manifest['items'][expected_identifier]['hash'] \
         == '5e5ccafa2018a36f8726398cc6589de8'
+
+
+def test_basic_workflow_with_nested_handle(tmp_dir_fixture):  # NOQA
+
+    from dtoolcore import ProtoDataSet, generate_admin_metadata
+    from dtoolcore import DataSet
+    from dtoolcore.utils import generate_identifier
+    from dtoolcore.storagebroker import DiskStorageBroker
+
+    name = "my_dataset"
+    admin_metadata = generate_admin_metadata(name)
+    dest_uri = DiskStorageBroker.generate_uri(
+        name=name,
+        uuid=admin_metadata["uuid"],
+        base_uri=tmp_dir_fixture)
+
+    sample_data_path = os.path.join(TEST_SAMPLE_DATA)
+    local_file_path = os.path.join(sample_data_path, 'tiny.png')
+    handle = "subdir/tiny.png"
+
+    # Create a minimal dataset
+    proto_dataset = ProtoDataSet(
+        uri=dest_uri,
+        admin_metadata=admin_metadata,
+        config_path=None)
+    proto_dataset.create()
+    handle = proto_dataset.put_item(local_file_path, handle)
+
+    proto_dataset.freeze()
+
+    # Read in a dataset
+    dataset = DataSet.from_uri(dest_uri)
+
+    expected_identifier = generate_identifier(handle)
+    assert expected_identifier in dataset.identifiers
+    assert len(dataset.identifiers) == 1
+
+    # Ensure that the file exists in the disk dataset.
+    # Particularly on Windows.
+    item_abspath = os.path.join(
+        tmp_dir_fixture,
+        name,
+        "data",
+        "subdir",
+        "tiny.png"
+    )
+    assert os.path.isfile(item_abspath)
+
+    # Ensure that the correct abspath is returned.
+    # Particularly on Windows.
+    assert dataset.item_content_abspath(expected_identifier) == item_abspath  # NOQA
