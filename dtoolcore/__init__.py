@@ -149,7 +149,7 @@ def create_derived_proto_dataset(
     """Return :class:`dtoolcore.ProtoDataSet` instance.
 
     It adds the "source_name", "source_uri", and "source_uuid" as
-    annotations and to the descriptive metadata in the readme.
+    annotations.
 
     :param name: dataset name
     :param base_uri: base URI for proto dataset
@@ -162,21 +162,10 @@ def create_derived_proto_dataset(
     proto_dataset.create()
 
     # Add derived info as annotations.
-    proto_dataset.put_annotation("source_name", source_dataset.name)
-    proto_dataset.put_annotation("source_uri", source_dataset.uri)
-    proto_dataset.put_annotation("source_uuid", source_dataset.uuid)
+    proto_dataset.put_annotation("source_dataset_name", source_dataset.name)
+    proto_dataset.put_annotation("source_dataset_uri", source_dataset.uri)
+    proto_dataset.put_annotation("source_dataset_uuid", source_dataset.uuid)
 
-    # Add derived info to the readme.
-    derived_info = """source_name: {}
-source_uri: {}
-source_uuid: {}
-""".format(source_dataset.name, source_dataset.uri, source_dataset.uuid)
-    readme_content = readme_content.strip()
-    if readme_content == "":
-        readme_content = "\n".join(["---", derived_info])
-    else:
-        readme_content = "\n".join([readme_content, derived_info])
-    print(readme_content)
     proto_dataset.put_readme(readme_content)
 
     return proto_dataset
@@ -750,7 +739,7 @@ class DataSetCreator(object):
 
         # Create the staging directory.
         tmpdir_prefix = dtoolcore.utils.get_config_value(
-            "DTOOL_TMPDIR_PREFIX",
+            "DTOOL_STAGING_PREFIX",
             None
         )
         if tmpdir_prefix is None:
@@ -803,21 +792,13 @@ class DataSetCreator(object):
         """
         return self._tmpdir
 
-    def register_staged_file(self, relpath):
-        """Register a file that has been created in the staging directory.
-
-        :returns: item handle
-        """
-        staging_abspath = os.path.join(self._tmpdir, relpath)
-        self._to_stage.append((staging_abspath, relpath))
-        handle = dtoolcore.utils.relpath_to_handle(
-            relpath,
-            dtoolcore.utils.IS_WINDOWS
-        )
-        return handle
-
-    def generate_item_info_for_staging(self, relpath):
+    def prepare_staging_abspath_promise(self, handle):
         """Return abspath and handle to stage a file.
+
+        For getting access to an abspath that can be used to write output to.
+        It is the responsibility of this method to create any missing
+        subdirectories.  It is the responsibility of the user to create the
+        file associated with the abspath.
 
         Use the abspath to create a file in the staging directory.
         The file will be added to the dataset when exiting the
@@ -826,24 +807,20 @@ class DataSetCreator(object):
         The handle can be used to generate an identifier for the item in the
         dataset using the :func:`dtoolcore.utils.generate_identifier` function.
 
-        :params relpath: relative path of the item in the staging area
-        :returns: tuple with absolute path to file in staging area and handle
-                  of the item in the :class:`dtoolcore.ProtoDataSet` class.
+        :params handle: Unix like relpath
+        :returns: tuple with absolute path to the file in staging area
+                  that the user promises to create
         """
         parent_dirs = os.path.join(
             self.staging_directory,
-            os.path.dirname(relpath)
+            os.path.dirname(handle)
         )
         dtoolcore.utils.mkdir_parents(parent_dirs)
-        staging_abspath = os.path.join(parent_dirs, relpath)
+        staging_abspath = os.path.join(parent_dirs, handle)
 
-        self._to_stage.append((staging_abspath, relpath))
+        self._to_stage.append((staging_abspath, handle))
 
-        handle = dtoolcore.utils.relpath_to_handle(
-            relpath,
-            dtoolcore.utils.IS_WINDOWS
-        )
-        return staging_abspath, handle
+        return staging_abspath
 
     def put_item(self, fpath, relpath):
         """
