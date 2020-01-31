@@ -253,7 +253,7 @@ def test_basic_workflow_with_nested_handle(tmp_dir_fixture):  # NOQA
         admin_metadata=admin_metadata,
         config_path=None)
     proto_dataset.create()
-    handle = proto_dataset.put_item(local_file_path, handle)
+    proto_dataset.put_item(local_file_path, handle)
 
     proto_dataset.freeze()
 
@@ -274,6 +274,7 @@ def test_basic_workflow_with_nested_handle(tmp_dir_fixture):  # NOQA
         "tiny.png"
     )
     assert os.path.isfile(item_abspath)
+    assert os.path.isfile(dataset.item_content_abspath(expected_identifier))
 
     # Ensure that the correct abspath is returned.
     # Particularly on Windows.
