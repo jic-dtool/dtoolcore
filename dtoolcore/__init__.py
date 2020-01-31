@@ -648,7 +648,7 @@ class ProtoDataSet(_BaseDataSet):
 
         :param fpath: path to the item on disk
         :param relpath: relative path name given to the item in the dataset as
-                        a handle
+                        a handle, i.e. a Unix-like relpath
         :returns: the handle given to the item
         """
         logger.debug("Put item with handle {} {}".format(relpath, self))

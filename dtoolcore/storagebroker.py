@@ -582,7 +582,7 @@ class DiskStorageBroker(BaseStorageBroker):
 
         :param fpath: path to the item on disk
         :param relpath: relative path name given to the item in the dataset as
-                        a handle
+                        a handle, i.e. a Unix-like relpath
         :returns: the handle given to the item
         """
 
