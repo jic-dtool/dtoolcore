@@ -243,3 +243,11 @@ def relpath_to_handle(relpath, is_windows=False):
     if relpath.startswith("./"):
         relpath = relpath[2:]
     return relpath
+
+
+def handle_to_osrelpath(handle, is_windows=False):
+    """Return OS specific relpath from handle."""
+    directories = handle.split("/")
+    if is_windows:
+        return "\\".join(directories)
+    return "/".join(directories)

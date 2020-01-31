@@ -233,3 +233,11 @@ def test_relpath_to_handle():
     assert relpath_to_handle(
         "subdir\\test.txt",
         is_windows=True) == "subdir/test.txt"
+
+
+def test_handle_to_osrelpath():
+    from dtoolcore.utils import handle_to_osrelpath
+    assert handle_to_osrelpath("subdir/test.txt") == "subdir/test.txt"
+    assert handle_to_osrelpath(
+        "subdir/test.txt",
+        is_windows=True) == "subdir\\test.txt"
