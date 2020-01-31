@@ -780,6 +780,16 @@ class DataSetCreator(object):
         """Return the dataset URI."""
         return self.proto_dataset.uri
 
+    def put_readme(self, content):
+        """
+        Update the README of the dataset and backup the previous README.
+
+        The client is responsible for ensuring that the content is valid YAML.
+
+        :param content: string to put into the README
+        """
+        self.proto_dataset.put_readme(content)
+
     @property
     def staging_directory(self):
         """Return the staging directory.

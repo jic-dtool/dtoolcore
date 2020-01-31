@@ -252,3 +252,27 @@ def test_promised_abspath_missing_raises(tmp_dir_fixture):  # NOQA
             staging_abspath = dataset_creator.prepare_staging_abspath_promise(  # NOQA
                 handle
             )
+
+
+def test_DataSetCreator_put_readme(tmp_dir_fixture):  # NOQA
+
+    import dtoolcore
+
+    name = "my-test-ds"
+    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    readme_content = "---\ndescription: a test dataset"
+    creator_username = "tester"
+    local_file_path = os.path.join(TEST_SAMPLE_DATA, "tiny.png")
+
+    with dtoolcore.DataSetCreator(
+        name=name,
+        base_uri=base_uri,
+        creator_username=creator_username
+    ) as dataset_creator:
+        uri = dataset_creator.uri
+        assert dataset_creator.proto_dataset.get_readme_content() == ""
+        dataset_creator.put_readme(readme_content)
+
+    # The below would raise if the dataset was not frozen.
+    dataset = dtoolcore.DataSet.from_uri(uri)
+    assert readme_content == dataset.get_readme_content()
