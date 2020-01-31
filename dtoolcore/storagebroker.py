@@ -16,6 +16,7 @@ from dtoolcore.utils import (
     IS_WINDOWS,
     windows_to_unix_path,
     unix_to_windows_path,
+    handle_to_osrelpath,
 )
 from dtoolcore.filehasher import FileHasher, md5sum_hexdigest
 
@@ -586,6 +587,7 @@ class DiskStorageBroker(BaseStorageBroker):
 
         # Define the destination path and make any missing parent directories.
         print("In put_item")
+        relpath = handle_to_osrelpath(relpath)
         dest_path = os.path.join(self._data_abspath, relpath)
         print("dest_path: {}".format(dest_path))
         dirname = os.path.dirname(dest_path)
