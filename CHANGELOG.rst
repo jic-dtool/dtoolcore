@@ -11,9 +11,6 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 Added
 ^^^^^
 
-- dtoolcore.DataSetCreator.put_readme() method
-- dtoolcore.DataSetCreator.put_annotation() method
-
 
 Changed
 ^^^^^^^
@@ -33,6 +30,16 @@ Fixed
 
 Security
 ^^^^^^^^
+
+[3.16.0] - 2020-02-03
+---------------------
+
+Added
+^^^^^
+
+- dtoolcore.DataSetCreator.put_readme() method
+- dtoolcore.DataSetCreator.put_annotation() method
+
 
 [3.15.0] - 2020-01-31
 ---------------------
