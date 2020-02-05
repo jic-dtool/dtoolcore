@@ -432,13 +432,19 @@ class _BaseDataSet(object):
             "DTOOL_NUM_PROCESSES",
             default=1
         ))
-        logging.info(
-            "Using {} process(es) to generate manifest".format(
-                num_processes
-            )
-        )
 
+        # Using multiprocessing only makes sense for some storage brokers.
+        _mp_support = self._storage_broker.key == "file"  \
+            or self._storage_broker.key == "symlink"
+
+#       if num_processes > 1 and _mp_support:
         if num_processes > 1:
+
+            logging.info(
+                "Using {} process(es) to generate manifest".format(
+                    num_processes
+                )
+            )
 
             # Create pool of processes.
             pool = mp.Pool(num_processes)
