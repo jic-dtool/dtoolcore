@@ -27,13 +27,21 @@ Removed
 Fixed
 ^^^^^
 
+
+Security
+^^^^^^^^
+
+
+[3.16.1] - 2020-02-05
+---------------------
+
+Fixed
+^^^^^
+
 - Fixed defect where using ``DTOOL_NUM_PROCESSES`` > 1 resulted in
   a cPickle.PicklingError on some storage brokers. Multiprocessing
   is now only used if the storage broker supports it.
 
-
-Security
-^^^^^^^^
 
 [3.16.0] - 2020-02-03
 ---------------------
