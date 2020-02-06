@@ -530,7 +530,7 @@ class DataSet(_BaseDataSet):
         """
         Return an existing :class:`dtoolcore.DataSet` from a URI.
 
-        :params uri: unique resource identifier where the existing
+        :param uri: unique resource identifier where the existing
                      :class:`dtoolcore.DataSet` is stored
         :returns: :class:`dtoolcore.DataSet`
         """
@@ -620,7 +620,7 @@ class ProtoDataSet(_BaseDataSet):
         """
         Return an existing :class:`dtoolcore.ProtoDataSet` from a URI.
 
-        :params uri: unique resource identifier where the existing
+        :param uri: unique resource identifier where the existing
                      :class:`dtoolcore.ProtoDataSet` is stored
         :returns: :class:`dtoolcore.ProtoDataSet`
         """
@@ -821,8 +821,8 @@ class DataSetCreator(object):
         The handle can be used to generate an identifier for the item in the
         dataset using the :func:`dtoolcore.utils.generate_identifier` function.
 
-        :params handle: Unix like relpath
-        :returns: tuple with absolute path to the file in staging area
+        :param handle: Unix like relpath
+        :returns: absolute path to the file in staging area
                   that the user promises to create
         """
         _, ext = os.path.splitext(handle)
