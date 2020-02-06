@@ -344,6 +344,19 @@ class BaseStorageBroker(object):
         self._document_structure()
 
 
+def dataset_abspath_from_uri(uri):
+    """Generate an absolute path to the base of a DataSet stored on filesystem
+    disk in a way that's safe for Windows.
+    """
+
+    parse_result = generous_parse_uri(uri)
+    path = os.path.join(parse_result.netloc, parse_result.path)
+    if path.startswith("/C:"):
+        return os.path.abspath(path[1:])
+    else:
+        return os.path.abspath(path)
+
+
 class DiskStorageBroker(BaseStorageBroker):
     """
     Storage broker to interact with datasets on local disk storage.
@@ -368,11 +381,8 @@ class DiskStorageBroker(BaseStorageBroker):
     _dtool_readme_txt = _DTOOL_README_TXT
 
     def __init__(self, uri, config_path=None):
-
         # Get the abspath to the dataset.
-        parse_result = generous_parse_uri(uri)
-        path = os.path.join(parse_result.netloc, parse_result.path)
-        self._abspath = os.path.abspath(path)
+        self._abspath = dataset_abspath_from_uri(uri)
 
         # Define some other more abspaths.
         self._data_abspath = self._generate_abspath("data_directory")
