@@ -437,8 +437,7 @@ class _BaseDataSet(object):
         _mp_support = self._storage_broker.key == "file"  \
             or self._storage_broker.key == "symlink"
 
-#       if num_processes > 1 and _mp_support:
-        if num_processes > 1:
+        if num_processes > 1 and _mp_support:
 
             logging.info(
                 "Using {} process(es) to generate manifest".format(
