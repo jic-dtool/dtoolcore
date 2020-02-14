@@ -32,7 +32,11 @@ NAME_VALID_CHARS_REGEX = re.compile(r"^[{}]+$".format(NAME_VALID_CHARS_STR))
 
 def windows_to_unix_path(win_path):
     """Return Unix path."""
-    return win_path.replace("\\", "/")
+    unix_path = win_path.replace("\\", "/")
+
+#    if unix_path[1] == ":":
+#        unix_path = unix_path[2:]
+    return unix_path
 
 
 def unix_to_windows_path(unix_path, netloc):
@@ -50,7 +54,9 @@ def generous_parse_uri(uri):
 
     parse_result = urlparse(uri)
 
-    if parse_result.scheme == '':
+    IS_WINDOWS_DRIVE_LETTER = len(parse_result.scheme) == 1
+
+    if parse_result.scheme == '' or IS_WINDOWS_DRIVE_LETTER:
         abspath = os.path.abspath(parse_result.path)
         if IS_WINDOWS:
             abspath = windows_to_unix_path(abspath)
