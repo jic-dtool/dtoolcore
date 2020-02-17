@@ -17,7 +17,7 @@ from collections import defaultdict
 import dtoolcore.utils
 
 
-__version__ = "3.16.0"
+__version__ = "3.16.2"
 
 logger = logging.getLogger(__name__)
 
@@ -39,32 +39,47 @@ def _get_identifier_and_item_properties(d):
 
 def _generate_storage_broker_lookup():
     """Return dictionary of available storage brokers."""
+    logger.debug("In _generate_storage_broker_lookup...")
     storage_broker_lookup = dict()
     for entrypoint in iter_entry_points("dtool.storage_brokers"):
         StorageBroker = entrypoint.load()
-        storage_broker_lookup[StorageBroker.key] = StorageBroker
+        key = StorageBroker.key
+        logger.debug("_gnerate_stroage_broker_lookup.key: {}".format(key))
+        storage_broker_lookup[key] = StorageBroker
+    logger.debug("_generate_storage_broker_lookup.return: {}".format(
+        storage_broker_lookup
+    ))
     return storage_broker_lookup
 
 
 def _get_storage_broker(uri, config_path):
     """Helper function to enable use lookup of appropriate storage brokers."""
+    logger.debug("In _get_storage_broker...")
     uri = dtoolcore.utils.sanitise_uri(uri)
     storage_broker_lookup = _generate_storage_broker_lookup()
+    logger.debug("_get_storage_broker.calling.utils.generous_parse_uri")
     parsed_uri = dtoolcore.utils.generous_parse_uri(uri)
     StorageBroker = storage_broker_lookup[parsed_uri.scheme]
-    return StorageBroker(uri, config_path)
+    storage_broker = StorageBroker(uri, config_path)
+    logger.debug("_get_storage_broker.return: {}".format(storage_broker))
+    return storage_broker
 
 
 def _admin_metadata_from_uri(uri, config_path):
     """Helper function for getting admin metadata."""
+    logger.debug("In _admin_metadata_from_uri...")
+    logger.debug("_admin_metadata_from_uri.input_uri: {}".format(uri))
     uri = dtoolcore.utils.sanitise_uri(uri)
     storage_broker = _get_storage_broker(uri, config_path)
     admin_metadata = storage_broker.get_admin_metadata()
+    logger.debug("_admin_metadata_from_uri.return: {}".format(admin_metadata))
     return admin_metadata
 
 
 def _is_dataset(uri, config_path):
     """Helper function for determining if a URI is a dataset."""
+    logger.debug("In _is_dataset...")
+    logger.debug("_is_dataset.input_uri: {}".format(uri))
     uri = dtoolcore.utils.sanitise_uri(uri)
     storage_broker = _get_storage_broker(uri, config_path)
     return storage_broker.has_admin_metadata()
@@ -72,6 +87,7 @@ def _is_dataset(uri, config_path):
 
 def generate_admin_metadata(name, creator_username=None):
     """Return admin metadata as a dictionary."""
+    logger.debug("In generate_admin_metadata...")
 
     if not dtoolcore.utils.name_is_valid(name):
         raise(DtoolCoreInvalidNameError())
@@ -99,13 +115,17 @@ def _generate_uri(admin_metadata, base_uri):
     :param base_uri: base URI from which to derive dataset URI
     :returns: dataset URI
     """
+    logger.debug("In _generate_uri...")
+    logger.debug("_generate_uri.input_base_uri: {}".format(base_uri))
     name = admin_metadata["name"]
     uuid = admin_metadata["uuid"]
     # storage_broker_lookup = _generate_storage_broker_lookup()
     # parse_result = urlparse(base_uri)
     # storage = parse_result.scheme
     StorageBroker = _get_storage_broker(base_uri, config_path=None)
-    return StorageBroker.generate_uri(name, uuid, base_uri)
+    uri = StorageBroker.generate_uri(name, uuid, base_uri)
+    logger.debug("_generate_uri.return: {}".format(uri))
+    return uri
 
 
 def generate_proto_dataset(admin_metadata, base_uri, config_path=None):
@@ -115,6 +135,7 @@ def generate_proto_dataset(admin_metadata, base_uri, config_path=None):
     :param base_uri: base URI for proto dataset
     :param config_path: path to dtool configuration file
     """
+    logger.debug("In generate_proto_dataset...")
     uri = _generate_uri(admin_metadata, base_uri)
     return ProtoDataSet(uri, admin_metadata, config_path)
 
@@ -132,6 +153,7 @@ def create_proto_dataset(
     :param readme_content: content of README as a string
     :param creator_username: creator username
     """
+    logger.debug("In create_proto_dataset...")
     admin_metadata = generate_admin_metadata(name, creator_username)
     proto_dataset = generate_proto_dataset(admin_metadata, base_uri)
     proto_dataset.create()
@@ -157,6 +179,7 @@ def create_derived_proto_dataset(
     :param readme_content: content of README as a string
     :param creator_username: creator username
     """
+    logger.debug("In create_derived_proto_dataset...")
     admin_metadata = generate_admin_metadata(name, creator_username)
     proto_dataset = generate_proto_dataset(admin_metadata, base_uri)
     proto_dataset.create()
@@ -432,13 +455,18 @@ class _BaseDataSet(object):
             "DTOOL_NUM_PROCESSES",
             default=1
         ))
-        logging.info(
-            "Using {} process(es) to generate manifest".format(
-                num_processes
-            )
-        )
 
-        if num_processes > 1:
+        # Using multiprocessing only makes sense for some storage brokers.
+        _mp_support = self._storage_broker.key == "file"  \
+            or self._storage_broker.key == "symlink"
+
+        if num_processes > 1 and _mp_support:
+
+            logger.info(
+                "Using {} process(es) to generate manifest".format(
+                    num_processes
+                )
+            )
 
             # Create pool of processes.
             pool = mp.Pool(num_processes)
@@ -524,7 +552,7 @@ class DataSet(_BaseDataSet):
         """
         Return an existing :class:`dtoolcore.DataSet` from a URI.
 
-        :params uri: unique resource identifier where the existing
+        :param uri: unique resource identifier where the existing
                      :class:`dtoolcore.DataSet` is stored
         :returns: :class:`dtoolcore.DataSet`
         """
@@ -614,7 +642,7 @@ class ProtoDataSet(_BaseDataSet):
         """
         Return an existing :class:`dtoolcore.ProtoDataSet` from a URI.
 
-        :params uri: unique resource identifier where the existing
+        :param uri: unique resource identifier where the existing
                      :class:`dtoolcore.ProtoDataSet` is stored
         :returns: :class:`dtoolcore.ProtoDataSet`
         """
@@ -815,8 +843,8 @@ class DataSetCreator(object):
         The handle can be used to generate an identifier for the item in the
         dataset using the :func:`dtoolcore.utils.generate_identifier` function.
 
-        :params handle: Unix like relpath
-        :returns: tuple with absolute path to the file in staging area
+        :param handle: Unix like relpath
+        :returns: absolute path to the file in staging area
                   that the user promises to create
         """
         _, ext = os.path.splitext(handle)
