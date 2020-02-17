@@ -369,6 +369,8 @@ class DiskStorageBroker(BaseStorageBroker):
 
     def __init__(self, uri, config_path=None):
 
+        logger.debug("Initialising {}...".format(self))
+
         # Get the abspath to the dataset.
         parse_result = generous_parse_uri(uri)
         path = os.path.join(parse_result.netloc, parse_result.path)
@@ -439,8 +441,10 @@ class DiskStorageBroker(BaseStorageBroker):
 
     @classmethod
     def generate_uri(cls, name, uuid, base_uri):
-        prefix = generous_parse_uri(base_uri).path
-        netloc = generous_parse_uri(base_uri).netloc
+        logger.debug("In DiskStorageBroker.generate_uri...")
+        parsed_uri = generous_parse_uri(base_uri)
+        prefix = parsed_uri.path
+        netloc = parsed_uri.netloc
         dataset_path = os.path.join(netloc, prefix, name)
         dataset_abspath = os.path.abspath(dataset_path)
         if IS_WINDOWS:
