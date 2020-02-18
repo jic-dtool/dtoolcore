@@ -9,7 +9,5 @@
 .tox
 .cache
 .pytest_cache
-.vscode
-
 env/
 dist/

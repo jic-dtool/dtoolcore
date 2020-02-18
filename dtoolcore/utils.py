@@ -11,14 +11,11 @@ import base64
 import datetime
 import re
 import socket
-import logging
 
 try:
     from urlparse import urlparse, urlunparse
 except ImportError:
     from urllib.parse import urlparse, urlunparse
-
-logger = logging.getLogger(__name__)
 
 IS_WINDOWS = False
 if platform.system() == "Windows":
@@ -35,23 +32,16 @@ NAME_VALID_CHARS_REGEX = re.compile(r"^[{}]+$".format(NAME_VALID_CHARS_STR))
 
 def windows_to_unix_path(win_path):
     """Return Unix path."""
-    logger.debug("In windows_to_unix_path...")
-    logger.debug("windows_to_unix_path.input_win_path: {}".format(win_path))
     unix_path = win_path.replace("\\", "/")
 
 #    if unix_path[1] == ":":
 #        unix_path = unix_path[2:]
-    logger.debug("windows_to_unix_path.return: {}".format(unix_path))
     return unix_path
 
 
 def unix_to_windows_path(unix_path, netloc):
     """Return Windows path."""
-    logger.debug("In unix_to_windows_path...")
-    logger.debug("unix_to_windows_path.input_unix_path: {}".format(unix_path))
-    win_path = netloc + unix_path.replace("/", "\\")
-    logger.debug("unix_to_windows_path.return: {}".format(win_path))
-    return win_path
+    return netloc + unix_path.replace("/", "\\")
 
 
 def generous_parse_uri(uri):
@@ -61,8 +51,6 @@ def generous_parse_uri(uri):
     When passed a relative path, it determines the absolute path, sets the
     scheme to file, the netloc to localhost and returns a parse of the result.
     """
-    logger.debug("In generous_pase_uri...")
-    logger.debug("generous_pase_uri.input_uri: {}".format(uri))
 
     parse_result = urlparse(uri)
 
@@ -78,18 +66,13 @@ def generous_parse_uri(uri):
         )
         parse_result = urlparse(fixed_uri)
 
-    logger.debug("generouse_pase_uri.return: {}".format(parse_result))
     return parse_result
 
 
 def sanitise_uri(uri):
     """Return fully qualified uri from the input, which might be a relpath."""
-    logger.debug("In sanitise_uri...")
-    logger.debug("sanitise_uri.input_uri: {}".format(uri))
-    logger.debug("sanitise_uri.calling.utils.generouse_parse_uri")
-    uri = urlunparse(generous_parse_uri(uri))
-    logger.debug("sanitise_uri.return: {}".format(uri))
-    return uri
+
+    return urlunparse(generous_parse_uri(uri))
 
 
 def cross_platform_getuser(is_windows, no_username_in_env):
