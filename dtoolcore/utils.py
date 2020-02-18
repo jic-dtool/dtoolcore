@@ -5,6 +5,7 @@ import errno
 import getpass
 import hashlib
 import json
+import logging
 import platform
 import binascii
 import base64
@@ -16,6 +17,8 @@ try:
     from urlparse import urlparse, urlunparse
 except ImportError:
     from urllib.parse import urlparse, urlunparse
+
+logger = logging.getLogger(__name__)
 
 IS_WINDOWS = False
 if platform.system() == "Windows":
@@ -32,16 +35,32 @@ NAME_VALID_CHARS_REGEX = re.compile(r"^[{}]+$".format(NAME_VALID_CHARS_STR))
 
 def windows_to_unix_path(win_path):
     """Return Unix path."""
+    logger.debug("In windows_to_unix_path...")
+    logger.debug("windows_to_unix_path.input_win_path: {}".format(win_path))
     unix_path = win_path.replace("\\", "/")
 
-#    if unix_path[1] == ":":
-#        unix_path = unix_path[2:]
+    # Deal with Windows path defect where path has incorrect starting /, e.g.
+    # /C:/some/path.
+    if IS_WINDOWS and len(unix_path) >=2  and unix_path[0] == "/" and unix_path[2] == ":":  # NOQA
+        unix_path = unix_path[1:]
+
+    logger.debug("windows_to_unix_path.return: {}".format(unix_path))
     return unix_path
 
 
-def unix_to_windows_path(unix_path, netloc):
+def unix_to_windows_path(unix_path):
     """Return Windows path."""
-    return netloc + unix_path.replace("/", "\\")
+    logger.debug("In unix_to_windows_path...")
+    logger.debug("unix_to_windows_path.input_unix_path: {}".format(unix_path))
+
+    # Deal with Windows path defect where path has incorrect starting /, e.g.
+    # /C:/some/path.
+    if IS_WINDOWS  and len(unix_path) >= 2  and unix_path[0] == "/" and unix_path[2] == ":":  # NOQA
+        unix_path = unix_path[1:]
+
+    win_path = unix_path.replace("/", "\\")
+    logger.debug("unix_to_windows_path.return: {}".format(win_path))
+    return win_path
 
 
 def generous_parse_uri(uri):
@@ -58,12 +77,13 @@ def generous_parse_uri(uri):
 
     if parse_result.scheme == '' or IS_WINDOWS_DRIVE_LETTER:
         abspath = os.path.abspath(parse_result.path)
-        if IS_WINDOWS:
-            abspath = windows_to_unix_path(abspath)
         fixed_uri = "file://{}{}".format(
             socket.gethostname(),
             abspath
         )
+        if IS_WINDOWS:
+            abspath = windows_to_unix_path(abspath)
+            fixed_uri = "file:///{}".format(abspath)
         parse_result = urlparse(fixed_uri)
 
     return parse_result

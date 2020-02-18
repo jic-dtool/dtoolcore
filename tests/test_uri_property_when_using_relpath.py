@@ -44,4 +44,7 @@ def test_uri_property_when_using_relpath(chdir_fixture):  # NOQA
     assert dataset.uri.endswith(abspath)
 
     parsed = urlparse(dataset.uri)
-    assert parsed.netloc != ""
+    if IS_WINDOWS:
+        assert parsed.netloc == ""
+    else:
+        assert parsed.netloc != ""

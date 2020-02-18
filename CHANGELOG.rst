@@ -27,6 +27,8 @@ Removed
 Fixed
 ^^^^^
 
+- Fixed several defects in how URIs were parsed and generated on Windows.
+
 
 Security
 ^^^^^^^^
