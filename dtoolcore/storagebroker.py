@@ -344,6 +344,20 @@ class BaseStorageBroker(object):
         self._document_structure()
 
 
+def _get_abspath_from_uri(uri):
+    """Return abspath.
+    """
+    logger.debug("In _get_abspath_from_uri")
+    logger.debug("_get_abspath_from_uri.input_uri: {}".format(uri))
+    parse_result = generous_parse_uri(uri)
+    path = parse_result.path
+    if IS_WINDOWS:
+        path = unix_to_windows_path(path)
+    abspath = os.path.abspath(path)
+    logger.debug("_get_abspath_from_uri.return: {}".format(abspath))
+    return abspath
+
+
 class DiskStorageBroker(BaseStorageBroker):
     """
     Storage broker to interact with datasets on local disk storage.
@@ -372,9 +386,7 @@ class DiskStorageBroker(BaseStorageBroker):
         logger.debug("Initialising {}...".format(self))
 
         # Get the abspath to the dataset.
-        parse_result = generous_parse_uri(uri)
-        path = os.path.join(parse_result.netloc, parse_result.path)
-        self._abspath = os.path.abspath(path)
+        self._abspath = _get_abspath_from_uri(uri)
 
         # Define some other more abspaths.
         self._data_abspath = self._generate_abspath("data_directory")
@@ -417,7 +429,7 @@ class DiskStorageBroker(BaseStorageBroker):
 
         path = parsed_uri.path
         if IS_WINDOWS:
-            path = unix_to_windows_path(parsed_uri.path, parsed_uri.netloc)
+            path = unix_to_windows_path(parsed_uri.path)
 
         for d in os.listdir(path):
             dir_path = os.path.join(path, d)
@@ -443,17 +455,20 @@ class DiskStorageBroker(BaseStorageBroker):
     def generate_uri(cls, name, uuid, base_uri):
         logger.debug("In DiskStorageBroker.generate_uri...")
         parsed_uri = generous_parse_uri(base_uri)
-        prefix = parsed_uri.path
-        netloc = parsed_uri.netloc
-        dataset_path = os.path.join(netloc, prefix, name)
+        base_dir_path = parsed_uri.path
+        if IS_WINDOWS:
+            base_dir_path = unix_to_windows_path(base_dir_path)
+        dataset_path = os.path.join(base_dir_path, name)
         dataset_abspath = os.path.abspath(dataset_path)
         if IS_WINDOWS:
             dataset_abspath = windows_to_unix_path(dataset_abspath)
-        return "{}://{}{}".format(
-            cls.key,
-            socket.gethostname(),
-            dataset_abspath
-        )
+            return "{}:///{}".format(cls.key, dataset_abspath)
+        else:
+            return "{}://{}{}".format(
+                cls.key,
+                socket.gethostname(),
+                dataset_abspath
+            )
 
     # Methods to override.
 

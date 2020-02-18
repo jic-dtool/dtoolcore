@@ -347,6 +347,7 @@ class _BaseDataSet(object):
 
     def __init__(self, uri, admin_metadata, config_path=None):
 
+        logger.debug("Initialising _BaseDataSet...")
         uri = dtoolcore.utils.sanitise_uri(uri)
 
         self._admin_metadata = admin_metadata
@@ -371,6 +372,7 @@ class _BaseDataSet(object):
     @property
     def base_uri(self):
         """Return the base URI of the dataset."""
+        logger.debug("In base_uri...")
         return self._storage_broker.generate_base_uri(self.uri)
 
     @property

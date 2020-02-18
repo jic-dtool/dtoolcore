@@ -37,16 +37,28 @@ def windows_to_unix_path(win_path):
     """Return Unix path."""
     logger.debug("In windows_to_unix_path...")
     logger.debug("windows_to_unix_path.input_win_path: {}".format(win_path))
-    linux_path = win_path.replace("\\", "/")
-    logger.debug("windows_to_unix_path.return: {}".format(linux_path))
-    return linux_path
+    unix_path = win_path.replace("\\", "/")
+
+    # Deal with Windows path defect where path has incorrect starting /, e.g.
+    # /C:/some/path.
+    if IS_WINDOWS and len(unix_path) >=2  and unix_path[0] == "/" and unix_path[2] == ":":  # NOQA
+        unix_path = unix_path[1:]
+
+    logger.debug("windows_to_unix_path.return: {}".format(unix_path))
+    return unix_path
 
 
-def unix_to_windows_path(unix_path, netloc):
+def unix_to_windows_path(unix_path):
     """Return Windows path."""
     logger.debug("In unix_to_windows_path...")
     logger.debug("unix_to_windows_path.input_unix_path: {}".format(unix_path))
-    win_path = netloc + unix_path.replace("/", "\\")
+
+    # Deal with Windows path defect where path has incorrect starting /, e.g.
+    # /C:/some/path.
+    if IS_WINDOWS  and len(unix_path) >= 2  and unix_path[0] == "/" and unix_path[2] == ":":  # NOQA
+        unix_path = unix_path[1:]
+
+    win_path = unix_path.replace("/", "\\")
     logger.debug("unix_to_windows_path.return: {}".format(win_path))
     return win_path
 
@@ -63,14 +75,17 @@ def generous_parse_uri(uri):
 
     parse_result = urlparse(uri)
 
-    if parse_result.scheme == '':
+    IS_WINDOWS_DRIVE_LETTER = len(parse_result.scheme) == 1
+
+    if parse_result.scheme == '' or IS_WINDOWS_DRIVE_LETTER:
         abspath = os.path.abspath(parse_result.path)
-        if IS_WINDOWS:
-            abspath = windows_to_unix_path(abspath)
         fixed_uri = "file://{}{}".format(
             socket.gethostname(),
             abspath
         )
+        if IS_WINDOWS:
+            abspath = windows_to_unix_path(abspath)
+            fixed_uri = "file:///{}".format(abspath)
         parse_result = urlparse(fixed_uri)
 
     logger.debug("generouse_pase_uri.return: {}".format(parse_result))
