@@ -7,6 +7,7 @@
 .coverage
 .eggs
 .tox
+.vscode
 .cache
 .pytest_cache
 env/
