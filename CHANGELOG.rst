@@ -27,11 +27,18 @@ Removed
 Fixed
 ^^^^^
 
-- Fixed several defects in how URIs were parsed and generated on Windows.
-
 
 Security
 ^^^^^^^^
+
+
+[3.16.3] - 2020-02-28
+---------------------
+
+Fixed
+^^^^^
+
+- Fixed several defects in how URIs were parsed and generated on Windows.
 
 
 [3.16.2] - 2020-02-05
