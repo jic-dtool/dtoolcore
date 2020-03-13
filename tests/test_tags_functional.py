@@ -13,21 +13,35 @@ def test_tags_functional(tmp_dir_fixture):
         # Test put on proto dataset.
         c.put_tag("testing")
 
+        uri = c.uri
+
     dataset = DataSet.from_uri(uri)
-    assert dataset.get_tags() == []
+    assert dataset.get_tags() == ["testing"]
 
     dataset.put_tag("amazing")
     dataset.put_tag("stuff")
-    assert dataset.get_tags() == ["amazing", "stuff"]
+    assert dataset.get_tags() == ["amazing", "stuff", "testing"]
 
     c.delete_tag("stuff")
-    assert dataset.get_tags() == ["amazing"]
+    assert dataset.get_tags() == ["amazing", "testing"]
+
+    # Putting the same tag is idempotent.
+    dataset.put_tag("amazing")
+    dataset.put_tag("amazing")
+    dataset.put_tag("amazing")
+    assert dataset.get_tags() == ["amazing", "testing"]
 
     # Tags can only be strings.
-    with pytest.raises(ValueError):
+    from dtoolcore import DtoolCoreValueError
+    with pytest.raises(DtoolCoreValueError):
         dataset.put_tag(1)
 
     # Tags need to adhere to the utils.name_is_valid() rules.
     from dtoolcore import DtoolCoreInvalidNameError
     with pytest.raises(DtoolCoreInvalidNameError):
         dataset.put_tag("!invalid")
+
+    # Deleting a non exiting tag raises.
+    from dtoolcore import DtoolCoreKeyError
+    with pytest.raises(DtoolCoreKeyError):
+        c.delete_tag("dontexist")
