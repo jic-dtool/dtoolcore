@@ -2,10 +2,10 @@
 
 import pytest
 
-from . import tmp_dir_fixture
+from . import tmp_dir_fixture  # NOQA
 
 
-def test_tags_functional(tmp_dir_fixture):
+def test_tags_functional(tmp_dir_fixture):  # NOQA
 
     from dtoolcore import DataSetCreator, DataSet
 
