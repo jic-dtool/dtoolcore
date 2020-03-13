@@ -536,6 +536,33 @@ class _BaseDataSet(object):
         logger.debug("List annotation names {}".format(self))
         return sorted(self._storage_broker.list_annotation_names())
 
+    def put_tag(self, tag):
+        """Annotate the dataset with a tag.
+
+        :param tag: tag
+        :raises: DtoolCoreInvalidNameError if the tag is invalid
+        :raises: DtoolCoreValueError if the tag is not a string
+        """
+        if not isinstance(tag, str):
+            raise(DtoolCoreValueError())
+
+        if not dtoolcore.utils.name_is_valid(tag):
+            raise(DtoolCoreInvalidNameError())
+
+        self._storage_broker.put_tag(tag)
+
+    def delete_tag(self, tag):
+        """Delete a tag from a dataset.
+
+        :param tag: tag
+        :raises: DtoolCoreKeyError if the tag does not exist
+        """
+        self._storage_broker.delete_tag(tag)
+
+    def list_tags(self):
+        """Return the dataset's tags as a list."""
+        return self._storage_broker.list_tags()
+
 
 class DataSet(_BaseDataSet):
     """
@@ -898,6 +925,15 @@ class DataSetCreator(object):
                  is invalid
         """
         self.proto_dataset.put_annotation(annotation_name, annotation)
+
+    def put_tag(self, tag):
+        """Annotate the dataset with a tag.
+
+        :param tag: tag
+        :raises: DtoolCoreInvalidNameError if the tag is invalid
+        :raises: ValueError if the tag is not a string
+        """
+        self.proto_dataset.put_tag(tag)
 
 
 class DerivedDataSetCreator(DataSetCreator):

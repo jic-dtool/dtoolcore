@@ -323,7 +323,7 @@ In the code below we label the ``animal_sounds_dataset`` with the tags
 
 The code below iterates over all the tags in the dataset and prints them.
 
-    >>> for tag in animal_sounds_dataset.get_tags():
+    >>> for tag in animal_sounds_dataset.list_tags():
     ...     print(tag)
     ...
     animal

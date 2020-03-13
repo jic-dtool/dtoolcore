@@ -7,7 +7,7 @@ import logging
 import datetime
 import socket
 
-from dtoolcore import __version__
+from dtoolcore import __version__, DtoolCoreKeyError
 from dtoolcore.utils import (
     mkdir_parents,
     generate_identifier,
@@ -33,6 +33,7 @@ _STRUCTURE_PARAMETERS = {
     "manifest_relpath": [".dtool", "manifest.json"],
     "overlays_directory": [".dtool", "overlays"],
     "annotations_directory": [".dtool", "annotations"],
+    "tags_directory": [".dtool", "tags"],
     "metadata_fragments_directory": [".dtool", "tmp_fragments"],
     "storage_broker_version": __version__,
 }
@@ -57,6 +58,7 @@ Structural metadata describing the dataset: .dtool/structure.json
 Structural metadata describing the data items: .dtool/manifest.json
 Per item descriptive metadata: .dtool/overlays/
 Dataset key/value pairs metadata: .dtool/annotations/
+Dataset tags metadata: .dtool/tags/
 """
 
 
@@ -93,6 +95,10 @@ class BaseStorageBroker(object):
         """Put the text into the storage associated with the key."""
         raise(NotImplementedError())
 
+    def delete_key(self, key):
+        """Delete the file/object associated with the key."""
+        raise(NotImplementedError())
+
     def get_admin_metadata_key(self):
         """Return the admin metadata key."""
         raise(NotImplementedError())
@@ -113,12 +119,20 @@ class BaseStorageBroker(object):
         """Return the annotation key."""
         raise(NotImplementedError())
 
+    def get_tag_key(self, tag):
+        """Return the tag key."""
+        raise(NotImplementedError())
+
     def list_overlay_names(self):
         """Return list of overlay names."""
         raise(NotImplementedError())
 
     def list_annotation_names(self):
         """Return list of annotation names."""
+        raise(NotImplementedError())
+
+    def list_tags(self):
+        """Return list of tags."""
         raise(NotImplementedError())
 
     def get_item_abspath(self, identifier):
@@ -311,6 +325,23 @@ class BaseStorageBroker(object):
         text = json.dumps(annotation, indent=2)
         self.put_text(key, text)
 
+    def put_tag(self, tag):
+        """Annotate the dataset with a tag.
+        """
+        logger.debug("Putting tag: {} {}".format(tag, self))
+        key = self.get_tag_key(tag)
+        self.put_text(key, "")
+
+    def delete_tag(self, tag):
+        """Delete a tag from a dataset.
+
+        :param tag: tag
+        :raises: DtoolCoreKeyError if the tag does not exist
+        """
+        logger.debug("Deleting tag: {} {}".format(tag, self))
+        key = self.get_tag_key(tag)
+        self.delete_key(key)
+
     def get_relpath(self, handle):
         """Return the relative path."""
         return handle
@@ -394,6 +425,9 @@ class DiskStorageBroker(BaseStorageBroker):
         self._annotations_abspath = self._generate_abspath(
             "annotations_directory"
         )
+        self._tags_abspath = self._generate_abspath(
+            "tags_directory"
+        )
         self._metadata_fragments_abspath = self._generate_abspath(
             "metadata_fragments_directory"
         )
@@ -403,7 +437,8 @@ class DiskStorageBroker(BaseStorageBroker):
             self._generate_abspath("dtool_directory"),
             self._data_abspath,
             self._overlays_abspath,
-            self._annotations_abspath
+            self._annotations_abspath,
+            self._tags_abspath,
         ]
 
     # Generic helper functions.
@@ -484,6 +519,13 @@ class DiskStorageBroker(BaseStorageBroker):
         with open(key, "w") as fh:
             fh.write(text)
 
+    def delete_key(self, key):
+        """Delete the file/object associated with the key."""
+        try:
+            os.unlink(key)
+        except OSError:
+            raise(DtoolCoreKeyError())
+
     def get_admin_metadata_key(self):
         "Return the path to the admin metadata file."""
         return self._generate_abspath("admin_metadata_relpath")
@@ -513,6 +555,13 @@ class DiskStorageBroker(BaseStorageBroker):
         return os.path.join(
             self._annotations_abspath,
             annotation_name + '.json'
+        )
+
+    def get_tag_key(self, tag):
+        "Return the path to the tag file."""
+        return os.path.join(
+            self._tags_abspath,
+            tag
         )
 
     def get_size_in_bytes(self, handle):
@@ -559,6 +608,15 @@ class DiskStorageBroker(BaseStorageBroker):
             name, ext = os.path.splitext(fname)
             annotation_names.append(name)
         return annotation_names
+
+    def list_tags(self):
+        """Return list of tags."""
+        tags = []
+        if not os.path.isdir(self._tags_abspath):
+            return tags
+        for fname in os.listdir(self._tags_abspath):
+            tags.append(fname)
+        return tags
 
     def get_item_abspath(self, identifier):
         """Return absolute path at which item content can be accessed.

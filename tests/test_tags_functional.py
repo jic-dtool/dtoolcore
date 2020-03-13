@@ -16,20 +16,20 @@ def test_tags_functional(tmp_dir_fixture):  # NOQA
         uri = c.uri
 
     dataset = DataSet.from_uri(uri)
-    assert dataset.get_tags() == ["testing"]
+    assert dataset.list_tags() == ["testing"]
 
     dataset.put_tag("amazing")
     dataset.put_tag("stuff")
-    assert dataset.get_tags() == ["amazing", "stuff", "testing"]
+    assert dataset.list_tags() == ["amazing", "stuff", "testing"]
 
-    c.delete_tag("stuff")
-    assert dataset.get_tags() == ["amazing", "testing"]
+    dataset.delete_tag("stuff")
+    assert dataset.list_tags() == ["amazing", "testing"]
 
     # Putting the same tag is idempotent.
     dataset.put_tag("amazing")
     dataset.put_tag("amazing")
     dataset.put_tag("amazing")
-    assert dataset.get_tags() == ["amazing", "testing"]
+    assert dataset.list_tags() == ["amazing", "testing"]
 
     # Tags can only be strings.
     from dtoolcore import DtoolCoreValueError
@@ -44,4 +44,4 @@ def test_tags_functional(tmp_dir_fixture):  # NOQA
     # Deleting a non exiting tag raises.
     from dtoolcore import DtoolCoreKeyError
     with pytest.raises(DtoolCoreKeyError):
-        c.delete_tag("dontexist")
+        dataset.delete_tag("dontexist")
