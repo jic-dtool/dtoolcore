@@ -305,6 +305,39 @@ dataset.
     dog.txt - bark
 
 
+Tagging a dataset
+-----------------
+
+It is possible to add "tags" to datasets and protodatasets. Tags are labels
+that can be used to organise datasets into groups. A tag is basically a short
+piece of text describing a dataset. It is possible to label a dataset with
+several tags.
+
+In the code below we label the ``animal_sounds_dataset`` with the tags
+"animal" and "sound".
+
+.. code-block:: python
+
+    >>> animal_sounds_dataset.put_tag("animal")
+    >>> animal_sounds_dataset.put_tag("sound")
+
+The code below iterates over all the tags in the dataset and prints them.
+
+    >>> for tag in animal_sounds_dataset.get_tags():
+    ...     print(tag)
+    ...
+    animal
+    sound
+
+It is possible to delete a tag.
+
+    >>> animal_sounds_dataset.delete_tag("sound")
+
+If the tag does not exist a :class:`dtoolcore.DtoolCoreKeyError` exception is raised.
+
+
+
+
 ..  clean up
 
     >>> import shutil
