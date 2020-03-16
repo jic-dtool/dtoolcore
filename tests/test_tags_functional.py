@@ -41,7 +41,5 @@ def test_tags_functional(tmp_dir_fixture):  # NOQA
     with pytest.raises(DtoolCoreInvalidNameError):
         dataset.put_tag("!invalid")
 
-    # Deleting a non exiting tag raises.
-    from dtoolcore import DtoolCoreKeyError
-    with pytest.raises(DtoolCoreKeyError):
-        dataset.delete_tag("dontexist")
+    # Deleting a non exiting tag does not raise any exceptions.
+    dataset.delete_tag("dontexist")

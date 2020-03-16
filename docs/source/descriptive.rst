@@ -333,7 +333,9 @@ It is possible to delete a tag.
 
     >>> animal_sounds_dataset.delete_tag("sound")
 
-If the tag does not exist a :class:`dtoolcore.DtoolCoreKeyError` exception is raised.
+If the tag does not exist the command above would simply do nothing, but would
+not raise any exceptions.
+
 
 
 

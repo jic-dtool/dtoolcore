@@ -7,7 +7,7 @@ import logging
 import datetime
 import socket
 
-from dtoolcore import __version__, DtoolCoreKeyError
+from dtoolcore import __version__
 from dtoolcore.utils import (
     mkdir_parents,
     generate_identifier,
@@ -336,7 +336,6 @@ class BaseStorageBroker(object):
         """Delete a tag from a dataset.
 
         :param tag: tag
-        :raises: DtoolCoreKeyError if the tag does not exist
         """
         logger.debug("Deleting tag: {} {}".format(tag, self))
         key = self.get_tag_key(tag)
@@ -524,7 +523,7 @@ class DiskStorageBroker(BaseStorageBroker):
         try:
             os.unlink(key)
         except OSError:
-            raise(DtoolCoreKeyError())
+            pass
 
     def get_admin_metadata_key(self):
         "Return the path to the admin metadata file."""
