@@ -7,23 +7,9 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 [Unreleased]
 ------------
 
-Added support for tags.
-
 
 Added
 ^^^^^
-
-- Added ``dtoolcore._BaseDataSet.put_tag()`` method
-- Added ``dtoolcore._BaseDataSet.delete_tag()`` method
-- Added ``dtoolcore._BaseDataSet.list_tags()`` method
-- Added ``dtoolcore.storagebroker.BaseStorageBroker.delete_key()`` method
-- Added ``dtoolcore.storagebroker.BaseStorageBroker.get_tag_key()`` method
-- Added ``dtoolcore.storagebroker.BaseStorageBroker.list_tags()`` method
-- Added ``dtoolcore.storagebroker.BaseStorageBroker.put_tag()`` method
-- Added ``dtoolcore.storagebroker.BaseStorageBroker.delete_tag()`` method
-- Added ``dtoolcore.storagebroker.DiskStorageBroker.delete_key()`` method
-- Added ``dtoolcore.storagebroker.DiskStorageBroker.get_tag_key()`` method
-- Added ``dtoolcore.storagebroker.DiskStorageBroker.list_tags()`` method
 
 
 Changed
@@ -44,6 +30,26 @@ Fixed
 
 Security
 ^^^^^^^^
+
+[3.17.0] - 2020-03-19
+---------------------
+
+Added support for tags.
+
+Added
+^^^^^
+
+- Added ``dtoolcore._BaseDataSet.put_tag()`` method
+- Added ``dtoolcore._BaseDataSet.delete_tag()`` method
+- Added ``dtoolcore._BaseDataSet.list_tags()`` method
+- Added ``dtoolcore.storagebroker.BaseStorageBroker.delete_key()`` method
+- Added ``dtoolcore.storagebroker.BaseStorageBroker.get_tag_key()`` method
+- Added ``dtoolcore.storagebroker.BaseStorageBroker.list_tags()`` method
+- Added ``dtoolcore.storagebroker.BaseStorageBroker.put_tag()`` method
+- Added ``dtoolcore.storagebroker.BaseStorageBroker.delete_tag()`` method
+- Added ``dtoolcore.storagebroker.DiskStorageBroker.delete_key()`` method
+- Added ``dtoolcore.storagebroker.DiskStorageBroker.get_tag_key()`` method
+- Added ``dtoolcore.storagebroker.DiskStorageBroker.list_tags()`` method
 
 
 [3.16.3] - 2020-02-28
