@@ -1,7 +1,7 @@
 from setuptools import setup
 
 
-version = "3.16.3"
+version = "3.17.0"
 url = "https://github.com/jic-dtool/dtoolcore"
 readme = open('README.rst').read()
 
