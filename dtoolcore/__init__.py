@@ -108,7 +108,7 @@ def generate_admin_metadata(name, creator_username=None):
     return admin_metadata
 
 
-def _generate_uri(admin_metadata, base_uri):
+def _generate_uri(admin_metadata, base_uri, config_path=None):
     """Return dataset URI.
 
     :param admin_metadata: dataset administrative metadata
@@ -122,7 +122,7 @@ def _generate_uri(admin_metadata, base_uri):
     # storage_broker_lookup = _generate_storage_broker_lookup()
     # parse_result = urlparse(base_uri)
     # storage = parse_result.scheme
-    StorageBroker = _get_storage_broker(base_uri, config_path=None)
+    StorageBroker = _get_storage_broker(base_uri, config_path)
     uri = StorageBroker.generate_uri(name, uuid, base_uri)
     logger.debug("_generate_uri.return: {}".format(uri))
     return uri
@@ -136,7 +136,7 @@ def generate_proto_dataset(admin_metadata, base_uri, config_path=None):
     :param config_path: path to dtool configuration file
     """
     logger.debug("In generate_proto_dataset...")
-    uri = _generate_uri(admin_metadata, base_uri)
+    uri = _generate_uri(admin_metadata, base_uri, config_path)
     return ProtoDataSet(uri, admin_metadata, config_path)
 
 
@@ -312,7 +312,7 @@ def copy_resume(src_uri, dest_base_uri, config_path=None, progressbar=None):
     dataset = DataSet.from_uri(src_uri)
 
     # Generate the URI of the destination proto dataset.
-    dest_uri = _generate_uri(dataset._admin_metadata, dest_base_uri)
+    dest_uri = _generate_uri(dataset._admin_metadata, dest_base_uri, config_path)
 
     proto_dataset = ProtoDataSet.from_uri(dest_uri)
 
