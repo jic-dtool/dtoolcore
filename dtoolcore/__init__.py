@@ -322,6 +322,36 @@ def copy_resume(src_uri, dest_base_uri, config_path=None, progressbar=None):
     return proto_dataset.uri
 
 
+def _iter_datasets_in_base_uri(base_uri, dataset_cls):
+    base_uri = dtoolcore.utils.sanitise_uri(base_uri)
+    config_path = dtoolcore.utils.DEFAULT_CONFIG_PATH
+    StorageBroker = _get_storage_broker(base_uri, config_path)
+    for uri in StorageBroker.list_dataset_uris(base_uri, config_path):
+        try:
+            dataset = dataset_cls.from_uri(uri)
+            yield dataset
+        except DtoolCoreTypeError:
+            pass
+
+
+def iter_datasets_in_base_uri(base_uri):
+    """Yield :class:`dtoolcore.DataSet` instances present in the base URI.
+
+    :params base_uri: base URI
+    :return: iterator yielding :class:`dtoolcore.DataSet` instances
+    """
+    return _iter_datasets_in_base_uri(base_uri, DataSet)
+
+
+def iter_proto_datasets_in_base_uri(base_uri):
+    """Yield :class:`dtoolcore.ProtoDataSet` instances present in the base URI.
+
+    :params base_uri: base URI
+    :return: iterator yielding :class:`dtoolcore.ProtoDataSet` instances
+    """
+    return _iter_datasets_in_base_uri(base_uri, ProtoDataSet)
+
+
 class DtoolCoreTypeError(TypeError):
     pass
 

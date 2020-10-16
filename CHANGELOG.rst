@@ -11,6 +11,9 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 Added
 ^^^^^
 
+- ``dtoolcore.iter_datasets_in_base_uri`` helper function
+- ``dtoolcore.iter_proto_datasets_in_base_uri`` helper function
+
 
 Changed
 ^^^^^^^
