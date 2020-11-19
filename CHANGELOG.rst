@@ -11,9 +11,6 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 Added
 ^^^^^
 
-- ``dtoolcore.iter_datasets_in_base_uri`` helper function
-- ``dtoolcore.iter_proto_datasets_in_base_uri`` helper function
-
 
 Changed
 ^^^^^^^
@@ -33,6 +30,17 @@ Fixed
 
 Security
 ^^^^^^^^
+
+
+[3.18.0] - 2020-11-19
+---------------------
+
+Added
+^^^^^
+
+- ``dtoolcore.iter_datasets_in_base_uri`` helper function
+- ``dtoolcore.iter_proto_datasets_in_base_uri`` helper function
+
 
 [3.17.0] - 2020-03-19
 ---------------------
