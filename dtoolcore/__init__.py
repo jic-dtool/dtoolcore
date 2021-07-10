@@ -205,7 +205,6 @@ def _copy_create_proto_dataset(
 
     admin_metadata = src_dataset._admin_metadata
     admin_metadata["type"] = "protodataset"
-    del admin_metadata["frozen_at"]
 
     proto_dataset = generate_proto_dataset(
         admin_metadata=admin_metadata,
@@ -216,7 +215,6 @@ def _copy_create_proto_dataset(
     # Ensure that this bug does not get re-introduced:
     # https://github.com/jic-dtool/dtoolcore/issues/1
     assert proto_dataset._admin_metadata["type"] == "protodataset"
-    assert "frozen_at" not in proto_dataset._admin_metadata
 
     proto_dataset.create()
 
@@ -786,13 +784,18 @@ class ProtoDataSet(_BaseDataSet):
         for overlay_name, overlay in overlays.items():
             self._put_overlay(overlay_name, overlay)
 
-        # Change the type of the dataset from "protodataset" to "dataset" and
-        # add a "frozen_at" time stamp to the administrative metadata.
-        datetime_obj = datetime.datetime.utcnow()
-        metadata_update = {
-            "type": "dataset",
-            "frozen_at": dtoolcore.utils.timestamp(datetime_obj)
-        }
+        # Change the type of the dataset from "protodataset" to "dataset"
+        # in the administrative metadata.
+        metadata_update = {"type": "dataset"}
+
+        # We only add frozen_at if it is not already present in the
+        # administrative metadata. It is present in the administrative metadata
+        # if the dataset is being copied.
+        if "frozen_at" not in self._admin_metadata:
+            datetime_obj = datetime.datetime.utcnow()
+            metadata_update["frozen_at"] = dtoolcore.utils.timestamp(datetime_obj)  # NOQA
+
+        # Apply the change(s) to the administrative metadata.
         self._admin_metadata.update(metadata_update)
         self._storage_broker.put_admin_metadata(self._admin_metadata)
 

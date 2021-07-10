@@ -27,6 +27,10 @@ Removed
 Fixed
 ^^^^^
 
+- Fixed defect where "frozen_at" administrative metadata changed when a dataset
+  was being copied (in the destination dataset). See:
+  https://github.com/jic-dtool/dtoolcore/issues/20
+
 
 Security
 ^^^^^^^^
