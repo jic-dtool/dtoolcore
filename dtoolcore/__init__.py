@@ -316,11 +316,14 @@ def copy_resume(src_uri, dest_base_uri, config_path=None, progressbar=None):
 
     _copy_content(dataset, proto_dataset, progressbar)
 
-    # jlh, 2021/09/06: Do we need conditional checks here?
-    # As I understand the mechanism, copying only works for frozen source datasets. When the transfer is interrupted,
-    # the partially copied dataset resides as an unfrozen proto dataset at the destination. A proto dataset never has
-    # the "frozen_at" timestamp, thus this property must be reassigned when resuming the transfer process.
-    proto_dataset._admin_metadata["frozen_at"] = dataset._admin_metadata["frozen_at"]
+    # jlh, 2021/09/06: Do we need conditional checks here?  # As I understand
+    # the mechanism, copying only works for frozen source datasets. When the
+    # transfer is interrupted, the partially copied dataset resides as an
+    # unfrozen proto dataset at the destination. A proto dataset never has #
+    # the "frozen_at" timestamp, thus this property must be reassigned when
+    # resuming the transfer process.
+    # to, 2021/09/27: Your understanding is correct and we don't need it.
+    proto_dataset._admin_metadata["frozen_at"] = dataset._admin_metadata["frozen_at"]  # NOQA
     proto_dataset.freeze(progressbar=progressbar)
 
     return proto_dataset.uri
