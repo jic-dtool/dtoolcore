@@ -46,12 +46,7 @@ def test_copy(tmp_uri_fixture):  # NOQA
     dest_ds = dtoolcore.DataSet.from_uri(dest_uri)
 
     for key, value in src_ds._admin_metadata.items():
-        if key == "frozen_at":
-            tolerance = 2  # seconds (number chosen arbitrarily)
-            assert dest_ds._admin_metadata[key] >= value
-            assert dest_ds._admin_metadata[key] < value + tolerance
-        else:
-            assert dest_ds._admin_metadata[key] == value
+        assert dest_ds._admin_metadata[key] == value
 
     assert src_ds.identifiers == dest_ds.identifiers
     for i in src_ds.identifiers:
@@ -120,12 +115,7 @@ def test_copy_resume(tmp_uri_fixture):  # NOQA
     dest_ds = dtoolcore.DataSet.from_uri(dest_uri)
 
     for key, value in src_ds._admin_metadata.items():
-        if key == "frozen_at":
-            tolerance = 2  # seconds (number chosen arbitrarily)
-            assert dest_ds._admin_metadata[key] >= value
-            assert dest_ds._admin_metadata[key] < value + tolerance
-        else:
-            assert dest_ds._admin_metadata[key] == value
+        assert dest_ds._admin_metadata[key] == value
 
     assert src_ds.identifiers == dest_ds.identifiers
     for i in src_ds.identifiers:
@@ -195,12 +185,7 @@ def test_copy_resume_fixes_broken_files(tmp_uri_fixture):  # NOQA
     dest_ds = dtoolcore.DataSet.from_uri(dest_uri)
 
     for key, value in src_ds._admin_metadata.items():
-        if key == "frozen_at":
-            tolerance = 2  # seconds (number chosen arbitrarily)
-            assert dest_ds._admin_metadata[key] >= value
-            assert dest_ds._admin_metadata[key] < value + tolerance
-        else:
-            assert dest_ds._admin_metadata[key] == value
+        assert dest_ds._admin_metadata[key] == value
 
     assert src_ds.identifiers == dest_ds.identifiers
     for i in src_ds.identifiers:
