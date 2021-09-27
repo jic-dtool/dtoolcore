@@ -27,13 +27,24 @@ Removed
 Fixed
 ^^^^^
 
-- Fixed defect where "frozen_at" administrative metadata changed when a dataset
-  was being copied (in the destination dataset). See:
-  https://github.com/jic-dtool/dtoolcore/issues/20
-
 
 Security
 ^^^^^^^^
+
+
+[3.18.1] - 2021-09-27
+---------------------
+
+Fixed
+^^^^^
+
+- Fixed defect where "frozen_at" administrative metadata changed when a dataset
+  was being copied (in the destination dataset).
+  Many thanks to `Johannes L. Hörmann <https://github.com/jotelha>`_
+  and `Lars Pastewka <https://github.com/pastewka>`_ for bug reports,
+  design discussions and code contributions.
+  See:
+  https://github.com/jic-dtool/dtoolcore/issues/20
 
 
 [3.18.0] - 2020-11-19
