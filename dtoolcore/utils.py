@@ -78,7 +78,12 @@ def generous_parse_uri(uri):
     IS_WINDOWS_DRIVE_LETTER = len(parse_result.scheme) == 1
 
     if parse_result.scheme == '' or IS_WINDOWS_DRIVE_LETTER:
-        abspath = os.path.abspath(parse_result.path)
+        # ATTENTION: abspath apparently prepends the drive letter of the current working directory on Windows
+        if IS_WINDOWS_DRIVE_LETTER:
+            abspath = parse_result.scheme.upper() + ':' + parse_result.path
+        else:
+            abspath = os.path.abspath(parse_result.path)
+
         fixed_uri = "file://{}{}".format(
             socket.gethostname(),
             abspath
