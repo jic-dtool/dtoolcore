@@ -27,6 +27,10 @@ Removed
 Fixed
 ^^^^^
 
+- Improve handling of Windows paths with drive letters where the
+  dataset is located in a drive different to that of the working
+  directory, see https://github.com/jic-dtool/dtoolcore/pull/23
+
 
 Security
 ^^^^^^^^

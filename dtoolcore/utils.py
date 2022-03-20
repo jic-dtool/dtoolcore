@@ -85,6 +85,8 @@ def generous_parse_uri(uri):
         )
         if IS_WINDOWS:
             abspath = windows_to_unix_path(abspath)
+            if IS_WINDOWS_DRIVE_LETTER:
+                abspath= parse_result.scheme.upper() + abspath[1:]
             fixed_uri = "file:///{}".format(abspath)
         parse_result = urlparse(fixed_uri)
 
