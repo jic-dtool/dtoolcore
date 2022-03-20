@@ -27,13 +27,20 @@ Removed
 Fixed
 ^^^^^
 
-- Improve handling of Windows paths with drive letters where the
-  dataset is located in a drive different to that of the working
-  directory, see https://github.com/jic-dtool/dtoolcore/pull/23
-
 
 Security
 ^^^^^^^^
+
+
+[3.18.2] - 2022-03-20
+---------------------
+
+Fixed
+^^^^^
+
+- Improve handling of Windows paths with drive letters where the
+  dataset is located in a drive different to that of the working
+  directory, see https://github.com/jic-dtool/dtoolcore/pull/23
 
 
 [3.18.1] - 2021-09-27
