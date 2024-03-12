@@ -36,6 +36,12 @@ def test_copy(tmp_uri_fixture):  # NOQA
         proto_dataset.put_item(item_fpath, fname)
         proto_dataset.add_item_metadata(fname, overlay, ext)
 
+    proto_dataset.put_tag("testing")
+    proto_dataset.put_tag("amazing")
+
+    proto_dataset.put_annotation("long-term-project", "world-peace")
+    proto_dataset.put_annotation("short-term-project", "food-sustainability")
+
     proto_dataset.freeze()
 
     # Copy the src dataset to dest.
@@ -64,6 +70,13 @@ def test_copy(tmp_uri_fixture):  # NOQA
 
     assert src_ds.list_overlay_names() == dest_ds.list_overlay_names()
     assert src_ds.get_overlay(overlay) == dest_ds.get_overlay(overlay)
+
+    assert set(src_ds.list_tags()) == set(dest_ds.list_tags())
+
+    assert src_ds.list_annotation_names() == dest_ds.list_annotation_names()
+
+    for annotation_name in dest_ds.list_annotation_names():
+        assert src_ds.get_annotation(annotation_name) == dest_ds.get_annotation(annotation_name)
 
 
 def test_copy_resume(tmp_uri_fixture):  # NOQA

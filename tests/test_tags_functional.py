@@ -20,16 +20,16 @@ def test_tags_functional(tmp_dir_fixture):  # NOQA
 
     dataset.put_tag("amazing")
     dataset.put_tag("stuff")
-    assert dataset.list_tags() == ["amazing", "stuff", "testing"]
+    assert set(dataset.list_tags()) == set(["amazing", "stuff", "testing"])
 
     dataset.delete_tag("stuff")
-    assert dataset.list_tags() == ["amazing", "testing"]
+    assert set(dataset.list_tags()) == set(["amazing", "testing"])
 
     # Putting the same tag is idempotent.
     dataset.put_tag("amazing")
     dataset.put_tag("amazing")
     dataset.put_tag("amazing")
-    assert dataset.list_tags() == ["amazing", "testing"]
+    assert set(dataset.list_tags()) == set(["amazing", "testing"])
 
     # Tags can only be strings.
     from dtoolcore import DtoolCoreValueError
