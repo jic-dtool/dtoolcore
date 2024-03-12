@@ -11,6 +11,7 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 Added
 ^^^^^
 
+- github CI test workflow
 
 Changed
 ^^^^^^^
@@ -27,6 +28,9 @@ Removed
 Fixed
 ^^^^^
 
+- Copy tags when copying dataset.
+- Test against set of tags in unit tests, not against order of tags
+- Test timestamp conversion againts fixed UTC time in unit tests, not local time
 
 Security
 ^^^^^^^^
