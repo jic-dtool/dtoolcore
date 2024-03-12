@@ -262,6 +262,9 @@ def _copy_content(src_dataset, dest_proto_dataset, progressbar=None):
 
     dest_proto_dataset.put_readme(src_dataset.get_readme_content())
 
+    for tag in src_dataset.list_tags():
+        dest_proto_dataset.put_tag(tag)
+
     for overlay_name in src_dataset.list_overlay_names():
         overlay = src_dataset.get_overlay(overlay_name)
         dest_proto_dataset._put_overlay(overlay_name, overlay)
