@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=42", "setuptools_scm[toml]>=6.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dtoolcore"
+description = "Core API for managing (scientific) data"
+readme = "README.rst"
+license = {file = "LICENSE"}
+authors = [
+    {name = "Tjelvar Olsson", email = "tjelvar.olsson@gmail.com"}
+]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "pytest-cov",
+]
+docs = [
+    "sphinx",
+    "sphinx_rtd_theme"
+]
+
+[project.urls]
+Documentation = "https://dtoolcore.readthedocs.io"
+Repository = "https://github.com/jic-dtool/dtoolcore"
+Changelog = "https://github.com/jic-dtool/dtoolcore/blob/master/CHANGELOG.rst"
+
+[tool.setuptools_scm]
+version_scheme = "guess-next-dev"
+local_scheme = "no-local-version"
+write_to = "dtoolcore/version.py"
+
+[tool.setuptools]
+packages = ["dtoolcore"]
+
+[project.entry-points."dtool.storage_brokers"]
+"DiskStorageBroker" = "dtoolcore.storagebroker:DiskStorageBroker"
