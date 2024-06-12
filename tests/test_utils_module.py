@@ -33,7 +33,7 @@ def test_cross_platform_getuser_windows_and_no_username_env_var():
     import getpass
     getpass.getuser = MagicMock(return_value="user1")
     assert cross_platform_getuser(True, True) == "unknown"
-    assert getpass.getuser.not_called()
+    getpass.getuser.assert_not_called()
 
 
 def test_cross_platform_getuser_windows_and_username_env_var():
@@ -41,7 +41,7 @@ def test_cross_platform_getuser_windows_and_username_env_var():
     import getpass
     getpass.getuser = MagicMock(return_value="user1")
     assert cross_platform_getuser(True, False) == "user1"
-    assert getpass.getuser.called_once()
+    getpass.getuser.assert_called_once()
 
 
 def test_cross_platform_getuser_not_windows_and_username_env_var():
@@ -49,7 +49,7 @@ def test_cross_platform_getuser_not_windows_and_username_env_var():
     import getpass
     getpass.getuser = MagicMock(return_value="user1")
     assert cross_platform_getuser(False, False) == "user1"
-    assert getpass.getuser.called_once()
+    getpass.getuser.assert_called_once()
 
 
 def test_cross_platform_getuser_not_windows_and_no_username_env_var():
@@ -57,14 +57,14 @@ def test_cross_platform_getuser_not_windows_and_no_username_env_var():
     import getpass
     getpass.getuser = MagicMock(return_value="user1")
     assert cross_platform_getuser(False, True) == "user1"
-    assert getpass.getuser.called_once()
+    getpass.getuser.assert_called_once()
 
 
 def test_getuser():
     import dtoolcore.utils
     dtoolcore.utils.cross_platform_getuser = MagicMock(return_value="user1")
     assert dtoolcore.utils.getuser() == "user1"
-    assert dtoolcore.utils.cross_platform_getuser.called_once()
+    dtoolcore.utils.cross_platform_getuser.assert_called_once()
 
 
 def test_base64_to_hex():
