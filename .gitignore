@@ -13,3 +13,4 @@
 
 env/
 dist/
+dtoolcore/version.py
