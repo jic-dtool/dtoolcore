@@ -12,10 +12,15 @@ Added
 ^^^^^
 
 - github CI test workflow
+- publication workflow
+- dynamic versioning
+- dtool icon
 
 Changed
 ^^^^^^^
 
+- updated badges in ``README.rst``
+- replaced ``setup.py`` with ``pyproject.toml``
 
 Deprecated
 ^^^^^^^^^^
@@ -30,7 +35,8 @@ Fixed
 
 - Copy tags when copying dataset.
 - Test against set of tags in unit tests, not against order of tags
-- Test timestamp conversion againts fixed UTC time in unit tests, not local time
+- Test timestamp conversion against fixed UTC time in unit tests, not local time
+- Made unit tests Python 3.12-compatible
 
 Security
 ^^^^^^^^
@@ -55,7 +61,7 @@ Fixed
 
 - Fixed defect where "frozen_at" administrative metadata changed when a dataset
   was being copied (in the destination dataset).
-  Many thanks to `Johannes L. Hörmann <https://github.com/jotelha>`_
+  Many thanks to `Johannes L. HÃ¶rmann <https://github.com/jotelha>`_
   and `Lars Pastewka <https://github.com/pastewka>`_ for bug reports,
   design discussions and code contributions.
   See:
