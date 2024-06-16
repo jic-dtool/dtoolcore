@@ -1,26 +1,30 @@
 Manage scientific data sets
 ===========================
 
+.. |dtool| image:: https://github.com/jic-dtool/dtoolcore/blob/master/icons/22x22/dtool_logo.png?raw=True
+    :height: 20px
+    :target: https://github.com/jic-dtool/dtoolcore
 
-.. image:: https://badge.fury.io/py/dtoolcore.svg
+.. |pypi| image:: https://badge.fury.io/py/dtoolcore.svg
    :target: http://badge.fury.io/py/dtoolcore
    :alt: PyPi package
 
-.. image:: https://travis-ci.org/jic-dtool/dtoolcore.svg?branch=master
-   :target: https://travis-ci.org/jic-dtool/dtoolcore
-   :alt: Travis CI build status (Linux)
-
-.. image:: https://ci.appveyor.com/api/projects/status/ifd8qrfidslvs4i3?svg=true
+.. |build| image:: https://ci.appveyor.com/api/projects/status/ifd8qrfidslvs4i3?svg=true
    :target: https://ci.appveyor.com/project/tjelvar-olsson/dtoolcore
    :alt: AppVeyor CI build status (Windows)
 
-.. image:: https://codecov.io/github/jic-dtool/dtoolcore/coverage.svg?branch=master
+.. |test| image:: https://img.shields.io/github/actions/workflow/status/jic-dtool/dtoolcore/test.yml?branch=master&label=tests
+    :target: https://github.com/jic-dtool/dtoolcore/actions/workflows/test.yml
+
+.. |codecov| image:: https://codecov.io/github/jic-dtool/dtoolcore/coverage.svg?branch=master
    :target: https://codecov.io/github/jic-dtool/dtoolcore?branch=master
    :alt: Code Coverage
 
-.. image:: https://readthedocs.org/projects/dtoolcore/badge/?version=latest
+.. |docs| image:: https://readthedocs.org/projects/dtoolcore/badge/?version=latest
    :target: https://readthedocs.org/projects/dtoolcore?badge=latest
    :alt: Documentation Status
+
+|dtool| |pypi| |build| |test| |test| |codecov| |docs|
 
 - Documentation: http://dtoolcore.readthedocs.io
 - GitHub: https://github.com/jic-dtool/dtoolcore
