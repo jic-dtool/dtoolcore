@@ -4,8 +4,37 @@ CHANGELOG
 This project uses `semantic versioning <http://semver.org/>`_.
 This change log uses principles from `keep a changelog <http://keepachangelog.com/>`_.
 
+
 [Unreleased]
 ------------
+
+
+Added
+^^^^^
+
+
+Changed
+^^^^^^^
+
+
+Deprecated
+^^^^^^^^^^
+
+
+Removed
+^^^^^^^
+
+
+Fixed
+^^^^^
+
+
+Security
+^^^^^^^^
+
+
+[3.18.3] - 2024-06-24
+---------------------
 
 
 Added
@@ -22,13 +51,6 @@ Changed
 - updated badges in ``README.rst``
 - replaced ``setup.py`` with ``pyproject.toml``
 
-Deprecated
-^^^^^^^^^^
-
-
-Removed
-^^^^^^^
-
 
 Fixed
 ^^^^^
@@ -37,9 +59,6 @@ Fixed
 - Test against set of tags in unit tests, not against order of tags
 - Test timestamp conversion against fixed UTC time in unit tests, not local time
 - Made unit tests Python 3.12-compatible
-
-Security
-^^^^^^^^
 
 
 [3.18.2] - 2022-03-20
