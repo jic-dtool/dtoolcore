@@ -51,8 +51,8 @@ def test_copy(tmp_uri_fixture):  # NOQA
     src_ds = dtoolcore.DataSet.from_uri(src_uri)
     dest_ds = dtoolcore.DataSet.from_uri(dest_uri)
 
-    for key, value in src_ds._admin_metadata.items():
-        assert dest_ds._admin_metadata[key] == value
+    for key, value in src_ds.admin_metadata.items():
+        assert dest_ds.admin_metadata[key] == value
 
     assert src_ds.identifiers == dest_ds.identifiers
     for i in src_ds.identifiers:
@@ -127,8 +127,8 @@ def test_copy_resume(tmp_uri_fixture):  # NOQA
     src_ds = dtoolcore.DataSet.from_uri(src_uri)
     dest_ds = dtoolcore.DataSet.from_uri(dest_uri)
 
-    for key, value in src_ds._admin_metadata.items():
-        assert dest_ds._admin_metadata[key] == value
+    for key, value in src_ds.admin_metadata.items():
+        assert dest_ds.admin_metadata[key] == value
 
     assert src_ds.identifiers == dest_ds.identifiers
     for i in src_ds.identifiers:
@@ -197,8 +197,8 @@ def test_copy_resume_fixes_broken_files(tmp_uri_fixture):  # NOQA
     src_ds = dtoolcore.DataSet.from_uri(src_uri)
     dest_ds = dtoolcore.DataSet.from_uri(dest_uri)
 
-    for key, value in src_ds._admin_metadata.items():
-        assert dest_ds._admin_metadata[key] == value
+    for key, value in src_ds.admin_metadata.items():
+        assert dest_ds.admin_metadata[key] == value
 
     assert src_ds.identifiers == dest_ds.identifiers
     for i in src_ds.identifiers:

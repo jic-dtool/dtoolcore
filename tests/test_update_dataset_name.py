@@ -81,4 +81,4 @@ def test_update_name_of_frozen_dataset(tmp_uri_fixture):  # NOQA
     for key, value in admin_metadata.items():
         if key == "name":
             continue
-        assert dataset_again._admin_metadata[key] == value
+        assert dataset_again.admin_metadata[key] == value
