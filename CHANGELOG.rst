@@ -16,6 +16,7 @@ Added
 Changed
 ^^^^^^^
 
+- public ``admin_metadata`` property exposes private ``_admin_metadata`` attribute of ``Dataset``
 
 Deprecated
 ^^^^^^^^^^
