@@ -11,7 +11,7 @@ import shutil
 import tempfile
 import uuid
 
-from pkg_resources import iter_entry_points
+from importlib.metadata import entry_points
 from collections import defaultdict
 
 import dtoolcore.utils
@@ -59,7 +59,10 @@ def _generate_storage_broker_lookup():
     """Return dictionary of available storage brokers."""
     logger.debug("In _generate_storage_broker_lookup...")
     storage_broker_lookup = dict()
-    for entrypoint in iter_entry_points("dtool.storage_brokers"):
+
+    eps = entry_points()
+
+    for entrypoint in eps.select(group="dtool.storage_brokers"):
         StorageBroker = entrypoint.load()
         key = StorageBroker.key
         logger.debug("_gnerate_stroage_broker_lookup.key: {}".format(key))
