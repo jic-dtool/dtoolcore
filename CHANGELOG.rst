@@ -16,6 +16,7 @@ Added
 Changed
 ^^^^^^^
 
+- ``pkg_resources`` has been deprecated with Python 3.12. Replaced use of ``pkg_resources.iter_entry_points`` with ``importlib.metadata.entry_points``.
 
 Deprecated
 ^^^^^^^^^^
