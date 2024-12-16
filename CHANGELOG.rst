@@ -12,6 +12,7 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 Added
 ^^^^^
 
+- ``delete_annotation`` method on ``Dataset`` class
 - Test with Python 3.13 in CI workflow
 
 Changed

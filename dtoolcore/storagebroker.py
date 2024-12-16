@@ -264,6 +264,7 @@ class BaseStorageBroker(object):
     def get_annotation(self, annotation_name):
         """Return value of the annotation associated with the key.
 
+        :param annotation_name: annotation name
         :returns: annotation (string, int, float, bool)
         :raises: DtoolCoreAnnotationKeyError if the annotation does not exist
         """
@@ -327,6 +328,8 @@ class BaseStorageBroker(object):
 
     def put_tag(self, tag):
         """Annotate the dataset with a tag.
+
+        :param tag: tag
         """
         logger.debug("Putting tag: {} {}".format(tag, self))
         key = self.get_tag_key(tag)
@@ -339,6 +342,15 @@ class BaseStorageBroker(object):
         """
         logger.debug("Deleting tag: {} {}".format(tag, self))
         key = self.get_tag_key(tag)
+        self.delete_key(key)
+
+    def delete_annotation(self, annotation_name):
+        """Delete an annotation from a dataset.
+
+        :param annotation_name: annotation name
+        """
+        logger.debug("Deleting annotation: {} {}".format(annotation_name, self))
+        key = self.get_annotation_key(annotation_name)
         self.delete_key(key)
 
     def get_relpath(self, handle):

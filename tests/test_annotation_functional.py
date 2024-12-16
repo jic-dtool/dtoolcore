@@ -54,6 +54,18 @@ def test_annotation_functional(tmp_dir_fixture):  # NOQA
 
     assert proto_dataset.list_annotation_names() == ["project"]
 
+    # Test deleting annotations on proto dataset
+    proto_dataset.put_annotation(annotation_name="stars", annotation=1)
+    assert proto_dataset.get_annotation("stars") == 1
+    assert proto_dataset.list_annotation_names() == ["project", "stars"]
+
+    proto_dataset.delete_annotation("stars")
+
+    with pytest.raises(DtoolCoreKeyError):
+        proto_dataset.get_annotation(annotation_name="stars")
+
+    assert proto_dataset.list_annotation_names() == ["project"]
+
     # Freeze the dataset
     proto_dataset.put_readme("")
     proto_dataset.freeze()
@@ -91,3 +103,11 @@ def test_annotation_functional(tmp_dir_fixture):  # NOQA
     assert copy_dataset.list_annotation_names() == ["project", "stars"]
     assert copy_dataset.get_annotation("stars") == 5
     assert copy_dataset.get_annotation("project") == "food-sustainability"
+
+    # Test deleting annotation on frozen dataset
+    dataset.delete_annotation("stars")
+
+    with pytest.raises(DtoolCoreKeyError):
+        dataset.get_annotation(annotation_name="stars")
+
+    assert dataset.list_annotation_names() == ["project"]
