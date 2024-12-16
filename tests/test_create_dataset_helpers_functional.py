@@ -38,7 +38,14 @@ def test_create_proto_dataset(tmp_dir_fixture):  # NOQA
         creator_username=creator_username
     )
     assert isinstance(proto_dataset, dtoolcore.ProtoDataSet)
-    assert proto_dataset._admin_metadata["creator_username"] == creator_username  # NOQA
+
+    assert "created_at" in proto_dataset.admin_metadata
+    assert "frozen_at" not in proto_dataset.admin_metadata
+    assert proto_dataset.admin_metadata["dtoolcore_version"] == dtoolcore.__version__  # NOQA
+    assert proto_dataset.admin_metadata["creator_username"] == creator_username  # NOQA
+    assert proto_dataset.admin_metadata["uuid"] == proto_dataset.uuid
+    assert proto_dataset.admin_metadata["type"] == "protodataset"
+
     assert proto_dataset.name == name
     assert proto_dataset.get_readme_content() == readme_content
 
@@ -63,7 +70,14 @@ def test_create_derived_proto_dataset(tmp_dir_fixture):  # NOQA
         creator_username=creator_username
     )
     assert isinstance(proto_dataset, dtoolcore.ProtoDataSet)
-    assert proto_dataset._admin_metadata["creator_username"] == creator_username  # NOQA
+
+    assert "created_at" in proto_dataset.admin_metadata
+    assert "frozen_at" not in proto_dataset.admin_metadata
+    assert proto_dataset.admin_metadata["dtoolcore_version"] == dtoolcore.__version__  # NOQA
+    assert proto_dataset.admin_metadata["creator_username"] == creator_username  # NOQA
+    assert proto_dataset.admin_metadata["uuid"] == proto_dataset.uuid
+    assert proto_dataset.admin_metadata["type"] == "protodataset"
+
     assert proto_dataset.name == name
 
     # Test the annotations.
@@ -96,6 +110,15 @@ def test_DataSetCreator(tmp_dir_fixture):  # NOQA
 
     # The below would raise if the dataset was not frozen.
     dataset = dtoolcore.DataSet.from_uri(uri)
+
+    # Check admin metadata
+    assert "created_at" in dataset.admin_metadata
+    assert "frozen_at" in dataset.admin_metadata
+    assert dataset.admin_metadata["frozen_at"] >= dataset.admin_metadata["created_at"]  # NOQA
+    assert dataset.admin_metadata["dtoolcore_version"] == dtoolcore.__version__  # NOQA
+    assert dataset.admin_metadata["creator_username"] == creator_username  # NOQA
+    assert dataset.admin_metadata["uuid"] == dataset.uuid
+    assert dataset.admin_metadata["type"] == "dataset"
 
     # Check the content.
     expected_identifier = generate_identifier("subdir/tiny.png")
@@ -226,7 +249,16 @@ def test_DerivedDataSetCreator(tmp_dir_fixture):  # NOQA
         derived_dataset_uri = derived_dataset_creator.uri
 
     # The below would raise if the dataset was not frozen.
-    dtoolcore.DataSet.from_uri(derived_dataset_uri)
+    dataset = dtoolcore.DataSet.from_uri(derived_dataset_uri)
+
+    # Check admin metadata
+    assert "created_at" in dataset.admin_metadata
+    assert "frozen_at" in dataset.admin_metadata
+    assert dataset.admin_metadata["frozen_at"] >= dataset.admin_metadata["created_at"]  # NOQA
+    assert dataset.admin_metadata["dtoolcore_version"] == dtoolcore.__version__  # NOQA
+    assert dataset.admin_metadata["creator_username"] == creator_username  # NOQA
+    assert dataset.admin_metadata["uuid"] == dataset.uuid
+    assert dataset.admin_metadata["type"] == "dataset"
 
 
 def test_promised_abspath_missing_raises(tmp_dir_fixture):  # NOQA
