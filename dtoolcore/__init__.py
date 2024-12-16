@@ -460,6 +460,11 @@ class _BaseDataSet(object):
         """Return the name of the dataset."""
         return self._admin_metadata['name']
 
+    @property
+    def admin_metadata(self):
+        """Return admin metadata of the dataset."""
+        return self._admin_metadata
+
     def update_name(self, new_name):
         """Update the name of the proto dataset.
 

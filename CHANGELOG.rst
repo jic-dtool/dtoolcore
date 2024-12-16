@@ -17,6 +17,7 @@ Added
 Changed
 ^^^^^^^
 
+- public ``admin_metadata`` property exposes private ``_admin_metadata`` attribute of ``Dataset``
 - ``pkg_resources`` has been deprecated with Python 3.12. Replaced use of ``pkg_resources.iter_entry_points`` with ``importlib.metadata.entry_points`` for >= Python 3.8
 
 Deprecated

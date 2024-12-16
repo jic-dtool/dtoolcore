@@ -15,6 +15,7 @@ def test_basic_workflow(tmp_dir_fixture):  # NOQA
 
     from dtoolcore import ProtoDataSet, generate_admin_metadata
     from dtoolcore import DataSet
+    from dtoolcore import __version__
     from dtoolcore.utils import generate_identifier
     from dtoolcore.storagebroker import DiskStorageBroker
 
@@ -40,6 +41,15 @@ def test_basic_workflow(tmp_dir_fixture):  # NOQA
 
     # Read in a dataset
     dataset = DataSet.from_uri(dest_uri)
+
+    # Check admin metadata
+    assert "created_at" in dataset.admin_metadata
+    assert "frozen_at" in dataset.admin_metadata
+    assert "creator_username" in dataset.admin_metadata
+    assert dataset.admin_metadata["frozen_at"] >= dataset.admin_metadata["created_at"]  # NOQA
+    assert dataset.admin_metadata["dtoolcore_version"] == __version__  # NOQA
+    assert dataset.admin_metadata["uuid"] == dataset.uuid
+    assert dataset.admin_metadata["type"] == "dataset"
 
     expected_identifier = generate_identifier('tiny.png')
     assert expected_identifier in dataset.identifiers
