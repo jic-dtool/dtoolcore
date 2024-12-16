@@ -5,8 +5,8 @@ This project uses `semantic versioning <http://semver.org/>`_.
 This change log uses principles from `keep a changelog <http://keepachangelog.com/>`_.
 
 
-[Unreleased]
-------------
+[3.19.0] - 2024-12-16
+---------------------
 
 
 Added
