@@ -224,103 +224,6 @@ def create_derived_proto_dataset(
     return proto_dataset
 
 
-def create_frozen_dataset(
-    base_uri,
-    uuid,
-    name,
-    creator_username,
-    frozen_at,
-    manifest,
-    readme_content="",
-    tags=None,
-    annotations=None,
-    config_path=None
-):
-    """Create a frozen dataset directly from metadata.
-
-    This function creates a frozen dataset without going through the
-    proto-dataset stage. It is useful for server-side operations where
-    the dataset structure is known upfront (e.g., signed URL uploads).
-
-    The function writes admin_metadata, manifest, structure, tags, and
-    annotations directly to storage. Items and README content must be
-    uploaded separately if they are not provided.
-
-    :param base_uri: base URI where the dataset will be created
-    :param uuid: dataset UUID
-    :param name: dataset name
-    :param creator_username: username of the dataset creator
-    :param frozen_at: timestamp when the dataset was frozen
-    :param manifest: manifest dictionary with items metadata
-    :param readme_content: optional README content string
-    :param tags: optional list of tags
-    :param annotations: optional dictionary of annotations
-    :param config_path: path to dtool configuration file
-    :returns: DataSet instance
-    :raises: DtoolCoreInvalidNameError if name or any tag/annotation name is invalid
-    """
-    logger.debug("In create_frozen_dataset...")
-
-    # Validate name
-    if not dtoolcore.utils.name_is_valid(name):
-        raise DtoolCoreInvalidNameError(f"Invalid dataset name: {name}")
-
-    # Validate tags
-    if tags:
-        for tag in tags:
-            if not isinstance(tag, str):
-                raise DtoolCoreValueError(f"Tag must be a string: {tag}")
-            if not dtoolcore.utils.name_is_valid(tag):
-                raise DtoolCoreInvalidNameError(f"Invalid tag name: {tag}")
-
-    # Validate annotations
-    if annotations:
-        for annotation_name in annotations.keys():
-            if not dtoolcore.utils.name_is_valid(annotation_name):
-                raise DtoolCoreInvalidNameError(
-                    f"Invalid annotation name: {annotation_name}"
-                )
-
-    # Build admin metadata for a frozen dataset
-    admin_metadata = {
-        "uuid": uuid,
-        "dtoolcore_version": __version__,
-        "name": name,
-        "type": "dataset",  # Frozen dataset, not protodataset
-        "creator_username": creator_username,
-        "frozen_at": frozen_at,
-    }
-
-    # Get storage broker
-    uri = _generate_uri(admin_metadata, base_uri)
-    storage_broker = _get_storage_broker(uri, config_path)
-
-    # Create the dataset structure
-    storage_broker.create_structure()
-
-    # Write admin metadata
-    storage_broker.put_admin_metadata(admin_metadata)
-
-    # Write manifest
-    storage_broker.put_manifest(manifest)
-
-    # Write README
-    storage_broker.put_readme(readme_content)
-
-    # Write tags
-    if tags:
-        for tag in tags:
-            storage_broker.put_tag(tag)
-
-    # Write annotations
-    if annotations:
-        for annotation_name, annotation_value in annotations.items():
-            storage_broker.put_annotation(annotation_name, annotation_value)
-
-    # Return a DataSet instance
-    return DataSet(uri, admin_metadata, config_path)
-
-
 def _copy_create_proto_dataset(
     src_dataset,
     dest_base_uri,
@@ -947,6 +850,66 @@ class ProtoDataSet(_BaseDataSet):
         if "frozen_at" not in self._admin_metadata:
             datetime_obj = datetime.datetime.utcnow()
             metadata_update["frozen_at"] = dtoolcore.utils.timestamp(datetime_obj)  # NOQA
+
+        # Apply the change(s) to the administrative metadata.
+        self._admin_metadata.update(metadata_update)
+        self._storage_broker.put_admin_metadata(self._admin_metadata)
+
+        # Clean up using the storage broker's post freeze hook.
+        self._storage_broker.post_freeze_hook()
+
+    def freeze_with_manifest(self, manifest, frozen_at=None):
+        """
+        Convert :class:`dtoolcore.ProtoDataSet` to :class:`dtoolcore.DataSet`
+        using a pre-computed manifest.
+
+        This method freezes the dataset without computing hashes server-side.
+        The caller provides a manifest with pre-computed item properties
+        (hash, size, timestamp). This is useful for server-side operations
+        where the client has already computed hashes during upload.
+
+        :param manifest: dict with structure::
+
+            {
+                "dtoolcore_version": <version>,
+                "hash_function": <hash_function_name>,
+                "items": {
+                    <identifier>: {
+                        "relpath": <path>,
+                        "size_in_bytes": <int>,
+                        "hash": <hash_string>,
+                        "utc_timestamp": <float>
+                    }
+                }
+            }
+
+        :param frozen_at: optional timestamp for when the dataset was frozen.
+            If not provided, uses the current UTC time.
+        """
+        logger.debug("Freeze dataset with manifest {}".format(self))
+
+        # Call the storage broker pre_freeze hook.
+        self._storage_broker.pre_freeze_hook()
+
+        # Use provided manifest instead of computing
+        self._storage_broker.put_manifest(manifest)
+
+        # Generate and persist overlays from any item metadata that has been
+        # added.
+        overlays = self._generate_overlays()
+        for overlay_name, overlay in overlays.items():
+            self._put_overlay(overlay_name, overlay)
+
+        # Change the type of the dataset from "protodataset" to "dataset"
+        # in the administrative metadata.
+        metadata_update = {"type": "dataset"}
+
+        # Use provided frozen_at or generate one
+        if frozen_at is not None:
+            metadata_update["frozen_at"] = frozen_at
+        elif "frozen_at" not in self._admin_metadata:
+            datetime_obj = datetime.datetime.utcnow()
+            metadata_update["frozen_at"] = dtoolcore.utils.timestamp(datetime_obj)
 
         # Apply the change(s) to the administrative metadata.
         self._admin_metadata.update(metadata_update)
