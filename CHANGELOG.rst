@@ -11,7 +11,11 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 Added
 ^^^^^
 
-- ``freeze_with_manifest`` method on ``ProtoDataSet`` class
+- ``freeze_with_manifest`` method on ``ProtoDataSet`` class for converting a
+  proto-dataset to a frozen dataset using a pre-computed manifest with
+  client-provided hashes. Validates that README and all manifest items exist
+  in storage before freezing. Useful for server applications that trust
+  client-computed hashes.
 
 Changed
 ^^^^^^^
