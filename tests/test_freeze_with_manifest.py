@@ -62,6 +62,8 @@ def test_freeze_with_manifest_basic(tmp_dir_fixture):  # NOQA
 def test_freeze_with_manifest_with_items(tmp_dir_fixture):  # NOQA
     """Test freezing with manifest containing items."""
     import dtoolcore
+    import tempfile
+    import os
 
     base_uri = _sanitise_base_uri(tmp_dir_fixture)
     name = "test-items"
@@ -94,6 +96,20 @@ def test_freeze_with_manifest_with_items(tmp_dir_fixture):  # NOQA
         name=name,
         base_uri=base_uri,
     )
+
+    # Add items to storage
+    temp_files = []
+    for relpath in ["data/file1.txt", "data/file2.csv"]:
+        with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.txt') as f:
+            f.write(f"content for {relpath}")
+            temp_files.append((f.name, relpath))
+
+    try:
+        for temp_path, relpath in temp_files:
+            proto_dataset.put_item(temp_path, relpath)
+    finally:
+        for temp_path, _ in temp_files:
+            os.unlink(temp_path)
 
     # Freeze with the provided manifest
     proto_dataset.freeze_with_manifest(manifest, frozen_at=frozen_at)
@@ -235,6 +251,8 @@ def test_freeze_with_manifest_with_annotations(tmp_dir_fixture):  # NOQA
 def test_freeze_with_manifest_full(tmp_dir_fixture):  # NOQA
     """Test freezing with all features combined."""
     import dtoolcore
+    import tempfile
+    import os
 
     base_uri = _sanitise_base_uri(tmp_dir_fixture)
     name = "full-test-dataset"
@@ -273,6 +291,16 @@ def test_freeze_with_manifest_full(tmp_dir_fixture):  # NOQA
         proto_dataset.put_tag(tag)
     for ann_name, ann_value in annotations.items():
         proto_dataset.put_annotation(ann_name, ann_value)
+
+    # Add item to storage
+    with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.json') as f:
+        f.write('{"results": "test data"}')
+        temp_path = f.name
+
+    try:
+        proto_dataset.put_item(temp_path, "results.json")
+    finally:
+        os.unlink(temp_path)
 
     proto_dataset.freeze_with_manifest(manifest, frozen_at=frozen_at)
 
@@ -360,3 +388,196 @@ def test_dataset_type_after_freeze(tmp_dir_fixture):  # NOQA
     # Cannot load as ProtoDataSet anymore
     with pytest.raises(dtoolcore.DtoolCoreTypeError):
         dtoolcore.ProtoDataSet.from_uri(proto_dataset.uri)
+
+
+def test_freeze_with_manifest_missing_readme(tmp_dir_fixture):  # NOQA
+    """Test that freezing fails if README is missing."""
+    import dtoolcore
+    import os
+
+    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    name = "test-missing-readme"
+
+    manifest = {
+        "dtoolcore_version": dtoolcore.__version__,
+        "hash_function": "md5sum_hexdigest",
+        "items": {},
+    }
+
+    # Create proto dataset
+    proto_dataset = dtoolcore.create_proto_dataset(
+        name=name,
+        base_uri=base_uri,
+    )
+
+    # Delete the README file
+    from dtoolcore.utils import generous_parse_uri
+    parsed = generous_parse_uri(proto_dataset.uri)
+    readme_path = os.path.join(parsed.path, "README.yml")
+    os.remove(readme_path)
+
+    # Freezing should fail because README is missing
+    with pytest.raises(dtoolcore.DtoolCoreValueError) as excinfo:
+        proto_dataset.freeze_with_manifest(manifest, frozen_at=1234567890.0)
+
+    assert "README" in str(excinfo.value)
+
+
+def test_freeze_with_manifest_missing_items(tmp_dir_fixture):  # NOQA
+    """Test that freezing fails if manifest items are missing from storage."""
+    import dtoolcore
+
+    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    name = "test-missing-items"
+
+    # Create manifest with items that don't exist in storage
+    items = {
+        generate_identifier("data/nonexistent1.txt"): {
+            "relpath": "data/nonexistent1.txt",
+            "size_in_bytes": 100,
+            "hash": "abc123",
+            "utc_timestamp": 1234567890.0,
+        },
+        generate_identifier("data/nonexistent2.txt"): {
+            "relpath": "data/nonexistent2.txt",
+            "size_in_bytes": 200,
+            "hash": "def456",
+            "utc_timestamp": 1234567890.0,
+        },
+    }
+
+    manifest = {
+        "dtoolcore_version": dtoolcore.__version__,
+        "hash_function": "md5sum_hexdigest",
+        "items": items,
+    }
+
+    # Create proto dataset (no items uploaded)
+    proto_dataset = dtoolcore.create_proto_dataset(
+        name=name,
+        base_uri=base_uri,
+    )
+
+    # Freezing should fail because items are missing
+    with pytest.raises(dtoolcore.DtoolCoreValueError) as excinfo:
+        proto_dataset.freeze_with_manifest(manifest, frozen_at=1234567890.0)
+
+    assert "Missing" in str(excinfo.value)
+    assert "2" in str(excinfo.value)  # Should mention 2 missing items
+
+
+def test_freeze_with_manifest_partial_items(tmp_dir_fixture):  # NOQA
+    """Test that freezing fails if some manifest items are missing."""
+    import dtoolcore
+    import tempfile
+    import os
+
+    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    name = "test-partial-items"
+
+    # Create manifest with 2 items
+    items = {
+        generate_identifier("data/exists.txt"): {
+            "relpath": "data/exists.txt",
+            "size_in_bytes": 100,
+            "hash": "abc123",
+            "utc_timestamp": 1234567890.0,
+        },
+        generate_identifier("data/missing.txt"): {
+            "relpath": "data/missing.txt",
+            "size_in_bytes": 200,
+            "hash": "def456",
+            "utc_timestamp": 1234567890.0,
+        },
+    }
+
+    manifest = {
+        "dtoolcore_version": dtoolcore.__version__,
+        "hash_function": "md5sum_hexdigest",
+        "items": items,
+    }
+
+    # Create proto dataset
+    proto_dataset = dtoolcore.create_proto_dataset(
+        name=name,
+        base_uri=base_uri,
+    )
+
+    # Create a temporary file to add to the dataset
+    with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.txt') as f:
+        f.write("test content")
+        temp_path = f.name
+
+    try:
+        # Add only one item to storage
+        proto_dataset.put_item(temp_path, "data/exists.txt")
+    finally:
+        os.unlink(temp_path)
+
+    # Freezing should fail because one item is missing
+    with pytest.raises(dtoolcore.DtoolCoreValueError) as excinfo:
+        proto_dataset.freeze_with_manifest(manifest, frozen_at=1234567890.0)
+
+    assert "Missing" in str(excinfo.value)
+    assert "1" in str(excinfo.value)  # Should mention 1 missing item
+    assert "missing.txt" in str(excinfo.value)
+
+
+def test_freeze_with_manifest_items_exist(tmp_dir_fixture):  # NOQA
+    """Test that freezing succeeds when all items exist."""
+    import dtoolcore
+    import tempfile
+    import os
+
+    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    name = "test-items-exist"
+
+    # Create manifest with items
+    items = {
+        generate_identifier("data/file1.txt"): {
+            "relpath": "data/file1.txt",
+            "size_in_bytes": 100,
+            "hash": "abc123",
+            "utc_timestamp": 1234567890.0,
+        },
+        generate_identifier("data/file2.txt"): {
+            "relpath": "data/file2.txt",
+            "size_in_bytes": 200,
+            "hash": "def456",
+            "utc_timestamp": 1234567890.0,
+        },
+    }
+
+    manifest = {
+        "dtoolcore_version": dtoolcore.__version__,
+        "hash_function": "md5sum_hexdigest",
+        "items": items,
+    }
+
+    # Create proto dataset
+    proto_dataset = dtoolcore.create_proto_dataset(
+        name=name,
+        base_uri=base_uri,
+    )
+
+    # Create temporary files and add them to the dataset
+    temp_files = []
+    for relpath in ["data/file1.txt", "data/file2.txt"]:
+        with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.txt') as f:
+            f.write(f"content for {relpath}")
+            temp_files.append((f.name, relpath))
+
+    try:
+        for temp_path, relpath in temp_files:
+            proto_dataset.put_item(temp_path, relpath)
+    finally:
+        for temp_path, _ in temp_files:
+            os.unlink(temp_path)
+
+    # Freezing should succeed because all items exist
+    proto_dataset.freeze_with_manifest(manifest, frozen_at=1234567890.0)
+
+    # Verify the dataset was frozen correctly
+    dataset = dtoolcore.DataSet.from_uri(proto_dataset.uri)
+    assert dataset.admin_metadata["type"] == "dataset"
+    assert set(dataset.identifiers) == set(items.keys())

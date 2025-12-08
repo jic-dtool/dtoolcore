@@ -868,6 +868,13 @@ class ProtoDataSet(_BaseDataSet):
         (hash, size, timestamp). This is useful for server-side operations
         where the client has already computed hashes during upload.
 
+        Before freezing, this method validates that:
+        - The README file exists in storage
+        - All items listed in the manifest exist in storage
+
+        Note: This method does NOT verify that the hashes match - it trusts
+        the client-provided hashes in the manifest.
+
         :param manifest: dict with structure::
 
             {
@@ -885,8 +892,45 @@ class ProtoDataSet(_BaseDataSet):
 
         :param frozen_at: optional timestamp for when the dataset was frozen.
             If not provided, uses the current UTC time.
+        :raises: DtoolCoreValueError if README or any manifest item is missing
         """
         logger.debug("Freeze dataset with manifest {}".format(self))
+
+        # Validate that README exists
+        try:
+            self._storage_broker.get_readme_content()
+        except Exception as e:
+            raise DtoolCoreValueError(
+                f"README file is missing or cannot be read: {e}"
+            )
+
+        # Validate that all items in the manifest exist in storage
+        manifest_items = manifest.get("items", {})
+        if manifest_items:
+            # Get identifiers of items that actually exist in storage
+            existing_handles = set(self._storage_broker.iter_item_handles())
+            existing_identifiers = set(
+                dtoolcore.utils.generate_identifier(h) for h in existing_handles
+            )
+
+            # Check for missing items
+            expected_identifiers = set(manifest_items.keys())
+            missing_identifiers = expected_identifiers - existing_identifiers
+
+            if missing_identifiers:
+                # Get relpaths of missing items for better error message
+                missing_relpaths = [
+                    manifest_items[ident].get("relpath", ident)
+                    for ident in list(missing_identifiers)[:5]  # Limit to 5
+                ]
+                if len(missing_identifiers) > 5:
+                    missing_relpaths.append(
+                        f"... and {len(missing_identifiers) - 5} more"
+                    )
+                raise DtoolCoreValueError(
+                    f"Missing {len(missing_identifiers)} item(s) in storage: "
+                    f"{missing_relpaths}"
+                )
 
         # Call the storage broker pre_freeze hook.
         self._storage_broker.pre_freeze_hook()
