@@ -4,6 +4,35 @@ CHANGELOG
 This project uses `semantic versioning <http://semver.org/>`_.
 This change log uses principles from `keep a changelog <http://keepachangelog.com/>`_.
 
+[3.20.0] - 2025-12-08
+---------------------
+
+
+Added
+^^^^^
+
+- ``freeze_with_manifest`` method on ``ProtoDataSet`` class
+
+Changed
+^^^^^^^
+
+- changed build system to ``flit``
+
+Deprecated
+^^^^^^^^^^
+
+
+Removed
+^^^^^^^
+
+
+Fixed
+^^^^^
+
+
+Security
+^^^^^^^^
+
 
 [3.19.0] - 2024-12-16
 ---------------------
