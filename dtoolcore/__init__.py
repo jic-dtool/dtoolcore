@@ -164,8 +164,13 @@ def generate_proto_dataset(admin_metadata, base_uri, config_path=None):
     :param admin_metadata: dataset administrative metadata
     :param base_uri: base URI for proto dataset
     :param config_path: path to dtool configuration file
+    :raises: DtoolCoreInvalidNameError if the name in the administrative
+             metadata is missing or invalid
     """
     logger.debug("In generate_proto_dataset...")
+    name = admin_metadata.get("name")
+    if name is None or not dtoolcore.utils.name_is_valid(name):
+        raise(DtoolCoreInvalidNameError())
     uri = _generate_uri(admin_metadata, base_uri)
     return ProtoDataSet(uri, admin_metadata, config_path)
 
@@ -356,6 +361,11 @@ def copy_resume(src_uri, dest_base_uri, config_path=None, progressbar=None):
     # the "frozen_at" timestamp, thus this property must be reassigned when
     # resuming the transfer process.
     # to, 2021/09/27: Your understanding is correct and we don't need it.
+    if "frozen_at" not in dataset._admin_metadata:
+        raise DtoolCoreValueError(
+            "Source dataset is missing 'frozen_at' in its administrative "
+            "metadata; cannot resume copy from {}".format(src_uri)
+        )
     proto_dataset._admin_metadata["frozen_at"] = dataset._admin_metadata["frozen_at"]  # NOQA
     proto_dataset.freeze(progressbar=progressbar)
 
