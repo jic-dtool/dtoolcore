@@ -60,16 +60,12 @@ def _generate_storage_broker_lookup():
     logger.debug("In _generate_storage_broker_lookup...")
     storage_broker_lookup = dict()
 
-    if sys.version_info >= (3, 8):
-        from importlib.metadata import entry_points
-        eps = entry_points()
-        if sys.version_info >= (3, 10):
-            entrypoints = eps.select(group="dtool.storage_brokers")
-        else:
-            entrypoints = eps.get("dtool.storage_brokers", [])
+    from importlib.metadata import entry_points
+    eps = entry_points()
+    if sys.version_info >= (3, 10):
+        entrypoints = eps.select(group="dtool.storage_brokers")
     else:
-        from pkg_resources import iter_entry_points
-        entrypoints = iter_entry_points("dtool.storage_brokers")
+        entrypoints = eps.get("dtool.storage_brokers", [])
 
     for entrypoint in entrypoints:
         StorageBroker = entrypoint.load()
