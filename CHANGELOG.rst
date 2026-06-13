@@ -5,6 +5,25 @@ This project uses `semantic versioning <http://semver.org/>`_.
 This change log uses principles from `keep a changelog <http://keepachangelog.com/>`_.
 
 
+[Unreleased]
+------------
+
+
+Added
+^^^^^
+
+- Test with Python 3.14 in CI workflow
+
+
+Removed
+^^^^^^^
+
+- Dropped support for Python 3.7 and 3.8 in CI workflow. ``importlib.metadata``
+  (used for storage broker entry-point discovery) is only available in the
+  standard library from Python 3.8 onwards, and ``actions/setup-python`` no
+  longer provides 3.7/3.8 builds on ``ubuntu-latest``
+
+
 [3.19.0] - 2024-12-16
 ---------------------
 
