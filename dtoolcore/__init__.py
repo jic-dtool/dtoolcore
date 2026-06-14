@@ -60,16 +60,12 @@ def _generate_storage_broker_lookup():
     logger.debug("In _generate_storage_broker_lookup...")
     storage_broker_lookup = dict()
 
-    if sys.version_info >= (3, 8):
-        from importlib.metadata import entry_points
-        eps = entry_points()
-        if sys.version_info >= (3, 10):
-            entrypoints = eps.select(group="dtool.storage_brokers")
-        else:
-            entrypoints = eps.get("dtool.storage_brokers", [])
+    from importlib.metadata import entry_points
+    eps = entry_points()
+    if sys.version_info >= (3, 10):
+        entrypoints = eps.select(group="dtool.storage_brokers")
     else:
-        from pkg_resources import iter_entry_points
-        entrypoints = iter_entry_points("dtool.storage_brokers")
+        entrypoints = eps.get("dtool.storage_brokers", [])
 
     for entrypoint in entrypoints:
         StorageBroker = entrypoint.load()
@@ -164,8 +160,13 @@ def generate_proto_dataset(admin_metadata, base_uri, config_path=None):
     :param admin_metadata: dataset administrative metadata
     :param base_uri: base URI for proto dataset
     :param config_path: path to dtool configuration file
+    :raises: DtoolCoreInvalidNameError if the name in the administrative
+             metadata is missing or invalid
     """
     logger.debug("In generate_proto_dataset...")
+    name = admin_metadata.get("name")
+    if name is None or not dtoolcore.utils.name_is_valid(name):
+        raise(DtoolCoreInvalidNameError())
     uri = _generate_uri(admin_metadata, base_uri)
     return ProtoDataSet(uri, admin_metadata, config_path)
 
@@ -356,6 +357,11 @@ def copy_resume(src_uri, dest_base_uri, config_path=None, progressbar=None):
     # the "frozen_at" timestamp, thus this property must be reassigned when
     # resuming the transfer process.
     # to, 2021/09/27: Your understanding is correct and we don't need it.
+    if "frozen_at" not in dataset._admin_metadata:
+        raise DtoolCoreValueError(
+            "Source dataset is missing 'frozen_at' in its administrative "
+            "metadata; cannot resume copy from {}".format(src_uri)
+        )
     proto_dataset._admin_metadata["frozen_at"] = dataset._admin_metadata["frozen_at"]  # NOQA
     proto_dataset.freeze(progressbar=progressbar)
 
@@ -850,6 +856,110 @@ class ProtoDataSet(_BaseDataSet):
         if "frozen_at" not in self._admin_metadata:
             datetime_obj = datetime.datetime.utcnow()
             metadata_update["frozen_at"] = dtoolcore.utils.timestamp(datetime_obj)  # NOQA
+
+        # Apply the change(s) to the administrative metadata.
+        self._admin_metadata.update(metadata_update)
+        self._storage_broker.put_admin_metadata(self._admin_metadata)
+
+        # Clean up using the storage broker's post freeze hook.
+        self._storage_broker.post_freeze_hook()
+
+    def freeze_with_manifest(self, manifest, frozen_at=None):
+        """
+        Convert :class:`dtoolcore.ProtoDataSet` to :class:`dtoolcore.DataSet`
+        using a pre-computed manifest.
+
+        This method freezes the dataset without computing hashes server-side.
+        The caller provides a manifest with pre-computed item properties
+        (hash, size, timestamp). This is useful for server-side operations
+        where the client has already computed hashes during upload.
+
+        Before freezing, this method validates that:
+        - The README file exists in storage
+        - All items listed in the manifest exist in storage
+
+        Note: This method does NOT verify that the hashes match - it trusts
+        the client-provided hashes in the manifest.
+
+        :param manifest: dict with structure::
+
+            {
+                "dtoolcore_version": <version>,
+                "hash_function": <hash_function_name>,
+                "items": {
+                    <identifier>: {
+                        "relpath": <path>,
+                        "size_in_bytes": <int>,
+                        "hash": <hash_string>,
+                        "utc_timestamp": <float>
+                    }
+                }
+            }
+
+        :param frozen_at: optional timestamp for when the dataset was frozen.
+            If not provided, uses the current UTC time.
+        :raises: DtoolCoreValueError if README or any manifest item is missing
+        """
+        logger.debug("Freeze dataset with manifest {}".format(self))
+
+        # Validate that README exists
+        try:
+            self._storage_broker.get_readme_content()
+        except Exception as e:
+            raise DtoolCoreValueError(
+                f"README file is missing or cannot be read: {e}"
+            )
+
+        # Validate that all items in the manifest exist in storage
+        manifest_items = manifest.get("items", {})
+        if manifest_items:
+            # Get identifiers of items that actually exist in storage
+            existing_handles = set(self._storage_broker.iter_item_handles())
+            existing_identifiers = set(
+                dtoolcore.utils.generate_identifier(h) for h in existing_handles
+            )
+
+            # Check for missing items
+            expected_identifiers = set(manifest_items.keys())
+            missing_identifiers = expected_identifiers - existing_identifiers
+
+            if missing_identifiers:
+                # Get relpaths of missing items for better error message
+                missing_relpaths = [
+                    manifest_items[ident].get("relpath", ident)
+                    for ident in list(missing_identifiers)[:5]  # Limit to 5
+                ]
+                if len(missing_identifiers) > 5:
+                    missing_relpaths.append(
+                        f"... and {len(missing_identifiers) - 5} more"
+                    )
+                raise DtoolCoreValueError(
+                    f"Missing {len(missing_identifiers)} item(s) in storage: "
+                    f"{missing_relpaths}"
+                )
+
+        # Call the storage broker pre_freeze hook.
+        self._storage_broker.pre_freeze_hook()
+
+        # Use provided manifest instead of computing
+        self._storage_broker.put_manifest(manifest)
+
+        # Generate and persist overlays from any item metadata that has been
+        # added.
+        overlays = self._generate_overlays()
+        for overlay_name, overlay in overlays.items():
+            self._put_overlay(overlay_name, overlay)
+
+        # Change the type of the dataset from "protodataset" to "dataset"
+        # in the administrative metadata.
+        metadata_update = {"type": "dataset"}
+
+        # Use provided frozen_at or generate one
+        if frozen_at is not None:
+            metadata_update["frozen_at"] = frozen_at
+        elif "frozen_at" not in self._admin_metadata:
+            datetime_obj = datetime.datetime.utcnow()
+            metadata_update["frozen_at"] = dtoolcore.utils.timestamp(datetime_obj)
 
         # Apply the change(s) to the administrative metadata.
         self._admin_metadata.update(metadata_update)
