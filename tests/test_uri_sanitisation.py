@@ -43,7 +43,7 @@ def test_generous_parse_uri():
 
 def test_sanitise_uri():
 
-    from dtoolcore.utils import sanitise_uri, IS_WINDOWS, windows_to_unix_path
+    from dtoolcore.utils import IS_WINDOWS, sanitise_uri, windows_to_unix_path
 
     relpath = "./my_data"
 

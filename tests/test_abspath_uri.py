@@ -3,9 +3,11 @@ import socket
 
 import pytest
 
-from . import TEST_SAMPLE_DATA
-from . import tmp_dir_fixture  # NOQA
-from . import chdir_fixture  # NOQA
+from . import (
+    TEST_SAMPLE_DATA,
+    chdir_fixture,  # NOQA
+    tmp_dir_fixture,  # NOQA
+)
 
 
 def test_abspath_uri():

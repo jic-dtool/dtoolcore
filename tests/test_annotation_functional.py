@@ -4,21 +4,22 @@ import os
 
 import pytest
 
-from . import tmp_dir_fixture  # NOQA
-from . import TEST_SAMPLE_DATA
+from . import (
+    TEST_SAMPLE_DATA,
+    tmp_dir_fixture,  # NOQA
+)
 
 
 def test_annotation_functional(tmp_dir_fixture):  # NOQA
 
     from dtoolcore import (
         DataSet,
-        ProtoDataSet,
-        DtoolCoreKeyError,
         DtoolCoreInvalidNameError,
-        generate_admin_metadata,
+        DtoolCoreKeyError,
+        ProtoDataSet,
         copy,
+        generate_admin_metadata,
     )
-
     from dtoolcore.storagebroker import DiskStorageBroker
 
     name = "my_dataset"

@@ -4,9 +4,11 @@ import os
 
 import pytest
 
-from . import uri_to_path
-from . import tmp_uri_fixture  # NOQA
-from . import TEST_SAMPLE_DATA
+from . import (
+    TEST_SAMPLE_DATA,
+    tmp_uri_fixture,  # NOQA
+    uri_to_path,
+)
 
 
 def test_copy(tmp_uri_fixture):  # NOQA
@@ -76,7 +78,8 @@ def test_copy(tmp_uri_fixture):  # NOQA
     assert src_ds.list_annotation_names() == dest_ds.list_annotation_names()
 
     for annotation_name in dest_ds.list_annotation_names():
-        assert src_ds.get_annotation(annotation_name) == dest_ds.get_annotation(annotation_name)
+        assert src_ds.get_annotation(annotation_name) \
+            == dest_ds.get_annotation(annotation_name)
 
 
 def test_copy_resume(tmp_uri_fixture):  # NOQA

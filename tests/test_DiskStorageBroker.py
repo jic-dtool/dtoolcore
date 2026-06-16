@@ -1,15 +1,17 @@
 """Tests for disk storage broker."""
 
-import os
-import pytz
 import datetime
+import os
 import time
 
 import pytest
+import pytz
 
-from . import tmp_dir_fixture  # NOQA
-from . import tmp_uri_fixture  # NOQA
-from . import TEST_SAMPLE_DATA
+from . import (
+    TEST_SAMPLE_DATA,
+    tmp_dir_fixture,  # NOQA
+    tmp_uri_fixture,  # NOQA
+)
 
 
 def test_initialise():
@@ -22,8 +24,7 @@ def test_initialise():
 
 def test_create_structure(tmp_dir_fixture):  # NOQA
 
-    from dtoolcore.storagebroker import DiskStorageBroker
-    from dtoolcore.storagebroker import StorageBrokerOSError
+    from dtoolcore.storagebroker import DiskStorageBroker, StorageBrokerOSError
 
     storagebroker = DiskStorageBroker(tmp_dir_fixture)
 

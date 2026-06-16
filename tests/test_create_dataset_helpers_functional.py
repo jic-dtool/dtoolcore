@@ -4,13 +4,15 @@ import os
 
 import pytest
 
-from . import tmp_dir_fixture  # NOQA
-from . import TEST_SAMPLE_DATA
-
 from dtoolcore.utils import (
     IS_WINDOWS,
     generous_parse_uri,
     windows_to_unix_path,
+)
+
+from . import (
+    TEST_SAMPLE_DATA,
+    tmp_dir_fixture,  # NOQA
 )
 
 

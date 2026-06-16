@@ -20,6 +20,9 @@ test = [
     "pytest-cov",
     "pytz"
 ]
+lint = [
+    "ruff"
+]
 docs = [
     "sphinx",
     "sphinx_rtd_theme"
@@ -45,5 +48,10 @@ write_to = "dtoolcore/version.py"
 testpaths = ["tests"]
 addopts = "--cov=dtoolcore --cov-report=term-missing"
 
-[tool.flake8]
-exclude = ["env*", ".tox", ".git", "*.egg", "build", "docs", "venv"]
+[tool.ruff]
+line-length = 79
+extend-exclude = ["dtoolcore/version.py", "docs", "venv*"]
+
+[tool.ruff.lint]
+# pycodestyle (E, W), pyflakes (F), isort (I)
+select = ["E", "W", "F", "I"]

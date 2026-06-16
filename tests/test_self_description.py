@@ -1,12 +1,14 @@
 """Test the DiskStorageBroker self description metadata."""
 
-import os
 import json
+import os
 
 from dtoolcore import __version__
 
-from . import uri_to_path
-from . import tmp_uri_fixture  # NOQA
+from . import (
+    tmp_uri_fixture,  # NOQA
+    uri_to_path,
+)
 
 
 def test_writing_of_dtool_structure_file(tmp_uri_fixture):  # NOQA

@@ -3,7 +3,7 @@
 import hashlib
 
 
-class FileHasher(object):
+class FileHasher:
     """Class for associating hash functions with names."""
 
     def __init__(self, hash_func):

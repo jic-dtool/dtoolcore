@@ -1,18 +1,17 @@
 """Test the freeze_with_manifest method of ProtoDataSet."""
 
 import os
-import uuid as uuid_module
 
 import pytest
 
-from . import tmp_dir_fixture  # NOQA
-
 from dtoolcore.utils import (
     IS_WINDOWS,
+    generate_identifier,
     generous_parse_uri,
     windows_to_unix_path,
-    generate_identifier,
 )
+
+from . import tmp_dir_fixture  # NOQA
 
 
 def _sanitise_base_uri(tmp_dir):
@@ -61,9 +60,9 @@ def test_freeze_with_manifest_basic(tmp_dir_fixture):  # NOQA
 
 def test_freeze_with_manifest_with_items(tmp_dir_fixture):  # NOQA
     """Test freezing with manifest containing items."""
-    import dtoolcore
     import tempfile
-    import os
+
+    import dtoolcore
 
     base_uri = _sanitise_base_uri(tmp_dir_fixture)
     name = "test-items"
@@ -100,7 +99,9 @@ def test_freeze_with_manifest_with_items(tmp_dir_fixture):  # NOQA
     # Add items to storage
     temp_files = []
     for relpath in ["data/file1.txt", "data/file2.csv"]:
-        with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.txt') as f:
+        with tempfile.NamedTemporaryFile(
+            mode='w', delete=False, suffix='.txt'
+        ) as f:
             f.write(f"content for {relpath}")
             temp_files.append((f.name, relpath))
 
@@ -127,8 +128,9 @@ def test_freeze_with_manifest_with_items(tmp_dir_fixture):  # NOQA
 
 def test_freeze_with_manifest_auto_frozen_at(tmp_dir_fixture):  # NOQA
     """Test that frozen_at is auto-generated if not provided."""
-    import dtoolcore
     import time
+
+    import dtoolcore
 
     base_uri = _sanitise_base_uri(tmp_dir_fixture)
     name = "test-auto-frozen-at"
@@ -250,9 +252,9 @@ def test_freeze_with_manifest_with_annotations(tmp_dir_fixture):  # NOQA
 
 def test_freeze_with_manifest_full(tmp_dir_fixture):  # NOQA
     """Test freezing with all features combined."""
-    import dtoolcore
     import tempfile
-    import os
+
+    import dtoolcore
 
     base_uri = _sanitise_base_uri(tmp_dir_fixture)
     name = "full-test-dataset"
@@ -293,7 +295,9 @@ def test_freeze_with_manifest_full(tmp_dir_fixture):  # NOQA
         proto_dataset.put_annotation(ann_name, ann_value)
 
     # Add item to storage
-    with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.json') as f:
+    with tempfile.NamedTemporaryFile(
+        mode='w', delete=False, suffix='.json'
+    ) as f:
         f.write('{"results": "test data"}')
         temp_path = f.name
 
@@ -393,7 +397,6 @@ def test_dataset_type_after_freeze(tmp_dir_fixture):  # NOQA
 def test_freeze_with_manifest_missing_readme(tmp_dir_fixture):  # NOQA
     """Test that freezing fails if README is missing."""
     import dtoolcore
-    import os
 
     base_uri = _sanitise_base_uri(tmp_dir_fixture)
     name = "test-missing-readme"
@@ -468,9 +471,9 @@ def test_freeze_with_manifest_missing_items(tmp_dir_fixture):  # NOQA
 
 def test_freeze_with_manifest_partial_items(tmp_dir_fixture):  # NOQA
     """Test that freezing fails if some manifest items are missing."""
-    import dtoolcore
     import tempfile
-    import os
+
+    import dtoolcore
 
     base_uri = _sanitise_base_uri(tmp_dir_fixture)
     name = "test-partial-items"
@@ -504,7 +507,9 @@ def test_freeze_with_manifest_partial_items(tmp_dir_fixture):  # NOQA
     )
 
     # Create a temporary file to add to the dataset
-    with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.txt') as f:
+    with tempfile.NamedTemporaryFile(
+        mode='w', delete=False, suffix='.txt'
+    ) as f:
         f.write("test content")
         temp_path = f.name
 
@@ -525,9 +530,9 @@ def test_freeze_with_manifest_partial_items(tmp_dir_fixture):  # NOQA
 
 def test_freeze_with_manifest_items_exist(tmp_dir_fixture):  # NOQA
     """Test that freezing succeeds when all items exist."""
-    import dtoolcore
     import tempfile
-    import os
+
+    import dtoolcore
 
     base_uri = _sanitise_base_uri(tmp_dir_fixture)
     name = "test-items-exist"
@@ -563,7 +568,9 @@ def test_freeze_with_manifest_items_exist(tmp_dir_fixture):  # NOQA
     # Create temporary files and add them to the dataset
     temp_files = []
     for relpath in ["data/file1.txt", "data/file2.txt"]:
-        with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.txt') as f:
+        with tempfile.NamedTemporaryFile(
+            mode='w', delete=False, suffix='.txt'
+        ) as f:
             f.write(f"content for {relpath}")
             temp_files.append((f.name, relpath))
 
