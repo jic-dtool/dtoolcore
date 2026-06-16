@@ -1,17 +1,18 @@
 [build-system]
-requires = ["setuptools>=42", "setuptools_scm[toml]>=6.3"]
-build-backend = "setuptools.build_meta"
+requires = ["flit_scm"]
+build-backend = "flit_scm:buildapi"
 
 [project]
 name = "dtoolcore"
 description = "Core API for managing (scientific) data"
 readme = "README.rst"
-license = {file = "LICENSE"}
+license = {text = "MIT"}
 authors = [
     {name = "Tjelvar Olsson", email = "tjelvar.olsson@gmail.com"}
 ]
 dynamic = ["version"]
-dependencies = ["setuptools"]
+requires-python = ">=3.9"
+dependencies = []
 
 [project.optional-dependencies]
 test = [
@@ -29,13 +30,20 @@ Documentation = "https://dtoolcore.readthedocs.io"
 Repository = "https://github.com/jic-dtool/dtoolcore"
 Changelog = "https://github.com/jic-dtool/dtoolcore/blob/master/CHANGELOG.rst"
 
+[project.entry-points."dtool.storage_brokers"]
+DiskStorageBroker = "dtoolcore.storagebroker:DiskStorageBroker"
+
+[tool.flit.module]
+name = "dtoolcore"
+
 [tool.setuptools_scm]
 version_scheme = "guess-next-dev"
 local_scheme = "no-local-version"
 write_to = "dtoolcore/version.py"
 
-[tool.setuptools]
-packages = ["dtoolcore"]
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--cov=dtoolcore --cov-report=term-missing"
 
-[project.entry-points."dtool.storage_brokers"]
-"DiskStorageBroker" = "dtoolcore.storagebroker:DiskStorageBroker"
+[tool.flake8]
+exclude = ["env*", ".tox", ".git", "*.egg", "build", "docs", "venv"]

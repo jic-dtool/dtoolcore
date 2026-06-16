@@ -4,6 +4,39 @@ CHANGELOG
 This project uses `semantic versioning <http://semver.org/>`_.
 This change log uses principles from `keep a changelog <http://keepachangelog.com/>`_.
 
+[3.20.0] - 2025-12-08
+---------------------
+
+
+Added
+^^^^^
+
+- ``freeze_with_manifest`` method on ``ProtoDataSet`` class for converting a
+  proto-dataset to a frozen dataset using a pre-computed manifest with
+  client-provided hashes. Validates that README and all manifest items exist
+  in storage before freezing. Useful for server applications that trust
+  client-computed hashes.
+
+Changed
+^^^^^^^
+
+- changed build system to ``flit``
+
+Deprecated
+^^^^^^^^^^
+
+
+Removed
+^^^^^^^
+
+
+Fixed
+^^^^^
+
+
+Security
+^^^^^^^^
+
 
 [Unreleased]
 ------------
