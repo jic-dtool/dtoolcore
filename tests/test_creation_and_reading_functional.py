@@ -1,23 +1,28 @@
 """Functional tests for creation and reading of a disk based DataSet."""
 
-import os
 import datetime
+import os
 import time
 
-import pytz
 import pytest
+import pytz
 
-from . import tmp_dir_fixture  # NOQA
-from . import TEST_SAMPLE_DATA
+from . import (
+    TEST_SAMPLE_DATA,
+    tmp_dir_fixture,  # NOQA
+)
 
 
 def test_basic_workflow(tmp_dir_fixture):  # NOQA
 
-    from dtoolcore import ProtoDataSet, generate_admin_metadata
-    from dtoolcore import DataSet
-    from dtoolcore import __version__
-    from dtoolcore.utils import generate_identifier
+    from dtoolcore import (
+        DataSet,
+        ProtoDataSet,
+        __version__,
+        generate_admin_metadata,
+    )
     from dtoolcore.storagebroker import DiskStorageBroker
+    from dtoolcore.utils import generate_identifier
 
     name = "my_dataset"
     admin_metadata = generate_admin_metadata(name)
@@ -59,13 +64,13 @@ def test_basic_workflow(tmp_dir_fixture):  # NOQA
 def test_proto_dataset_freeze_functional(tmp_dir_fixture):  # NOQA
 
     from dtoolcore import (
-        generate_admin_metadata,
         DataSet,
+        DtoolCoreTypeError,
         ProtoDataSet,
-        DtoolCoreTypeError
+        generate_admin_metadata,
     )
-    from dtoolcore.utils import generate_identifier
     from dtoolcore.storagebroker import DiskStorageBroker
+    from dtoolcore.utils import generate_identifier
 
     name = "func_test_dataset_freeze"
     admin_metadata = generate_admin_metadata(name)
@@ -241,10 +246,9 @@ def test_creation_and_reading(tmp_dir_fixture):  # NOQA
 
 def test_basic_workflow_with_nested_handle(tmp_dir_fixture):  # NOQA
 
-    from dtoolcore import ProtoDataSet, generate_admin_metadata
-    from dtoolcore import DataSet
-    from dtoolcore.utils import generate_identifier
+    from dtoolcore import DataSet, ProtoDataSet, generate_admin_metadata
     from dtoolcore.storagebroker import DiskStorageBroker
+    from dtoolcore.utils import generate_identifier
 
     name = "my_dataset"
     admin_metadata = generate_admin_metadata(name)

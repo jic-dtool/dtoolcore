@@ -45,7 +45,7 @@ Features
 - Ability to create plugins for custom storage solutions
 - Plugins for iRODS and Microsoft Azure storage backends available
 - Cross-platform: Linux, Mac and Windows are all supported
-- Works with Python 2.7, 3.5 and 3.6
+- Works with Python 3.9 and above
 - No external dependencies
 
 Overview

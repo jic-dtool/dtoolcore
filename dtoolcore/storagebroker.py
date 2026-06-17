@@ -1,24 +1,24 @@
 """Disk storage broker."""
 
-import os
-import json
-import shutil
-import logging
 import datetime
+import json
+import logging
+import os
+import shutil
 import socket
 
 from dtoolcore import __version__
+from dtoolcore.filehasher import FileHasher, md5sum_hexdigest
 from dtoolcore.utils import (
-    mkdir_parents,
+    IS_WINDOWS,
     generate_identifier,
     generous_parse_uri,
-    timestamp,
-    IS_WINDOWS,
-    windows_to_unix_path,
-    unix_to_windows_path,
     handle_to_osrelpath,
+    mkdir_parents,
+    timestamp,
+    unix_to_windows_path,
+    windows_to_unix_path,
 )
-from dtoolcore.filehasher import FileHasher, md5sum_hexdigest
 
 logger = logging.getLogger(__name__)
 
@@ -70,7 +70,7 @@ class DiskStorageBrokerValidationWarning(Warning):
     pass
 
 
-class BaseStorageBroker(object):
+class BaseStorageBroker:
     """Base storage broker class defining the required interface."""
 
     # Class methods to override.
@@ -78,62 +78,62 @@ class BaseStorageBroker(object):
     @classmethod
     def list_dataset_uris(cls, base_uri, config_path):
         """Return list containing URIs in location given by base_uri."""
-        raise(NotImplementedError())
+        raise NotImplementedError()
 
     @classmethod
     def generate_uri(cls, name, uuid, base_uri):
         """Return dataset URI."""
-        raise(NotImplementedError())
+        raise NotImplementedError()
 
     # Methods to override.
 
     def get_text(self, key):
         """Return the text associated with the key."""
-        raise(NotImplementedError())
+        raise NotImplementedError()
 
     def put_text(self, key, text):
         """Put the text into the storage associated with the key."""
-        raise(NotImplementedError())
+        raise NotImplementedError()
 
     def delete_key(self, key):
         """Delete the file/object associated with the key."""
-        raise(NotImplementedError())
+        raise NotImplementedError()
 
     def get_admin_metadata_key(self):
         """Return the admin metadata key."""
-        raise(NotImplementedError())
+        raise NotImplementedError()
 
     def get_readme_key(self):
         """Return the admin metadata key."""
-        raise(NotImplementedError())
+        raise NotImplementedError()
 
     def get_manifest_key(self):
         """Return the manifest key."""
-        raise(NotImplementedError())
+        raise NotImplementedError()
 
     def get_overlay_key(self, overlay_name):
         """Return the overlay key."""
-        raise(NotImplementedError())
+        raise NotImplementedError()
 
     def get_annotation_key(self, annotation_name):
         """Return the annotation key."""
-        raise(NotImplementedError())
+        raise NotImplementedError()
 
     def get_tag_key(self, tag):
         """Return the tag key."""
-        raise(NotImplementedError())
+        raise NotImplementedError()
 
     def list_overlay_names(self):
         """Return list of overlay names."""
-        raise(NotImplementedError())
+        raise NotImplementedError()
 
     def list_annotation_names(self):
         """Return list of annotation names."""
-        raise(NotImplementedError())
+        raise NotImplementedError()
 
     def list_tags(self):
         """Return list of tags."""
-        raise(NotImplementedError())
+        raise NotImplementedError()
 
     def get_item_abspath(self, identifier):
         """Return absolute path at which item content can be accessed.
@@ -141,11 +141,11 @@ class BaseStorageBroker(object):
         :param identifier: item identifier
         :returns: absolute path from which the item content can be accessed
         """
-        raise(NotImplementedError())
+        raise NotImplementedError()
 
     def _create_structure(self):
         """Create necessary structure to hold a dataset."""
-        raise(NotImplementedError())
+        raise NotImplementedError()
 
     def put_item(self, fpath, relpath):
         """Put item with content from fpath at relpath in dataset.
@@ -157,30 +157,30 @@ class BaseStorageBroker(object):
                         a handle
         :returns: the handle given to the item
         """
-        raise(NotImplementedError())
+        raise NotImplementedError()
 
     def iter_item_handles(self):
         """Return iterator over item handles."""
-        raise(NotImplementedError())
+        raise NotImplementedError()
 
     def get_size_in_bytes(self, handle):
         """Return the size in bytes."""
-        raise(NotImplementedError())
+        raise NotImplementedError()
 
     def get_utc_timestamp(self, handle):
         """Return the UTC timestamp."""
-        raise(NotImplementedError())
+        raise NotImplementedError()
 
     def get_hash(self, handle):
         """Return the hash."""
-        raise(NotImplementedError())
+        raise NotImplementedError()
 
     def has_admin_metadata(self):
         """Return True if the administrative metadata exists.
 
         This is the definition of being a "dataset".
         """
-        raise(NotImplementedError())
+        raise NotImplementedError()
 
     def add_item_metadata(self, handle, key, value):
         """Store the given key:value pair for the item associated with handle.
@@ -190,7 +190,7 @@ class BaseStorageBroker(object):
         :param key: metadata key
         :param value: metadata value
         """
-        raise(NotImplementedError())
+        raise NotImplementedError()
 
     def get_item_metadata(self, handle):
         """Return dictionary containing all metadata associated with handle.
@@ -202,7 +202,7 @@ class BaseStorageBroker(object):
                        frozen
         :returns: dictionary containing item metadata
         """
-        raise(NotImplementedError())
+        raise NotImplementedError()
 
     def pre_freeze_hook(self):
         """Pre :meth:`dtoolcore.ProtoDataSet.freeze` actions.
@@ -213,7 +213,7 @@ class BaseStorageBroker(object):
         It may be useful for remote storage backends to generate
         caches to remove repetitive time consuming calls
         """
-        raise(NotImplementedError())
+        raise NotImplementedError()
 
     def post_freeze_hook(self):
         """Post :meth:`dtoolcore.ProtoDataSet.freeze` cleanup actions.
@@ -224,11 +224,11 @@ class BaseStorageBroker(object):
         In the :class:`dtoolcore.storage_broker.DiskStorageBroker` it removes
         the temporary directory for storing item metadata fragment files.
         """
-        raise(NotImplementedError())
+        raise NotImplementedError()
 
     def _list_historical_readme_keys(self):
         """Return list of historical README.yml keys."""
-        raise(NotImplementedError())
+        raise NotImplementedError()
 
     # Reusable methods.
 
@@ -349,7 +349,9 @@ class BaseStorageBroker(object):
 
         :param annotation_name: annotation name
         """
-        logger.debug("Deleting annotation: {} {}".format(annotation_name, self))
+        logger.debug(
+            "Deleting annotation: {} {}".format(annotation_name, self)
+        )
         key = self.get_annotation_key(annotation_name)
         self.delete_key(key)
 
@@ -583,8 +585,8 @@ class DiskStorageBroker(BaseStorageBroker):
     def get_utc_timestamp(self, handle):
         """Return the UTC timestamp."""
         fpath = self._fpath_from_handle(handle)
-        datetime_obj = datetime.datetime.utcfromtimestamp(
-            os.stat(fpath).st_mtime
+        datetime_obj = datetime.datetime.fromtimestamp(
+            os.stat(fpath).st_mtime, datetime.timezone.utc
         )
         return timestamp(datetime_obj)
 
@@ -646,15 +648,15 @@ class DiskStorageBroker(BaseStorageBroker):
 
         # Ensure that the specified path does not exist and create it.
         if os.path.exists(self._abspath):
-            raise(StorageBrokerOSError(
+            raise StorageBrokerOSError(
                 "Path already exists: {}".format(self._abspath)
-            ))
+            )
 
         # Make sure the parent directory exists.
         parent, _ = os.path.split(self._abspath)
         if not os.path.isdir(parent):
-            raise(StorageBrokerOSError(
-                "No such directory: {}".format(parent)))
+            raise StorageBrokerOSError(
+                "No such directory: {}".format(parent))
 
         os.mkdir(self._abspath)
 
@@ -761,7 +763,7 @@ class DiskStorageBroker(BaseStorageBroker):
         for d in os.listdir(self._abspath):
             if d not in allowed:
                 msg = "Rogue content in base of dataset: {}".format(d)
-                raise(DiskStorageBrokerValidationWarning(msg))
+                raise DiskStorageBrokerValidationWarning(msg)
 
     def post_freeze_hook(self):
         """Post :meth:`dtoolcore.ProtoDataSet.freeze` cleanup actions.

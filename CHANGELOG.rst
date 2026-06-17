@@ -4,6 +4,39 @@ CHANGELOG
 This project uses `semantic versioning <http://semver.org/>`_.
 This change log uses principles from `keep a changelog <http://keepachangelog.com/>`_.
 
+
+[Unreleased]
+------------
+
+
+Added
+^^^^^
+
+- ``ruff`` linting (replacing ``flake8``), configured in ``pyproject.toml``,
+  with a ``.pre-commit-config.yaml`` and a ``lint`` optional-dependency group
+
+Changed
+^^^^^^^
+
+- Migrated deprecated ``datetime.utcnow()`` / ``datetime.utcfromtimestamp()``
+  to timezone-aware equivalents; ``utils.timestamp()`` now treats naive
+  datetimes as UTC and accepts timezone-aware datetimes
+- ``utils.write_config_value_to_file`` now sets config-file permissions to
+  ``0o600`` as documented (previously ``0o700``)
+
+Removed
+^^^^^^^
+
+- Python 2 import shims (``urlparse`` and ``importlib_metadata`` fallbacks)
+- Redundant ``requirements.txt``; ``tox.ini`` no longer references it
+
+Fixed
+^^^^^
+
+- ``raise(Error())`` rewritten to ``raise Error()`` throughout (statement, not
+  call), resolving the corresponding lint warnings
+
+
 [3.20.0] - 2025-12-08
 ---------------------
 

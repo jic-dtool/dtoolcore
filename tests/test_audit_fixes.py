@@ -11,13 +11,13 @@ import os
 
 import pytest
 
-from . import tmp_dir_fixture  # NOQA
-
 from dtoolcore.utils import (
     IS_WINDOWS,
     generous_parse_uri,
     windows_to_unix_path,
 )
+
+from . import tmp_dir_fixture  # NOQA
 
 
 def _sanitise_base_uri(tmp_dir):
@@ -78,8 +78,6 @@ def test_generate_proto_dataset_accepts_valid_name(tmp_dir_fixture):  # NOQA
 
 def test_copy_resume_missing_frozen_at_gives_helpful_error(tmp_dir_fixture):  # NOQA
     import dtoolcore
-
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
 
     src_dir = os.path.join(tmp_dir_fixture, "src")
     dest_dir = os.path.join(tmp_dir_fixture, "dest")
