@@ -12,6 +12,9 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 Added
 ^^^^^
 
+- ``ProtoDataSet.freeze`` and ``freeze_with_manifest`` return the frozen
+  ``DataSet`` (previously ``None``)
+- ``DtoolCoreFrozenDataSetError`` (a ``DtoolCoreTypeError``)
 - ``ruff`` linting (replacing ``flake8``), configured in ``pyproject.toml``,
   with a ``.pre-commit-config.yaml`` and a ``lint`` optional-dependency group
 - Windows CI job (``windows-latest``, Python 3.14)
@@ -36,6 +39,12 @@ Removed
 Fixed
 ^^^^^
 
+- A ``ProtoDataSet`` object could still add items, overwrite the README,
+  add item metadata and be frozen again after it had been frozen, which
+  rewrote the manifest of a frozen dataset (#38). These now raise
+  ``DtoolCoreFrozenDataSetError``; ``freeze`` and ``freeze_with_manifest``
+  also check the admin metadata in storage, which catches a dataset frozen
+  by another object or process. Annotations and tags remain mutable
 - ``ProtoDataSet.freeze_with_manifest`` now rejects manifests that are
   inconsistent with the proto dataset: a ``hash_function`` that is missing or
   differs from the storage broker's, items without ``relpath`` or whose

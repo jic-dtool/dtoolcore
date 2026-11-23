@@ -389,6 +389,11 @@ class DtoolCoreTypeError(TypeError):
     pass
 
 
+class DtoolCoreFrozenDataSetError(DtoolCoreTypeError):
+    """Raised when modifying a proto dataset that has already been frozen."""
+    pass
+
+
 class DtoolCoreKeyError(KeyError):
     pass
 
@@ -414,6 +419,7 @@ class _BaseDataSet:
         uri = dtoolcore.utils.sanitise_uri(uri)
 
         self._admin_metadata = admin_metadata
+        self._config_path = config_path
         self._storage_broker = _get_storage_broker(uri, config_path)
         self._uri = uri
 
@@ -759,6 +765,38 @@ class ProtoDataSet(_BaseDataSet):
         for handle in self._storage_broker.iter_item_handles():
             yield dtoolcore.utils.generate_identifier(handle)
 
+    def _assert_not_frozen(self):
+        """Raise if this proto dataset object has been frozen.
+
+        :raises: DtoolCoreFrozenDataSetError
+        """
+        if self._admin_metadata.get("type") != "protodataset":
+            raise DtoolCoreFrozenDataSetError(
+                "{} has already been frozen".format(self.uri)
+            )
+
+    def _assert_not_frozen_in_storage(self):
+        """Raise if this proto dataset has been frozen, also by another object.
+
+        In addition to the in-memory state, this reads the administrative
+        metadata from storage, which catches a dataset frozen by another
+        ProtoDataSet object or process.
+
+        :raises: DtoolCoreFrozenDataSetError
+        """
+        self._assert_not_frozen()
+        stored_admin_metadata = self._storage_broker.get_admin_metadata()
+        if stored_admin_metadata.get("type") != "protodataset":
+            raise DtoolCoreFrozenDataSetError(
+                "{} has already been frozen".format(self.uri)
+            )
+
+    def _frozen_dataset(self):
+        """Return a DataSet for this proto dataset after it has been frozen."""
+        return DataSet(
+            self.uri, dict(self._admin_metadata), self._config_path
+        )
+
     def create(self):
         """Create the required directory structure and admin metadata."""
         logger.debug("Create structure and admin metadata {}".format(self))
@@ -772,8 +810,10 @@ class ProtoDataSet(_BaseDataSet):
         The client is responsible for ensuring that the content is valid YAML.
 
         :param content: string to put into the README
+        :raises: DtoolCoreFrozenDataSetError if the dataset has been frozen
         """
         logger.debug("Put readme {}".format(self))
+        self._assert_not_frozen()
         self._storage_broker.put_readme(content)
 
     def put_item(self, fpath, relpath):
@@ -784,8 +824,10 @@ class ProtoDataSet(_BaseDataSet):
         :param relpath: relative path name given to the item in the dataset as
                         a handle, i.e. a Unix-like relpath
         :returns: the handle given to the item
+        :raises: DtoolCoreFrozenDataSetError if the dataset has been frozen
         """
         logger.debug("Put item with handle {} {}".format(relpath, self))
+        self._assert_not_frozen()
         return self._storage_broker.put_item(fpath, relpath)
 
     def add_item_metadata(self, handle, key, value):
@@ -796,9 +838,11 @@ class ProtoDataSet(_BaseDataSet):
                        :class:`dtoolcore.ProtoDataSet`
         :param key: metadata key, becomes the overlay name when frozen
         :param value: metadata value
-        :raises: DtoolCoreInvalidNameError if the key is not a valid name
+        :raises: DtoolCoreInvalidNameError if the key is not a valid name,
+                 DtoolCoreFrozenDataSetError if the dataset has been frozen
         """
         logger.debug("Add item metadata {} {} {}".format(handle, key, self))
+        self._assert_not_frozen()
         # The key becomes an overlay name when the dataset is frozen. Validate
         # it now rather than failing halfway through the freeze.
         if not dtoolcore.utils.name_is_valid(key):
@@ -847,8 +891,13 @@ class ProtoDataSet(_BaseDataSet):
     def freeze(self, progressbar=None):
         """
         Convert :class:`dtoolcore.ProtoDataSet` to :class:`dtoolcore.DataSet`.
+
+        :returns: the frozen :class:`dtoolcore.DataSet`
+        :raises: DtoolCoreFrozenDataSetError if the dataset has already been
+                 frozen
         """
         logger.debug("Freeze dataset {}".format(self))
+        self._assert_not_frozen_in_storage()
         # Call the storage broker pre_freeze hook.
         self._storage_broker.pre_freeze_hook()
 
@@ -881,6 +930,8 @@ class ProtoDataSet(_BaseDataSet):
 
         # Clean up using the storage broker's post freeze hook.
         self._storage_broker.post_freeze_hook()
+
+        return self._frozen_dataset()
 
     def _validate_manifest(self, manifest):
         """Raise DtoolCoreValueError if manifest does not match storage.
@@ -981,10 +1032,13 @@ class ProtoDataSet(_BaseDataSet):
 
         :param frozen_at: optional timestamp for when the dataset was frozen.
             If not provided, uses the current UTC time.
+        :returns: the frozen :class:`dtoolcore.DataSet`
         :raises: DtoolCoreValueError if the README is missing or the manifest
-            is inconsistent with the proto dataset
+            is inconsistent with the proto dataset,
+            DtoolCoreFrozenDataSetError if the dataset has already been frozen
         """
         logger.debug("Freeze dataset with manifest {}".format(self))
+        self._assert_not_frozen_in_storage()
 
         # Validate that README exists
         try:
@@ -1027,6 +1081,8 @@ class ProtoDataSet(_BaseDataSet):
 
         # Clean up using the storage broker's post freeze hook.
         self._storage_broker.post_freeze_hook()
+
+        return self._frozen_dataset()
 
 
 class DataSetCreator:
