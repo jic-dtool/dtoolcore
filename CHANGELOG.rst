@@ -52,8 +52,27 @@ Fixed
   empty manifest). Item content is still never read.
 - ``update_readme`` named README backups using local time interpreted as UTC,
   offsetting the backup timestamp by the local UTC offset
+- Item metadata keys containing dots (e.g. ``my.key``) were read back by
+  ``DiskStorageBroker.get_item_metadata`` with only the part after the last
+  dot, silently renaming the resulting overlay
+- ``ProtoDataSet.add_item_metadata`` now validates the key with
+  ``name_is_valid`` and raises ``DtoolCoreInvalidNameError`` immediately;
+  previously invalid keys failed during ``freeze`` after the manifest had
+  been written
+- ``utils.name_is_valid`` now rejects names consisting only of dots (``.``,
+  ``..``), which referred to the current or parent directory for datasets,
+  tags, annotations and overlays on disk
 - ``raise(Error())`` rewritten to ``raise Error()`` throughout (statement, not
   call), resolving the corresponding lint warnings
+- ``DiskStorageBroker`` now reads and writes text (README, metadata) as UTF-8
+  instead of the locale encoding, which broke non-ASCII READMEs on Windows.
+  Files that are not valid UTF-8 are read using the locale encoding, so
+  datasets written by older versions on Windows remain readable
+- ``DiskStorageBroker`` now writes text with ``\n`` line endings on all
+  platforms (previously ``\r\n`` on Windows), and converts ``\r\n`` in the
+  content to ``\n``, so datasets are byte-identical across platforms
+- ``utils.windows_to_unix_path`` and ``utils.unix_to_windows_path`` raised
+  ``IndexError`` on Windows for two-character paths starting with ``/``
 
 
 [3.20.0] - 2025-12-08
