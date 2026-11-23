@@ -54,15 +54,7 @@ def _generate_storage_broker_lookup():
     storage_broker_lookup = dict()
 
     from importlib.metadata import entry_points
-    eps = entry_points()
-    if hasattr(eps, 'select'):
-        # Python 3.10+ / importlib_metadata >= 3.6
-        entrypoints = eps.select(group="dtool.storage_brokers")
-    else:
-        # Python 3.9 and earlier - eps is a dict
-        entrypoints = eps.get("dtool.storage_brokers", [])
-
-    for entrypoint in entrypoints:
+    for entrypoint in entry_points(group="dtool.storage_brokers"):
         StorageBroker = entrypoint.load()
         key = StorageBroker.key
         logger.debug("_gnerate_stroage_broker_lookup.key: {}".format(key))

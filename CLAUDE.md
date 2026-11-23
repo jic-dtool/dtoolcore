@@ -24,7 +24,7 @@ pytest tests/test_copy_dataset.py::test_copy
 ruff check .
 ruff check . --fix   # auto-fix
 
-# Run tests across all supported environments (py39..py314, lint)
+# Run tests across all supported environments (py310..py314, lint)
 tox
 tox -e lint          # lint only
 
@@ -132,10 +132,8 @@ and `DTOOL_STAGING_PREFIX` (staging tempdir location for `DataSetCreator`).
 
 - **No runtime dependencies** — keep it that way; the dependency-free promise is
   a core feature. Version discovery uses stdlib `importlib.metadata`.
-- **Python 3.9+** only (`requires-python = ">=3.9"`). CI in
-  `.github/workflows/test.yml` tests 3.9–3.14. Note the one remaining version
-  branch: `entry_points().select(...)` (3.10+) vs `.get(...)` (3.9) in
-  `_generate_storage_broker_lookup`.
+- **Python 3.10+** only (`requires-python = ">=3.10"`). CI in
+  `.github/workflows/test.yml` tests 3.10–3.14.
 - **Build backend is `flit_scm`** (flit + setuptools_scm). The version is derived
   from git tags and written to `dtoolcore/version.py` (generated, do not edit).
   Releases are git tags; tagging triggers PyPI publish.

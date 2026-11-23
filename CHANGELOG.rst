@@ -29,10 +29,14 @@ Removed
 
 - Python 2 import shims (``urlparse`` and ``importlib_metadata`` fallbacks)
 - Redundant ``requirements.txt``; ``tox.ini`` no longer references it
+- Support for Python 3.9 (end of life); ``requires-python`` is now ``>=3.10``
+- Stale ``.travis.yml`` and ``appveyor.yml`` CI configurations
 
 Fixed
 ^^^^^
 
+- ``update_readme`` named README backups using local time interpreted as UTC,
+  offsetting the backup timestamp by the local UTC offset
 - ``raise(Error())`` rewritten to ``raise Error()`` throughout (statement, not
   call), resolving the corresponding lint warnings
 

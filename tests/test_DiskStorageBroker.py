@@ -90,6 +90,34 @@ def test_update_readme(tmp_dir_fixture):  # NOQA
     assert len(storagebroker._list_historical_readme_keys()) == 2
 
 
+@pytest.mark.skipif(
+    not hasattr(time, "tzset"), reason="time.tzset not available"
+)
+def test_update_readme_backup_key_is_utc(tmp_dir_fixture, monkeypatch):  # NOQA
+
+    from dtoolcore.storagebroker import DiskStorageBroker
+
+    # Use a local timezone far from UTC (POSIX sign is inverted: UTC+5).
+    monkeypatch.setenv("TZ", "Etc/GMT-5")
+    time.tzset()
+    try:
+        destination_path = os.path.join(tmp_dir_fixture, 'my_proto_dataset')
+        storagebroker = DiskStorageBroker(destination_path)
+        storagebroker.create_structure()
+        storagebroker.put_readme('Hello world')
+
+        before = time.time()
+        storagebroker.update_readme('Updated')
+        after = time.time()
+
+        backup_key, = storagebroker._list_historical_readme_keys()
+        backup_timestamp = float(backup_key.rsplit("README.yml-", 1)[1])
+        assert before - 1 <= backup_timestamp <= after + 1
+    finally:
+        monkeypatch.undo()
+        time.tzset()
+
+
 def test_store_and_retrieve_admin_metadata(tmp_dir_fixture):  # NOQA
 
     from dtoolcore.storagebroker import DiskStorageBroker

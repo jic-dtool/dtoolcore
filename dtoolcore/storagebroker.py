@@ -301,7 +301,7 @@ class BaseStorageBroker:
         # Back up old README content.
         backup_content = self.get_readme_content()
         backup_key = key + "-{}".format(
-            timestamp(datetime.datetime.now())
+            timestamp(datetime.datetime.now(datetime.timezone.utc))
         )
         logger.debug("README.yml backup key: {} {}".format(backup_key, self))
         self.put_text(backup_key, backup_content)
