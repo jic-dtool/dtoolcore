@@ -6,7 +6,6 @@ import pytest
 
 from dtoolcore.utils import (
     generate_identifier,
-    generous_parse_uri,
 )
 
 from . import (
@@ -405,10 +404,9 @@ def test_freeze_with_manifest_missing_readme(tmp_dir_fixture):  # NOQA
         base_uri=base_uri,
     )
 
-    # Delete the README file
-    parsed = generous_parse_uri(proto_dataset.uri)
-    readme_path = os.path.join(parsed.path, "README.yml")
-    os.remove(readme_path)
+    # Delete the README file. Ask the storage broker for its location, as the
+    # path of a file URI is not a valid path on Windows ("/C:/...").
+    os.remove(proto_dataset._storage_broker.get_readme_key())
 
     # Freezing should fail because README is missing
     with pytest.raises(dtoolcore.DtoolCoreValueError) as excinfo:
