@@ -5,29 +5,21 @@ import os
 import pytest
 
 from dtoolcore.utils import (
-    IS_WINDOWS,
     generate_identifier,
     generous_parse_uri,
-    windows_to_unix_path,
 )
 
-from . import tmp_dir_fixture  # NOQA
-
-
-def _sanitise_base_uri(tmp_dir):
-    base_uri = tmp_dir
-    if IS_WINDOWS:
-        parsed_base_uri = generous_parse_uri(tmp_dir)
-        unix_path = windows_to_unix_path(parsed_base_uri.path)
-        base_uri = "file://{}".format(unix_path)
-    return base_uri
+from . import (
+    sanitise_base_uri,
+    tmp_dir_fixture,  # NOQA
+)
 
 
 def test_freeze_with_manifest_basic(tmp_dir_fixture):  # NOQA
     """Test basic freezing of a proto dataset with provided manifest."""
     import dtoolcore
 
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
     name = "test-freeze-manifest"
     creator_username = "tester"
     frozen_at = 1234567890.123
@@ -64,7 +56,7 @@ def test_freeze_with_manifest_with_items(tmp_dir_fixture):  # NOQA
 
     import dtoolcore
 
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
     name = "test-items"
     frozen_at = 1234567890.0
 
@@ -132,7 +124,7 @@ def test_freeze_with_manifest_auto_frozen_at(tmp_dir_fixture):  # NOQA
 
     import dtoolcore
 
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
     name = "test-auto-frozen-at"
 
     manifest = {
@@ -163,7 +155,7 @@ def test_freeze_with_manifest_with_readme(tmp_dir_fixture):  # NOQA
     """Test freezing with README content."""
     import dtoolcore
 
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
     name = "test-readme"
     readme_content = "---\ndescription: Test dataset\nproject: Testing"
 
@@ -191,7 +183,7 @@ def test_freeze_with_manifest_with_tags(tmp_dir_fixture):  # NOQA
     """Test freezing with tags added to proto dataset."""
     import dtoolcore
 
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
     name = "test-tags"
     tags = ["production", "validated"]
 
@@ -220,7 +212,7 @@ def test_freeze_with_manifest_with_annotations(tmp_dir_fixture):  # NOQA
     """Test freezing with annotations added to proto dataset."""
     import dtoolcore
 
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
     name = "test-annotations"
     annotations = {
         "project": "test-project",
@@ -256,7 +248,7 @@ def test_freeze_with_manifest_full(tmp_dir_fixture):  # NOQA
 
     import dtoolcore
 
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
     name = "full-test-dataset"
     creator_username = "scientist"
     frozen_at = 1609459200.0  # 2021-01-01 00:00:00 UTC
@@ -323,7 +315,7 @@ def test_freeze_with_manifest_different_hash_function(tmp_dir_fixture):  # NOQA
     """Test that hash_function in manifest is preserved."""
     import dtoolcore
 
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
     name = "test-hash-function"
 
     manifest = {
@@ -349,7 +341,7 @@ def test_proto_dataset_type_before_freeze(tmp_dir_fixture):  # NOQA
     """Test that proto dataset has type 'protodataset' before freezing."""
     import dtoolcore
 
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
     name = "test-proto-type"
 
     proto_dataset = dtoolcore.create_proto_dataset(
@@ -369,7 +361,7 @@ def test_dataset_type_after_freeze(tmp_dir_fixture):  # NOQA
     """Test that dataset has type 'dataset' after freezing."""
     import dtoolcore
 
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
     name = "test-dataset-type"
 
     manifest = {
@@ -398,7 +390,7 @@ def test_freeze_with_manifest_missing_readme(tmp_dir_fixture):  # NOQA
     """Test that freezing fails if README is missing."""
     import dtoolcore
 
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
     name = "test-missing-readme"
 
     manifest = {
@@ -414,7 +406,6 @@ def test_freeze_with_manifest_missing_readme(tmp_dir_fixture):  # NOQA
     )
 
     # Delete the README file
-    from dtoolcore.utils import generous_parse_uri
     parsed = generous_parse_uri(proto_dataset.uri)
     readme_path = os.path.join(parsed.path, "README.yml")
     os.remove(readme_path)
@@ -430,7 +421,7 @@ def test_freeze_with_manifest_missing_items(tmp_dir_fixture):  # NOQA
     """Test that freezing fails if manifest items are missing from storage."""
     import dtoolcore
 
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
     name = "test-missing-items"
 
     # Create manifest with items that don't exist in storage
@@ -475,7 +466,7 @@ def test_freeze_with_manifest_partial_items(tmp_dir_fixture):  # NOQA
 
     import dtoolcore
 
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
     name = "test-partial-items"
 
     # Create manifest with 2 items
@@ -534,7 +525,7 @@ def test_freeze_with_manifest_items_exist(tmp_dir_fixture):  # NOQA
 
     import dtoolcore
 
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
     name = "test-items-exist"
 
     # Create manifest with items

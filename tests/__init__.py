@@ -25,6 +25,27 @@ def uri_to_path(uri):
     return parsed.path
 
 
+def file_uri_from_path(path):
+    """Return the canonical file URI of a local path.
+
+    On Windows this is ``file:///C:/some/path``, matching the URIs that
+    dtoolcore generates. Note that ``"file://" + "C:/some/path"`` is not
+    equivalent: it puts the drive letter into the netloc of the URI.
+    """
+    abspath = os.path.abspath(path)
+    if IS_WINDOWS:
+        return "file:///" + windows_to_unix_path(abspath)
+    return "file://" + abspath
+
+
+def sanitise_base_uri(tmp_dir):
+    """Return a base URI for tmp_dir: the path itself, or a file URI on
+    Windows."""
+    if IS_WINDOWS:
+        return file_uri_from_path(tmp_dir)
+    return tmp_dir
+
+
 @contextmanager
 def tmp_env_var(key, value):
     os.environ[key] = value
@@ -63,9 +84,7 @@ def tmp_uri_fixture(request):
     def teardown():
         shutil.rmtree(d)
 
-    if IS_WINDOWS:
-        return "file://" + windows_to_unix_path(d)
-    return "file://" + d
+    return file_uri_from_path(d)
 
 
 @pytest.fixture

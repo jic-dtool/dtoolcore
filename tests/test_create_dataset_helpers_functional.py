@@ -4,32 +4,18 @@ import os
 
 import pytest
 
-from dtoolcore.utils import (
-    IS_WINDOWS,
-    generous_parse_uri,
-    windows_to_unix_path,
-)
-
 from . import (
     TEST_SAMPLE_DATA,
+    sanitise_base_uri,
     tmp_dir_fixture,  # NOQA
 )
-
-
-def _sanitise_base_uri(tmp_dir):
-    base_uri = tmp_dir
-    if IS_WINDOWS:
-        parsed_base_uri = generous_parse_uri(tmp_dir)
-        unix_path = windows_to_unix_path(parsed_base_uri.path)
-        base_uri = "file://{}".format(unix_path)
-    return base_uri
 
 
 def test_create_proto_dataset(tmp_dir_fixture):  # NOQA
     import dtoolcore
 
     name = "my-test-ds"
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
     readme_content = "---\ndescription: a test dataset"
     creator_username = "tester"
 
@@ -56,7 +42,7 @@ def test_create_derived_proto_dataset(tmp_dir_fixture):  # NOQA
     import dtoolcore
 
     name = "derived-data-ds"
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
     readme_content = "---\ndescription: a test dataset"
     creator_username = "tester"
 
@@ -94,7 +80,7 @@ def test_DataSetCreator(tmp_dir_fixture):  # NOQA
     from dtoolcore.utils import generate_identifier
 
     name = "my-test-ds"
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
     readme_content = "---\ndescription: a test dataset"
     creator_username = "tester"
     local_file_path = os.path.join(TEST_SAMPLE_DATA, "tiny.png")
@@ -137,7 +123,7 @@ def test_DataSetCreator_does_not_freeze_if_raises(tmp_dir_fixture):  # NOQA
     import dtoolcore
 
     name = "my-test-ds"
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
     readme_content = "---\ndescription: a test dataset"
     creator_username = "tester"
 
@@ -160,7 +146,7 @@ def test_DataSetCreator_staging_api(tmp_dir_fixture):  # NOQA
     import dtoolcore
 
     name = "my-test-ds"
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
     readme_content = "---\ndescription: a test dataset"
     creator_username = "tester"
 
@@ -190,7 +176,7 @@ def test_DataSetCreator_staging_api_stage_item(tmp_dir_fixture):  # NOQA
     from dtoolcore.utils import generate_identifier
 
     name = "my-test-ds"
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
     readme_content = "---\ndescription: a test dataset"
     creator_username = "tester"
 
@@ -235,7 +221,7 @@ def test_DerivedDataSetCreator(tmp_dir_fixture):  # NOQA
     import dtoolcore
 
     name = "derived-data-ds"
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
     creator_username = "tester"
 
     with dtoolcore.DataSetCreator("raw-data-ds", base_uri) as dataset_creator:
@@ -268,7 +254,7 @@ def test_promised_abspath_missing_raises(tmp_dir_fixture):  # NOQA
     import dtoolcore
 
     name = "my-test-ds"
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
     readme_content = "---\ndescription: a test dataset"
     creator_username = "tester"
 
@@ -293,7 +279,7 @@ def test_DataSetCreator_put_readme(tmp_dir_fixture):  # NOQA
     import dtoolcore
 
     name = "my-test-ds"
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
     readme_content = "---\ndescription: a test dataset"
     creator_username = "tester"
 
@@ -316,7 +302,7 @@ def test_DataSetCreator_put_annotation(tmp_dir_fixture):  # NOQA
     import dtoolcore
 
     name = "my-test-ds"
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
     creator_username = "tester"
 
     with dtoolcore.DataSetCreator(
