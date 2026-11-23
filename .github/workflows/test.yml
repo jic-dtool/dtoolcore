@@ -11,17 +11,27 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+
+    defaults:
+      run:
+        shell: bash
 
     strategy:
+      fail-fast: false
       matrix:
+        os: [ubuntu-latest]
         python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
+        include:
+          # Windows is a supported platform; test it on one Python version.
+          - os: windows-latest
+            python-version: '3.14'
 
     steps:
     - name: Git checkout
       uses: actions/checkout@v7
 
-    - name: Set up python3 ${{ matrix.python-version }}
+    - name: Set up python3 ${{ matrix.python-version }} on ${{ matrix.os }}
       uses: actions/setup-python@v7
       with:
         python-version: ${{ matrix.python-version }}
