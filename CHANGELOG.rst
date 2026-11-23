@@ -12,21 +12,60 @@ This change log uses principles from `keep a changelog <http://keepachangelog.co
 Added
 ^^^^^
 
+
+Changed
+^^^^^^^
+
+
+Deprecated
+^^^^^^^^^^
+
+
+Removed
+^^^^^^^
+
+
+Fixed
+^^^^^
+
+
+Security
+^^^^^^^^
+
+
+[3.20.0] - 2026-11-23
+---------------------
+
+
+Added
+^^^^^
+
+- ``freeze_with_manifest`` method on ``ProtoDataSet`` class for converting a
+  proto-dataset to a frozen dataset using a pre-computed manifest with
+  client-provided hashes. Validates that README and all manifest items exist
+  in storage before freezing. Useful for server applications that trust
+  client-computed hashes.
 - ``ProtoDataSet.freeze`` and ``freeze_with_manifest`` return the frozen
   ``DataSet`` (previously ``None``)
 - ``DtoolCoreFrozenDataSetError`` (a ``DtoolCoreTypeError``)
 - ``ruff`` linting (replacing ``flake8``), configured in ``pyproject.toml``,
   with a ``.pre-commit-config.yaml`` and a ``lint`` optional-dependency group
 - Windows CI job (``windows-latest``, Python 3.14)
+- Test with Python 3.14 in CI workflow
 
 Changed
 ^^^^^^^
 
+- changed build system to ``flit``
 - Migrated deprecated ``datetime.utcnow()`` / ``datetime.utcfromtimestamp()``
   to timezone-aware equivalents; ``utils.timestamp()`` now treats naive
   datetimes as UTC and accepts timezone-aware datetimes
 - ``utils.write_config_value_to_file`` now sets config-file permissions to
   ``0o600`` as documented (previously ``0o700``)
+
+Deprecated
+^^^^^^^^^^
+
 
 Removed
 ^^^^^^^
@@ -35,6 +74,10 @@ Removed
 - Redundant ``requirements.txt``; ``tox.ini`` no longer references it
 - Support for Python 3.9 (end of life); ``requires-python`` is now ``>=3.10``
 - Stale ``.travis.yml`` and ``appveyor.yml`` CI configurations
+- Dropped support for Python 3.7 and 3.8 in CI workflow. ``importlib.metadata``
+  (used for storage broker entry-point discovery) is only available in the
+  standard library from Python 3.8 onwards, and ``actions/setup-python`` no
+  longer provides 3.7/3.8 builds on ``ubuntu-latest``
 
 Fixed
 ^^^^^
@@ -84,58 +127,8 @@ Fixed
 - ``utils.windows_to_unix_path`` and ``utils.unix_to_windows_path`` raised
   ``IndexError`` on Windows for two-character paths starting with ``/``
 
-
-[3.20.0] - 2025-12-08
----------------------
-
-
-Added
-^^^^^
-
-- ``freeze_with_manifest`` method on ``ProtoDataSet`` class for converting a
-  proto-dataset to a frozen dataset using a pre-computed manifest with
-  client-provided hashes. Validates that README and all manifest items exist
-  in storage before freezing. Useful for server applications that trust
-  client-computed hashes.
-
-Changed
-^^^^^^^
-
-- changed build system to ``flit``
-
-Deprecated
-^^^^^^^^^^
-
-
-Removed
-^^^^^^^
-
-
-Fixed
-^^^^^
-
-
 Security
 ^^^^^^^^
-
-
-[Unreleased]
-------------
-
-
-Added
-^^^^^
-
-- Test with Python 3.14 in CI workflow
-
-
-Removed
-^^^^^^^
-
-- Dropped support for Python 3.7 and 3.8 in CI workflow. ``importlib.metadata``
-  (used for storage broker entry-point discovery) is only available in the
-  standard library from Python 3.8 onwards, and ``actions/setup-python`` no
-  longer provides 3.7/3.8 builds on ``ubuntu-latest``
 
 
 [3.19.0] - 2024-12-16

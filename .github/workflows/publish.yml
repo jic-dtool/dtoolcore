@@ -1,21 +1,29 @@
 name: publish
 
+# Pushes to main publish a development build to TestPyPI.
+# Pushing a version tag (e.g. 3.20.0) runs the test suite, then publishes the
+# release to PyPI. Both uploads use PyPI trusted publishing (OIDC), so no API
+# tokens are stored in the repository.
+
 on:
   push:
     branches:
       - main
-      - master
     tags:
-      - '*'
+      - '[0-9]+.[0-9]+.[0-9]+*'
 
 jobs:
-  build:
+  test:
+    uses: ./.github/workflows/test.yml
 
+  build:
+    needs: test
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v7
       with:
+        # setuptools_scm derives the version from the git tags
         fetch-depth: 0
 
     - name: Set up Python 3.12
@@ -23,30 +31,59 @@ jobs:
       with:
         python-version: 3.12
 
-    - name: Install requirements
-      run: |
-        pip install --upgrade build
-        pip install --upgrade setuptools wheel setuptools-scm[toml]
-        pip list
-
     - name: Package distribution
       run: |
+        pip install --upgrade build
         python -m build
 
-    - name: Publish distribution to Test PyPI
-      uses: pypa/gh-action-pypi-publish@release/v1
-      continue-on-error: true
+    - name: Check version matches tag
+      if: startsWith(github.ref, 'refs/tags/')
+      run: |
+        ls dist/dtoolcore-${GITHUB_REF_NAME}.tar.gz \
+           dist/dtoolcore-${GITHUB_REF_NAME}-py3-none-any.whl
+
+    - uses: actions/upload-artifact@v4
       with:
-        user: __token__
-        password: ${{ secrets.test_pypi_password }}
+        name: dist
+        path: dist/
+
+  publish-testpypi:
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/p/dtoolcore
+    permissions:
+      id-token: write
+
+    steps:
+    - uses: actions/download-artifact@v4
+      with:
+        name: dist
+        path: dist/
+
+    - name: Publish distribution to TestPyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
         repository-url: https://test.pypi.org/legacy/
-        verbose: true
         skip-existing: true
 
-    - name: Publish distribution to PyPI
-      if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
-      uses: pypa/gh-action-pypi-publish@release/v1
+  publish-pypi:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/dtoolcore
+    permissions:
+      id-token: write
+
+    steps:
+    - uses: actions/download-artifact@v4
       with:
-        user: __token__
-        password: ${{ secrets.pypi_password }}
-        verbose: true
+        name: dist
+        path: dist/
+
+    - name: Publish distribution to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1

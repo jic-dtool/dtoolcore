@@ -31,7 +31,7 @@ docs = [
 [project.urls]
 Documentation = "https://dtoolcore.readthedocs.io"
 Repository = "https://github.com/jic-dtool/dtoolcore"
-Changelog = "https://github.com/jic-dtool/dtoolcore/blob/master/CHANGELOG.rst"
+Changelog = "https://github.com/jic-dtool/dtoolcore/blob/main/CHANGELOG.rst"
 
 [project.entry-points."dtool.storage_brokers"]
 DiskStorageBroker = "dtoolcore.storagebroker:DiskStorageBroker"
