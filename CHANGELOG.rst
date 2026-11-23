@@ -35,6 +35,12 @@ Removed
 Fixed
 ^^^^^
 
+- ``ProtoDataSet.freeze_with_manifest`` now rejects manifests that are
+  inconsistent with the proto dataset: a ``hash_function`` that is missing or
+  differs from the storage broker's, items without ``relpath`` or whose
+  identifier is not derived from their ``relpath``, and items present in
+  storage but absent from the manifest (previously not checked at all for an
+  empty manifest). Item content is still never read.
 - ``update_readme`` named README backups using local time interpreted as UTC,
   offsetting the backup timestamp by the local UTC offset
 - ``raise(Error())`` rewritten to ``raise Error()`` throughout (statement, not

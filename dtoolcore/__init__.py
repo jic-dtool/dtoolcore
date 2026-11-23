@@ -851,6 +851,66 @@ class ProtoDataSet(_BaseDataSet):
         # Clean up using the storage broker's post freeze hook.
         self._storage_broker.post_freeze_hook()
 
+    def _validate_manifest(self, manifest):
+        """Raise DtoolCoreValueError if manifest does not match storage.
+
+        Only uses the item listing of the storage broker; item content is
+        never read.
+        """
+
+        def summarise(relpaths, limit=5):
+            relpaths = sorted(relpaths)
+            summary = relpaths[:limit]
+            if len(relpaths) > limit:
+                summary.append(f"... and {len(relpaths) - limit} more")
+            return summary
+
+        hasher = getattr(self._storage_broker, "hasher", None)
+        hash_function = manifest.get("hash_function")
+        if hash_function is None:
+            raise DtoolCoreValueError("Manifest is missing 'hash_function'")
+        if hasher is not None and hash_function != hasher.name:
+            raise DtoolCoreValueError(
+                f"Manifest hash_function '{hash_function}' does not match "
+                f"the storage broker's hash function '{hasher.name}'"
+            )
+
+        manifest_items = manifest.get("items", {})
+
+        # Each identifier must be derived from its relpath, otherwise the
+        # dataset would record relpaths that do not correspond to any item.
+        for identifier, properties in manifest_items.items():
+            relpath = properties.get("relpath")
+            if relpath is None:
+                raise DtoolCoreValueError(
+                    f"Manifest item {identifier} is missing 'relpath'"
+                )
+            if dtoolcore.utils.generate_identifier(relpath) != identifier:
+                raise DtoolCoreValueError(
+                    f"Manifest identifier {identifier} does not match "
+                    f"relpath '{relpath}'"
+                )
+
+        # Items in storage and in the manifest must be identical.
+        existing = {
+            dtoolcore.utils.generate_identifier(handle): handle
+            for handle in self._storage_broker.iter_item_handles()
+        }
+
+        missing = set(manifest_items) - set(existing)
+        if missing:
+            raise DtoolCoreValueError(
+                f"Missing {len(missing)} item(s) in storage: "
+                f"{summarise(manifest_items[i]['relpath'] for i in missing)}"
+            )
+
+        extra = set(existing) - set(manifest_items)
+        if extra:
+            raise DtoolCoreValueError(
+                f"Found {len(extra)} item(s) in storage that are not in the "
+                f"manifest: {summarise(existing[i] for i in extra)}"
+            )
+
     def freeze_with_manifest(self, manifest, frozen_at=None):
         """
         Convert :class:`dtoolcore.ProtoDataSet` to :class:`dtoolcore.DataSet`
@@ -862,11 +922,16 @@ class ProtoDataSet(_BaseDataSet):
         where the client has already computed hashes during upload.
 
         Before freezing, this method validates that:
-        - The README file exists in storage
-        - All items listed in the manifest exist in storage
 
-        Note: This method does NOT verify that the hashes match - it trusts
-        the client-provided hashes in the manifest.
+        - The README file exists in storage
+        - The manifest's hash function matches the storage broker's
+        - Every item identifier is derived from the item's relpath
+        - The items in the manifest and the items in storage are identical
+
+        Note: This method does NOT read item content. It neither verifies the
+        hashes nor the sizes - it trusts the client-provided values in the
+        manifest. Its cost only scales with the number of items, as it must
+        be cheap enough to run inside a synchronous web request.
 
         :param manifest: dict with structure::
 
@@ -885,7 +950,8 @@ class ProtoDataSet(_BaseDataSet):
 
         :param frozen_at: optional timestamp for when the dataset was frozen.
             If not provided, uses the current UTC time.
-        :raises: DtoolCoreValueError if README or any manifest item is missing
+        :raises: DtoolCoreValueError if the README is missing or the manifest
+            is inconsistent with the proto dataset
         """
         logger.debug("Freeze dataset with manifest {}".format(self))
 
@@ -897,34 +963,7 @@ class ProtoDataSet(_BaseDataSet):
                 f"README file is missing or cannot be read: {e}"
             )
 
-        # Validate that all items in the manifest exist in storage
-        manifest_items = manifest.get("items", {})
-        if manifest_items:
-            # Get identifiers of items that actually exist in storage
-            existing_handles = set(self._storage_broker.iter_item_handles())
-            existing_identifiers = set(
-                dtoolcore.utils.generate_identifier(h)
-                for h in existing_handles
-            )
-
-            # Check for missing items
-            expected_identifiers = set(manifest_items.keys())
-            missing_identifiers = expected_identifiers - existing_identifiers
-
-            if missing_identifiers:
-                # Get relpaths of missing items for better error message
-                missing_relpaths = [
-                    manifest_items[ident].get("relpath", ident)
-                    for ident in list(missing_identifiers)[:5]  # Limit to 5
-                ]
-                if len(missing_identifiers) > 5:
-                    missing_relpaths.append(
-                        f"... and {len(missing_identifiers) - 5} more"
-                    )
-                raise DtoolCoreValueError(
-                    f"Missing {len(missing_identifiers)} item(s) in storage: "
-                    f"{missing_relpaths}"
-                )
+        self._validate_manifest(manifest)
 
         # Call the storage broker pre_freeze hook.
         self._storage_broker.pre_freeze_hook()
