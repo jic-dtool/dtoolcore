@@ -1,16 +1,15 @@
 """Test the dtoolcore.utils module."""
 
-import os
-import sys
 import json
+import os
+import stat
+import sys
+from unittest.mock import MagicMock
 
-try:
-    from unittest.mock import MagicMock
-except ImportError:
-    from mock import MagicMock
-
-from . import tmp_dir_fixture  # NOQA
-from . import tmp_env_var
+from . import (
+    tmp_dir_fixture,  # NOQA
+    tmp_env_var,
+)
 
 
 def test_sha1_hexdigest():
@@ -29,32 +28,36 @@ def test_generate_identifier():
 
 
 def test_cross_platform_getuser_windows_and_no_username_env_var():
-    from dtoolcore.utils import cross_platform_getuser
     import getpass
+
+    from dtoolcore.utils import cross_platform_getuser
     getpass.getuser = MagicMock(return_value="user1")
     assert cross_platform_getuser(True, True) == "unknown"
     getpass.getuser.assert_not_called()
 
 
 def test_cross_platform_getuser_windows_and_username_env_var():
-    from dtoolcore.utils import cross_platform_getuser
     import getpass
+
+    from dtoolcore.utils import cross_platform_getuser
     getpass.getuser = MagicMock(return_value="user1")
     assert cross_platform_getuser(True, False) == "user1"
     getpass.getuser.assert_called_once()
 
 
 def test_cross_platform_getuser_not_windows_and_username_env_var():
-    from dtoolcore.utils import cross_platform_getuser
     import getpass
+
+    from dtoolcore.utils import cross_platform_getuser
     getpass.getuser = MagicMock(return_value="user1")
     assert cross_platform_getuser(False, False) == "user1"
     getpass.getuser.assert_called_once()
 
 
 def test_cross_platform_getuser_not_windows_and_no_username_env_var():
-    from dtoolcore.utils import cross_platform_getuser
     import getpass
+
+    from dtoolcore.utils import cross_platform_getuser
     getpass.getuser = MagicMock(return_value="user1")
     assert cross_platform_getuser(False, True) == "user1"
     getpass.getuser.assert_called_once()
@@ -108,7 +111,7 @@ def test_write_config_value_to_file(tmp_dir_fixture):  # NOQA
     # Ensure that the file has 600 permissions.
     if sys.platform != "win32":
         # Don't do this check on windows
-        assert os.stat(config_path).st_mode == 33216
+        assert stat.S_IMODE(os.stat(config_path).st_mode) == 0o600
 
 
 def test_get_config_value():
@@ -206,7 +209,7 @@ def test_name_is_valid():
     assert not name_is_valid("x" * 81)
 
     assert not name_is_valid("/root/this-is-a-bad-name")
-    assert not name_is_valid("th\is-is-a-bad-name")  # NOQA
+    assert not name_is_valid(r"th\is-is-a-bad-name")  # NOQA
     assert not name_is_valid("th\\is-is-a-bad-name")
     assert not name_is_valid("th\nis-is-a-bad-name")
     assert not name_is_valid("{this-is-a-bad-name}")

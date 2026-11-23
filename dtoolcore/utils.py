@@ -1,22 +1,19 @@
 """Utility functions for dtoolcore."""
 
-import os
+import base64
+import binascii
+import datetime
 import errno
 import getpass
 import hashlib
 import json
+import logging
+import os
 import platform
-import binascii
-import base64
-import datetime
 import re
 import socket
-import logging
-
-try:
-    from urlparse import urlparse, urlunparse
-except ImportError:
-    from urllib.parse import urlparse, urlunparse
+import stat
+from urllib.parse import urlparse, urlunparse
 
 logger = logging.getLogger(__name__)
 
@@ -161,7 +158,7 @@ def write_config_value_to_file(key, value, config_path=None):
         json.dump(config, fh, sort_keys=True, indent=2)
 
     # Set 600 permissions on the config file.
-    os.chmod(config_path, 33216)
+    os.chmod(config_path, stat.S_IRUSR | stat.S_IWUSR)
 
     return get_config_value_from_file(key, config_path)
 
@@ -247,8 +244,12 @@ def timestamp(datetime_obj):
     """Return Unix timestamp as float.
 
     The number of seconds that have elapsed since January 1, 1970.
+
+    Naive datetimes are assumed to be in UTC.
     """
-    start_of_time = datetime.datetime(1970, 1, 1)
+    start_of_time = datetime.datetime(1970, 1, 1, tzinfo=datetime.timezone.utc)
+    if datetime_obj.tzinfo is None:
+        datetime_obj = datetime_obj.replace(tzinfo=datetime.timezone.utc)
     diff = datetime_obj - start_of_time
     return diff.total_seconds()
 

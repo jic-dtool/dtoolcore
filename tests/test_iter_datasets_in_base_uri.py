@@ -6,9 +6,9 @@ from . import tmp_uri_fixture  # NOQA
 def test_iter_datasets_in_base_uri(tmp_uri_fixture):  # NOQA
 
     from dtoolcore import (
-        create_proto_dataset,
         DataSet,
         ProtoDataSet,
+        create_proto_dataset,
         iter_datasets_in_base_uri,
         iter_proto_datasets_in_base_uri,
     )

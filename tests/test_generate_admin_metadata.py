@@ -1,9 +1,9 @@
 """Test the generate_admin_metadata helper function."""
 
 import datetime
-import pytz
 
 import pytest
+import pytz
 
 
 def test_generate_admin_metadata():
@@ -28,8 +28,7 @@ def test_generate_admin_metadata():
 
 
 def test_generate_admin_metadata_raises_invalid_name_error():
-    from dtoolcore import generate_admin_metadata
-    from dtoolcore import DtoolCoreInvalidNameError
+    from dtoolcore import DtoolCoreInvalidNameError, generate_admin_metadata
 
     with pytest.raises(DtoolCoreInvalidNameError):
         generate_admin_metadata("/root/bad-name")

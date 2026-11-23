@@ -5,9 +5,10 @@ Tests for https://github.com/jic-dtool/dtoolcore/issues/20
 import os
 import time
 
+import dtoolcore as dc
+
 from . import tmp_dir_fixture  # NOQA
 
-import dtoolcore as dc
 
 def test_frozen_at_value_when_copying_dataset(tmp_dir_fixture):  # NOQA
 

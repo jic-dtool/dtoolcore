@@ -1,6 +1,6 @@
 """Test timestamp functionality."""
 
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 def test_timestamp_returns_float():
@@ -33,7 +33,7 @@ def test_subsection_precision():
     import dtoolcore.utils
 
     time_as_float = 946684800.513
-    into_new_millenium = datetime.utcfromtimestamp(time_as_float)
+    into_new_millenium = datetime.fromtimestamp(time_as_float, timezone.utc)
 
     tolerance = 0.000001
     actual = dtoolcore.utils.timestamp(into_new_millenium)

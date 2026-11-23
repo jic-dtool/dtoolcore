@@ -9,9 +9,9 @@ import pytest
 
 from dtoolcore.utils import (
     IS_WINDOWS,
-    windows_to_unix_path,
-    unix_to_windows_path,
     generous_parse_uri,
+    unix_to_windows_path,
+    windows_to_unix_path,
 )
 
 _HERE = os.path.dirname(__file__)

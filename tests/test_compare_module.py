@@ -2,8 +2,10 @@
 
 import os
 
-from . import uri_to_path
-from . import tmp_uri_fixture  # NOQA
+from . import (
+    tmp_uri_fixture,  # NOQA
+    uri_to_path,
+)
 
 
 def create_test_files(uri):
@@ -23,8 +25,8 @@ def test_diff_identifiers(tmp_uri_fixture):  # NOQA
         generate_admin_metadata,
         generate_proto_dataset,
     )
-    from dtoolcore.utils import generate_identifier
     from dtoolcore.compare import diff_identifiers
+    from dtoolcore.utils import generate_identifier
 
     fpaths = create_test_files(tmp_uri_fixture)
 
@@ -63,8 +65,8 @@ def test_diff_sizes(tmp_uri_fixture):  # NOQA
         generate_admin_metadata,
         generate_proto_dataset,
     )
-    from dtoolcore.utils import generate_identifier
     from dtoolcore.compare import diff_sizes
+    from dtoolcore.utils import generate_identifier
 
     fpaths = create_test_files(tmp_uri_fixture)
 
@@ -102,9 +104,9 @@ def test_diff_content(tmp_uri_fixture):  # NOQA
         generate_admin_metadata,
         generate_proto_dataset,
     )
-    from dtoolcore.utils import generate_identifier
     from dtoolcore.compare import diff_content
     from dtoolcore.storagebroker import DiskStorageBroker
+    from dtoolcore.utils import generate_identifier
 
     fpaths = create_test_files(tmp_uri_fixture)
 

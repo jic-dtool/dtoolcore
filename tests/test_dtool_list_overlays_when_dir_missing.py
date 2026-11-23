@@ -1,7 +1,9 @@
 import os
 
-from . import chdir_fixture  # NOQA
-from . import TEST_SAMPLE_DATA
+from . import (
+    TEST_SAMPLE_DATA,
+    chdir_fixture,  # NOQA
+)
 
 
 def test_list_overlays_when_dir_missing(chdir_fixture):  # NOQA
@@ -14,8 +16,7 @@ def test_list_overlays_when_dir_missing(chdir_fixture):  # NOQA
     https://github.com/jic-dtool/dtoolcore/issues/3
     """
 
-    from dtoolcore import ProtoDataSet, generate_admin_metadata
-    from dtoolcore import DataSet
+    from dtoolcore import DataSet, ProtoDataSet, generate_admin_metadata
     from dtoolcore.storagebroker import DiskStorageBroker
 
     name = "my_dataset"

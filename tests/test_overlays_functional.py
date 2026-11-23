@@ -4,25 +4,26 @@ import os
 
 import pytest
 
-from . import tmp_dir_fixture  # NOQA
-from . import TEST_SAMPLE_DATA
+from . import (
+    TEST_SAMPLE_DATA,
+    tmp_dir_fixture,  # NOQA
+)
 
 
 def test_overlays_functional(tmp_dir_fixture):  # NOQA
 
     from dtoolcore import (
         DataSet,
-        ProtoDataSet,
+        DtoolCoreInvalidNameError,
         DtoolCoreKeyError,
         DtoolCoreTypeError,
         DtoolCoreValueError,
-        DtoolCoreInvalidNameError,
-        generate_admin_metadata,
+        ProtoDataSet,
         copy,
+        generate_admin_metadata,
     )
-
-    from dtoolcore.utils import generate_identifier
     from dtoolcore.storagebroker import DiskStorageBroker
+    from dtoolcore.utils import generate_identifier
 
     name = "my_dataset"
     admin_metadata = generate_admin_metadata(name)

@@ -22,8 +22,9 @@ def test_md5sum_hexdigest():
 
 
 def test_md5sum_digest():
-    from dtoolcore.filehasher import md5sum_digest
     from base64 import b64encode
+
+    from dtoolcore.filehasher import md5sum_digest
     expected = "3HMZLS+B1wCc5aHue61XVQ=="
     test_file = os.path.join(TEST_SAMPLE_DATA, 'tiny.png')
     actual = b64encode(md5sum_digest(test_file)).decode("utf-8")

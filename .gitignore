@@ -9,8 +9,11 @@
 .tox
 .cache
 .pytest_cache
+.ruff_cache
 .vscode
 
 env/
+venv*/
+build/
 dist/
 dtoolcore/version.py

@@ -7,7 +7,7 @@ from . import tmp_dir_fixture  # NOQA
 
 def test_tags_functional(tmp_dir_fixture):  # NOQA
 
-    from dtoolcore import DataSetCreator, DataSet
+    from dtoolcore import DataSet, DataSetCreator
 
     with DataSetCreator(name="empty-test-ds", base_uri=tmp_dir_fixture) as c:
         # Test put on proto dataset.

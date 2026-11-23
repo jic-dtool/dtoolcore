@@ -1,19 +1,16 @@
 import os
 
-from . import chdir_fixture  # NOQA
-from . import TEST_SAMPLE_DATA
+from . import (
+    TEST_SAMPLE_DATA,
+    chdir_fixture,  # NOQA
+)
 
 
 def test_uri_property_when_using_relpath(chdir_fixture):  # NOQA
 
-    from dtoolcore import ProtoDataSet, generate_admin_metadata
-    from dtoolcore import DataSet
+    from dtoolcore import DataSet, ProtoDataSet, generate_admin_metadata
     from dtoolcore.storagebroker import DiskStorageBroker
-    from dtoolcore.utils import (
-        IS_WINDOWS,
-        windows_to_unix_path,
-        urlparse
-    )
+    from dtoolcore.utils import IS_WINDOWS, urlparse, windows_to_unix_path
 
     name = "my_dataset"
     admin_metadata = generate_admin_metadata(name)
