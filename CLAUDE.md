@@ -31,7 +31,7 @@ tox -e lint          # lint only
 # Install for development
 pip install -e ".[test,lint]"
 
-# Build sdist + wheel (flit_scm backend)
+# Build sdist + wheel (hatchling + hatch-vcs backend)
 python -m build
 ```
 
@@ -134,7 +134,7 @@ and `DTOOL_STAGING_PREFIX` (staging tempdir location for `DataSetCreator`).
   a core feature. Version discovery uses stdlib `importlib.metadata`.
 - **Python 3.10+** only (`requires-python = ">=3.10"`). CI in
   `.github/workflows/test.yml` tests 3.10–3.14.
-- **Build backend is `flit_scm`** (flit + setuptools_scm). The version is derived
+- **Build backend is `hatchling` + `hatch-vcs`** (uses setuptools_scm). The version is derived
   from git tags and written to `dtoolcore/version.py` (generated, do not edit).
   Releases are git tags; tagging triggers PyPI publish.
 - **Timestamps**: `utils.timestamp()` returns seconds since the Unix epoch and

@@ -56,7 +56,8 @@ Added
 Changed
 ^^^^^^^
 
-- changed build system to ``flit``
+- Build system changed from ``setuptools`` to ``hatchling`` with
+  ``hatch-vcs``; the version is still derived from git tags
 - Migrated deprecated ``datetime.utcnow()`` / ``datetime.utcfromtimestamp()``
   to timezone-aware equivalents; ``utils.timestamp()`` now treats naive
   datetimes as UTC and accepts timezone-aware datetimes

@@ -21,7 +21,7 @@ try:
     __version__ = version(__name__)
     logger.debug("Determined version %s via importlib.metadata", __version__)
 except PackageNotFoundError:
-    # if that fails, check for static version file written by setuptools_scm
+    # if that fails, check for static version file written by hatch-vcs
     try:
         from .version import version as __version__
         logger.debug(
