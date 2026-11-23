@@ -14,7 +14,6 @@ Added
 
 - ``ruff`` linting (replacing ``flake8``), configured in ``pyproject.toml``,
   with a ``.pre-commit-config.yaml`` and a ``lint`` optional-dependency group
-- Windows CI job (``windows-latest``, Python 3.14)
 
 Changed
 ^^^^^^^
