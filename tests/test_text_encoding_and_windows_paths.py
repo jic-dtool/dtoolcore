@@ -49,8 +49,11 @@ def test_readme_is_written_as_utf8(tmp_dir_fixture, non_utf8_locale):  # NOQA
     storagebroker = _create_broker(tmp_dir_fixture)
     storagebroker.put_readme(NON_ASCII_README)
 
+    # Text mode translates "\n" to the platform's line separator ("\r\n" on
+    # Windows); only the encoding is under test here.
     with open(storagebroker.get_readme_key(), "rb") as fh:
-        assert fh.read() == NON_ASCII_README.encode("utf-8")
+        raw = fh.read()
+    assert raw.replace(b"\r\n", b"\n") == NON_ASCII_README.encode("utf-8")
 
     assert storagebroker.get_readme_content() == NON_ASCII_README
 
