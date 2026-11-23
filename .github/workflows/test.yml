@@ -37,7 +37,6 @@ jobs:
     - name: Install requirements
       run: |
         python -m pip install --upgrade pip
-        pip install --upgrade setuptools wheel setuptools-scm[toml]
         pip install ".[test,lint]"
         pip list
 
