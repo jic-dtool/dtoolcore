@@ -390,7 +390,7 @@ def test_freeze_with_manifest_missing_hash_function(tmp_dir_fixture):  # NOQA
     """Test that a manifest without hash_function is rejected."""
     import dtoolcore
 
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
     manifest = {
         "dtoolcore_version": dtoolcore.__version__,
         "items": {},
@@ -657,7 +657,7 @@ def test_freeze_with_manifest_identifier_relpath_mismatch(tmp_dir_fixture):  # N
     """
     import dtoolcore
 
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
     proto_dataset = dtoolcore.create_proto_dataset(
         name="test-identifier-mismatch",
         base_uri=base_uri,
@@ -679,7 +679,7 @@ def test_freeze_with_manifest_item_without_relpath(tmp_dir_fixture):  # NOQA
     """Test that a manifest item without relpath is rejected."""
     import dtoolcore
 
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
     proto_dataset = dtoolcore.create_proto_dataset(
         name="test-no-relpath",
         base_uri=base_uri,
@@ -701,7 +701,7 @@ def test_freeze_with_manifest_extra_items_in_storage(tmp_dir_fixture):  # NOQA
     """Test that items in storage but not in the manifest are rejected."""
     import dtoolcore
 
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
     proto_dataset = dtoolcore.create_proto_dataset(
         name="test-extra-items",
         base_uri=base_uri,
@@ -725,7 +725,7 @@ def test_freeze_with_manifest_extra_items_empty_manifest(tmp_dir_fixture):  # NO
     """Test that items in storage are rejected when the manifest is empty."""
     import dtoolcore
 
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
     proto_dataset = dtoolcore.create_proto_dataset(
         name="test-extra-items-empty",
         base_uri=base_uri,
@@ -750,7 +750,7 @@ def test_freeze_with_manifest_does_not_hash_items(tmp_dir_fixture, monkeypatch):
     import dtoolcore
     from dtoolcore.storagebroker import DiskStorageBroker
 
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
     proto_dataset = dtoolcore.create_proto_dataset(
         name="test-no-hashing",
         base_uri=base_uri,
