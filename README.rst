@@ -1,7 +1,7 @@
 Manage scientific data sets
 ===========================
 
-.. |dtool| image:: https://github.com/jic-dtool/dtoolcore/blob/master/icons/22x22/dtool_logo.png?raw=True
+.. |dtool| image:: https://github.com/jic-dtool/dtoolcore/blob/main/icons/22x22/dtool_logo.png?raw=True
     :height: 20px
     :target: https://github.com/jic-dtool/dtoolcore
 
@@ -13,11 +13,11 @@ Manage scientific data sets
    :target: https://ci.appveyor.com/project/tjelvar-olsson/dtoolcore
    :alt: AppVeyor CI build status (Windows)
 
-.. |test| image:: https://img.shields.io/github/actions/workflow/status/jic-dtool/dtoolcore/test.yml?branch=master&label=tests
+.. |test| image:: https://img.shields.io/github/actions/workflow/status/jic-dtool/dtoolcore/test.yml?branch=main&label=tests
     :target: https://github.com/jic-dtool/dtoolcore/actions/workflows/test.yml
 
-.. |codecov| image:: https://codecov.io/github/jic-dtool/dtoolcore/coverage.svg?branch=master
-   :target: https://codecov.io/github/jic-dtool/dtoolcore?branch=master
+.. |codecov| image:: https://codecov.io/github/jic-dtool/dtoolcore/coverage.svg?branch=main
+   :target: https://codecov.io/github/jic-dtool/dtoolcore?branch=main
    :alt: Code Coverage
 
 .. |docs| image:: https://readthedocs.org/projects/dtoolcore/badge/?version=latest
