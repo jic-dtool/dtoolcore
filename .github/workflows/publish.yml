@@ -44,7 +44,7 @@ jobs:
         ls dist/dtoolcore-${GITHUB_REF_NAME}.tar.gz \
            dist/dtoolcore-${GITHUB_REF_NAME}-py3-none-any.whl
 
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v7
       with:
         name: dist
         path: dist/
