@@ -808,15 +808,41 @@ class ProtoDataSet(_BaseDataSet):
         self._storage_broker.add_item_metadata(handle, key, value)
 
     def _generate_overlays(self):
-        """Return dictionary of overlays generated from added item metadata."""
+        """Return dictionary of overlays generated from added item metadata.
+
+        Overlays must have every item identifier as a key. Items without
+        metadata for a given overlay get the value ``None``.
+
+        :raises: DtoolCoreInvalidNameError if a metadata key is not a valid
+                 overlay name
+        """
+        identifiers = []
         overlays = defaultdict(dict)
         for handle in self._storage_broker.iter_item_handles():
             identifier = dtoolcore.utils.generate_identifier(handle)
+            identifiers.append(identifier)
             item_metadata = self._storage_broker.get_item_metadata(handle)
             for k, v in item_metadata.items():
                 overlays[k][identifier] = v
 
-        return overlays
+        for overlay_name, overlay in overlays.items():
+            if not dtoolcore.utils.name_is_valid(overlay_name):
+                raise DtoolCoreInvalidNameError(
+                    "Invalid item metadata key: {!r}".format(overlay_name)
+                )
+            for identifier in identifiers:
+                overlay.setdefault(identifier, None)
+
+        return dict(overlays)
+
+    def _put_generated_overlays(self, overlays):
+        """Store overlays returned by :meth:`_generate_overlays`.
+
+        These have every item identifier as a key by construction, so this
+        avoids listing the items again for each overlay.
+        """
+        for overlay_name, overlay in overlays.items():
+            self._storage_broker.put_overlay(overlay_name, overlay)
 
     def freeze(self, progressbar=None):
         """
@@ -829,16 +855,14 @@ class ProtoDataSet(_BaseDataSet):
         if progressbar:
             progressbar.label = "Freezing dataset"
 
-        # Generate and persist the manifest.
+        # Generate the manifest and the overlays from any item metadata that
+        # has been added before writing anything, so that a failure leaves the
+        # proto dataset untouched.
         manifest = self.generate_manifest(progressbar=progressbar)
-        self._storage_broker.put_manifest(manifest)
-
-        # Generate and persist overlays from any item metadata that has been
-        # added.
-
         overlays = self._generate_overlays()
-        for overlay_name, overlay in overlays.items():
-            self._put_overlay(overlay_name, overlay)
+
+        self._storage_broker.put_manifest(manifest)
+        self._put_generated_overlays(overlays)
 
         # Change the type of the dataset from "protodataset" to "dataset"
         # in the administrative metadata.
@@ -975,14 +999,14 @@ class ProtoDataSet(_BaseDataSet):
         # Call the storage broker pre_freeze hook.
         self._storage_broker.pre_freeze_hook()
 
+        # Generate the overlays from any item metadata that has been added
+        # before writing anything, so that a failure leaves the proto dataset
+        # untouched.
+        overlays = self._generate_overlays()
+
         # Use provided manifest instead of computing
         self._storage_broker.put_manifest(manifest)
-
-        # Generate and persist overlays from any item metadata that has been
-        # added.
-        overlays = self._generate_overlays()
-        for overlay_name, overlay in overlays.items():
-            self._put_overlay(overlay_name, overlay)
+        self._put_generated_overlays(overlays)
 
         # Change the type of the dataset from "protodataset" to "dataset"
         # in the administrative metadata.

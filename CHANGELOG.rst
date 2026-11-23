@@ -41,6 +41,12 @@ Fixed
   identifier is not derived from their ``relpath``, and items present in
   storage but absent from the manifest (previously not checked at all for an
   empty manifest). Item content is still never read.
+- ``ProtoDataSet.freeze`` and ``freeze_with_manifest`` failed with "Overlay
+  keys must be dataset identifiers" when item metadata was added to only
+  some items, after the manifest had already been written. Items without
+  metadata for an overlay now get ``None``, and overlays are generated and
+  validated before anything is written, so a failing freeze leaves the
+  proto dataset untouched
 - ``update_readme`` named README backups using local time interpreted as UTC,
   offsetting the backup timestamp by the local UTC offset
 - Item metadata keys containing dots (e.g. ``my.key``) were read back by
