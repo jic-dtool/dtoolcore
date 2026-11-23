@@ -738,12 +738,17 @@ class DiskStorageBroker(BaseStorageBroker):
             for f in os.listdir(dirname):
                 yield os.path.join(dirname, f)
 
+        # Fragment file names are "<identifier>.<key>.json". The key may
+        # itself contain dots, so strip the known prefix and suffix rather
+        # than splitting on dots.
+        prefix = prefix + "."
+        suffix = ".json"
         files = [f for f in list_abspaths(self._metadata_fragments_abspath)
-                 if f.startswith(prefix)]
+                 if f.startswith(prefix) and f.endswith(suffix)]
 
         metadata = {}
         for f in files:
-            key = f.split('.')[-2]  # filename: identifier.key.json
+            key = f.removeprefix(prefix).removesuffix(suffix)
             with open(f) as fh:
                 value = json.load(fh)
             metadata[key] = value

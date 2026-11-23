@@ -794,10 +794,17 @@ class ProtoDataSet(_BaseDataSet):
 
         :param handle: handle representing the relative path of the item in the
                        :class:`dtoolcore.ProtoDataSet`
-        :param key: metadata key
+        :param key: metadata key, becomes the overlay name when frozen
         :param value: metadata value
+        :raises: DtoolCoreInvalidNameError if the key is not a valid name
         """
         logger.debug("Add item metadata {} {} {}".format(handle, key, self))
+        # The key becomes an overlay name when the dataset is frozen. Validate
+        # it now rather than failing halfway through the freeze.
+        if not dtoolcore.utils.name_is_valid(key):
+            raise DtoolCoreInvalidNameError(
+                "Invalid item metadata key: {!r}".format(key)
+            )
         self._storage_broker.add_item_metadata(handle, key, value)
 
     def _generate_overlays(self):

@@ -260,9 +260,13 @@ def name_is_valid(name):
     The name can only be 80 characters long.
     Valid characters: Alpha numeric characters [0-9a-zA-Z]
     Valid special characters: - _ .
+    Names consisting only of dots (e.g. "." and "..") are invalid, as they
+    refer to the current or parent directory on file systems.
     """
     # The name can only be 80 characters long.
     if len(name) > MAX_NAME_LENGTH:
+        return False
+    if name.strip(".") == "":
         return False
     return bool(NAME_VALID_CHARS_REGEX.match(name))
 
