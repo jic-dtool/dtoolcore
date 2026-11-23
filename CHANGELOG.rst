@@ -40,6 +40,9 @@ Fixed
   offsetting the backup timestamp by the local UTC offset
 - ``raise(Error())`` rewritten to ``raise Error()`` throughout (statement, not
   call), resolving the corresponding lint warnings
+- On Windows, ``file://C:/path`` URIs (drive letter parsed as the network
+  location) silently resolved to ``/path`` on the drive of the current
+  working directory; they are now normalised to ``file:///C:/path``
 
 
 [3.20.0] - 2025-12-08
