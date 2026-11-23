@@ -2,6 +2,7 @@
 
 import datetime
 import json
+import locale
 import logging
 import os
 import shutil
@@ -521,15 +522,34 @@ class DiskStorageBroker(BaseStorageBroker):
     # Methods to override.
 
     def get_text(self, key):
-        """Return the text associated with the key."""
-        with open(key) as fh:
-            return fh.read()
+        """Return the text associated with the key.
+
+        Text is stored as UTF-8. Files written by older versions of dtoolcore
+        used the locale encoding (e.g. cp1252 on Windows); these are read
+        using the locale encoding if they are not valid UTF-8.
+        """
+        try:
+            with open(key, encoding="utf-8") as fh:
+                return fh.read()
+        except UnicodeDecodeError:
+            encoding = locale.getpreferredencoding(False)
+            logger.debug(
+                "{} is not valid UTF-8, reading as {}".format(key, encoding)
+            )
+            with open(key, encoding=encoding) as fh:
+                return fh.read()
 
     def put_text(self, key, text):
-        """Put the text into the storage associated with the key."""
+        """Put the text into the storage associated with the key.
+
+        Text is stored as UTF-8 with "\n" line endings on every platform, so
+        that datasets are byte-identical regardless of where they were
+        written. "\r\n" line endings in the text are converted to "\n".
+        """
         parent_directory = os.path.dirname(key)
         mkdir_parents(parent_directory)
-        with open(key, "w") as fh:
+        text = text.replace("\r\n", "\n")
+        with open(key, "w", encoding="utf-8", newline="") as fh:
             fh.write(text)
 
     def delete_key(self, key):
