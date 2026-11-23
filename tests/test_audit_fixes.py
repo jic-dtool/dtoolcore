@@ -14,25 +14,18 @@ import pytest
 from dtoolcore.utils import (
     IS_WINDOWS,
     generous_parse_uri,
-    windows_to_unix_path,
 )
 
-from . import tmp_dir_fixture  # NOQA
-
-
-def _sanitise_base_uri(tmp_dir):
-    base_uri = tmp_dir
-    if IS_WINDOWS:
-        parsed_base_uri = generous_parse_uri(tmp_dir)
-        unix_path = windows_to_unix_path(parsed_base_uri.path)
-        base_uri = "file://{}".format(unix_path)
-    return base_uri
+from . import (
+    sanitise_base_uri,
+    tmp_dir_fixture,  # NOQA
+)
 
 
 def test_generate_proto_dataset_rejects_invalid_name(tmp_dir_fixture):  # NOQA
     import dtoolcore
 
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
 
     admin_metadata = dtoolcore.generate_admin_metadata(
         "valid-name", creator_username="tester")
@@ -48,7 +41,7 @@ def test_generate_proto_dataset_rejects_invalid_name(tmp_dir_fixture):  # NOQA
 def test_generate_proto_dataset_rejects_missing_name(tmp_dir_fixture):  # NOQA
     import dtoolcore
 
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
 
     admin_metadata = dtoolcore.generate_admin_metadata(
         "valid-name", creator_username="tester")
@@ -64,7 +57,7 @@ def test_generate_proto_dataset_rejects_missing_name(tmp_dir_fixture):  # NOQA
 def test_generate_proto_dataset_accepts_valid_name(tmp_dir_fixture):  # NOQA
     import dtoolcore
 
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
 
     admin_metadata = dtoolcore.generate_admin_metadata(
         "valid-name", creator_username="tester")
@@ -83,8 +76,8 @@ def test_copy_resume_missing_frozen_at_gives_helpful_error(tmp_dir_fixture):  # 
     dest_dir = os.path.join(tmp_dir_fixture, "dest")
     os.mkdir(src_dir)
     os.mkdir(dest_dir)
-    src_base_uri = _sanitise_base_uri(src_dir)
-    dest_base_uri = _sanitise_base_uri(dest_dir)
+    src_base_uri = sanitise_base_uri(src_dir)
+    dest_base_uri = sanitise_base_uri(dest_dir)
 
     # Create and freeze a source dataset.
     proto = dtoolcore.create_proto_dataset(

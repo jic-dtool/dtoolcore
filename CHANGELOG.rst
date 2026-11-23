@@ -14,6 +14,7 @@ Added
 
 - ``ruff`` linting (replacing ``flake8``), configured in ``pyproject.toml``,
   with a ``.pre-commit-config.yaml`` and a ``lint`` optional-dependency group
+- Windows CI job (``windows-latest``, Python 3.14)
 
 Changed
 ^^^^^^^
@@ -61,6 +62,9 @@ Fixed
   tags, annotations and overlays on disk
 - ``raise(Error())`` rewritten to ``raise Error()`` throughout (statement, not
   call), resolving the corresponding lint warnings
+- On Windows, ``file://C:/path`` URIs (drive letter parsed as the network
+  location) silently resolved to ``/path`` on the drive of the current
+  working directory; they are now normalised to ``file:///C:/path``
 - ``DiskStorageBroker`` now reads and writes text (README, metadata) as UTF-8
   instead of the locale encoding, which broke non-ASCII READMEs on Windows.
   Files that are not valid UTF-8 are read using the locale encoding, so

@@ -5,22 +5,13 @@ import os
 import pytest
 
 from dtoolcore.utils import (
-    IS_WINDOWS,
     generate_identifier,
-    generous_parse_uri,
-    windows_to_unix_path,
 )
 
-from . import tmp_dir_fixture  # NOQA
-
-
-def _sanitise_base_uri(tmp_dir):
-    base_uri = tmp_dir
-    if IS_WINDOWS:
-        parsed_base_uri = generous_parse_uri(tmp_dir)
-        unix_path = windows_to_unix_path(parsed_base_uri.path)
-        base_uri = "file://{}".format(unix_path)
-    return base_uri
+from . import (
+    sanitise_base_uri,
+    tmp_dir_fixture,  # NOQA
+)
 
 
 def _put_items(proto_dataset, relpaths):
@@ -73,7 +64,7 @@ def test_freeze_with_manifest_basic(tmp_dir_fixture):  # NOQA
     """Test basic freezing of a proto dataset with provided manifest."""
     import dtoolcore
 
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
     name = "test-freeze-manifest"
     creator_username = "tester"
     frozen_at = 1234567890.123
@@ -110,7 +101,7 @@ def test_freeze_with_manifest_with_items(tmp_dir_fixture):  # NOQA
 
     import dtoolcore
 
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
     name = "test-items"
     frozen_at = 1234567890.0
 
@@ -178,7 +169,7 @@ def test_freeze_with_manifest_auto_frozen_at(tmp_dir_fixture):  # NOQA
 
     import dtoolcore
 
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
     name = "test-auto-frozen-at"
 
     manifest = {
@@ -209,7 +200,7 @@ def test_freeze_with_manifest_with_readme(tmp_dir_fixture):  # NOQA
     """Test freezing with README content."""
     import dtoolcore
 
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
     name = "test-readme"
     readme_content = "---\ndescription: Test dataset\nproject: Testing"
 
@@ -237,7 +228,7 @@ def test_freeze_with_manifest_with_tags(tmp_dir_fixture):  # NOQA
     """Test freezing with tags added to proto dataset."""
     import dtoolcore
 
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
     name = "test-tags"
     tags = ["production", "validated"]
 
@@ -266,7 +257,7 @@ def test_freeze_with_manifest_with_annotations(tmp_dir_fixture):  # NOQA
     """Test freezing with annotations added to proto dataset."""
     import dtoolcore
 
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
     name = "test-annotations"
     annotations = {
         "project": "test-project",
@@ -302,7 +293,7 @@ def test_freeze_with_manifest_full(tmp_dir_fixture):  # NOQA
 
     import dtoolcore
 
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
     name = "full-test-dataset"
     creator_username = "scientist"
     frozen_at = 1609459200.0  # 2021-01-01 00:00:00 UTC
@@ -374,7 +365,7 @@ def test_freeze_with_manifest_different_hash_function(tmp_dir_fixture):  # NOQA
     """
     import dtoolcore
 
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
     name = "test-hash-function"
 
     manifest = {
@@ -399,7 +390,7 @@ def test_freeze_with_manifest_missing_hash_function(tmp_dir_fixture):  # NOQA
     """Test that a manifest without hash_function is rejected."""
     import dtoolcore
 
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
     manifest = {
         "dtoolcore_version": dtoolcore.__version__,
         "items": {},
@@ -420,7 +411,7 @@ def test_proto_dataset_type_before_freeze(tmp_dir_fixture):  # NOQA
     """Test that proto dataset has type 'protodataset' before freezing."""
     import dtoolcore
 
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
     name = "test-proto-type"
 
     proto_dataset = dtoolcore.create_proto_dataset(
@@ -440,7 +431,7 @@ def test_dataset_type_after_freeze(tmp_dir_fixture):  # NOQA
     """Test that dataset has type 'dataset' after freezing."""
     import dtoolcore
 
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
     name = "test-dataset-type"
 
     manifest = {
@@ -469,7 +460,7 @@ def test_freeze_with_manifest_missing_readme(tmp_dir_fixture):  # NOQA
     """Test that freezing fails if README is missing."""
     import dtoolcore
 
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
     name = "test-missing-readme"
 
     manifest = {
@@ -484,11 +475,9 @@ def test_freeze_with_manifest_missing_readme(tmp_dir_fixture):  # NOQA
         base_uri=base_uri,
     )
 
-    # Delete the README file
-    from dtoolcore.utils import generous_parse_uri
-    parsed = generous_parse_uri(proto_dataset.uri)
-    readme_path = os.path.join(parsed.path, "README.yml")
-    os.remove(readme_path)
+    # Delete the README file. Ask the storage broker for its location, as the
+    # path of a file URI is not a valid path on Windows ("/C:/...").
+    os.remove(proto_dataset._storage_broker.get_readme_key())
 
     # Freezing should fail because README is missing
     with pytest.raises(dtoolcore.DtoolCoreValueError) as excinfo:
@@ -501,7 +490,7 @@ def test_freeze_with_manifest_missing_items(tmp_dir_fixture):  # NOQA
     """Test that freezing fails if manifest items are missing from storage."""
     import dtoolcore
 
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
     name = "test-missing-items"
 
     # Create manifest with items that don't exist in storage
@@ -546,7 +535,7 @@ def test_freeze_with_manifest_partial_items(tmp_dir_fixture):  # NOQA
 
     import dtoolcore
 
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
     name = "test-partial-items"
 
     # Create manifest with 2 items
@@ -605,7 +594,7 @@ def test_freeze_with_manifest_items_exist(tmp_dir_fixture):  # NOQA
 
     import dtoolcore
 
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
     name = "test-items-exist"
 
     # Create manifest with items
@@ -668,7 +657,7 @@ def test_freeze_with_manifest_identifier_relpath_mismatch(tmp_dir_fixture):  # N
     """
     import dtoolcore
 
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
     proto_dataset = dtoolcore.create_proto_dataset(
         name="test-identifier-mismatch",
         base_uri=base_uri,
@@ -690,7 +679,7 @@ def test_freeze_with_manifest_item_without_relpath(tmp_dir_fixture):  # NOQA
     """Test that a manifest item without relpath is rejected."""
     import dtoolcore
 
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
     proto_dataset = dtoolcore.create_proto_dataset(
         name="test-no-relpath",
         base_uri=base_uri,
@@ -712,7 +701,7 @@ def test_freeze_with_manifest_extra_items_in_storage(tmp_dir_fixture):  # NOQA
     """Test that items in storage but not in the manifest are rejected."""
     import dtoolcore
 
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
     proto_dataset = dtoolcore.create_proto_dataset(
         name="test-extra-items",
         base_uri=base_uri,
@@ -736,7 +725,7 @@ def test_freeze_with_manifest_extra_items_empty_manifest(tmp_dir_fixture):  # NO
     """Test that items in storage are rejected when the manifest is empty."""
     import dtoolcore
 
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
     proto_dataset = dtoolcore.create_proto_dataset(
         name="test-extra-items-empty",
         base_uri=base_uri,
@@ -761,7 +750,7 @@ def test_freeze_with_manifest_does_not_hash_items(tmp_dir_fixture, monkeypatch):
     import dtoolcore
     from dtoolcore.storagebroker import DiskStorageBroker
 
-    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    base_uri = sanitise_base_uri(tmp_dir_fixture)
     proto_dataset = dtoolcore.create_proto_dataset(
         name="test-no-hashing",
         base_uri=base_uri,

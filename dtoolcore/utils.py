@@ -29,6 +29,8 @@ NAME_VALID_CHARS_LIST = ["0-9", "a-z", "A-Z", "-", "_", "."]
 NAME_VALID_CHARS_STR = "".join(NAME_VALID_CHARS_LIST)
 NAME_VALID_CHARS_REGEX = re.compile(r"^[{}]+$".format(NAME_VALID_CHARS_STR))
 
+WINDOWS_DRIVE_NETLOC_REGEX = re.compile(r"^[A-Za-z]:$")
+
 
 def windows_to_unix_path(win_path):
     """Return Unix path."""
@@ -71,6 +73,17 @@ def generous_parse_uri(uri):
     logger.debug("generous_pase_uri.input_uri: {}".format(uri))
 
     parse_result = urlparse(uri)
+
+    # On Windows, "file://C:/some/path" puts the drive letter into the netloc
+    # and leaves "/some/path" as the path. As the netloc of file URIs is
+    # otherwise ignored, the path would silently resolve to the drive of the
+    # current working directory. Normalise to "file:///C:/some/path".
+    if (IS_WINDOWS and parse_result.scheme == "file"
+            and WINDOWS_DRIVE_NETLOC_REGEX.match(parse_result.netloc)):
+        parse_result = urlparse("file:///{}{}".format(
+            parse_result.netloc.upper(),
+            parse_result.path or "/"
+        ))
 
     IS_WINDOWS_DRIVE_LETTER = len(parse_result.scheme) == 1
 
