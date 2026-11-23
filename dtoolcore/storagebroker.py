@@ -540,10 +540,16 @@ class DiskStorageBroker(BaseStorageBroker):
                 return fh.read()
 
     def put_text(self, key, text):
-        """Put the text into the storage associated with the key."""
+        """Put the text into the storage associated with the key.
+
+        Text is stored as UTF-8 with "\n" line endings on every platform, so
+        that datasets are byte-identical regardless of where they were
+        written. "\r\n" line endings in the text are converted to "\n".
+        """
         parent_directory = os.path.dirname(key)
         mkdir_parents(parent_directory)
-        with open(key, "w", encoding="utf-8") as fh:
+        text = text.replace("\r\n", "\n")
+        with open(key, "w", encoding="utf-8", newline="") as fh:
             fh.write(text)
 
     def delete_key(self, key):

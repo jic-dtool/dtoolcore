@@ -32,6 +32,26 @@ def non_utf8_locale(monkeypatch):
                         lambda do_setlocale=True: "cp1252")
 
 
+@pytest.fixture
+def windows_newlines(monkeypatch):
+    """Simulate Windows text mode, which writes "\n" as "\r\n".
+
+    Files opened for writing in text mode without an explicit ``newline``
+    translate "\n" to ``os.linesep``, which we pin to "\r\n" here.
+    """
+    import dtoolcore.storagebroker
+
+    def crlf_open(file, mode="r", *args, **kwargs):
+        writing = any(m in mode for m in "wax")
+        if "b" not in mode and writing and "newline" not in kwargs \
+                and len(args) < 3:
+            kwargs["newline"] = "\r\n"
+        return builtins.open(file, mode, *args, **kwargs)
+
+    monkeypatch.setattr(dtoolcore.storagebroker, "open", crlf_open,
+                        raising=False)
+
+
 def _create_broker(tmp_dir):
     from dtoolcore.storagebroker import DiskStorageBroker
 
@@ -49,11 +69,8 @@ def test_readme_is_written_as_utf8(tmp_dir_fixture, non_utf8_locale):  # NOQA
     storagebroker = _create_broker(tmp_dir_fixture)
     storagebroker.put_readme(NON_ASCII_README)
 
-    # Text mode translates "\n" to the platform's line separator ("\r\n" on
-    # Windows); only the encoding is under test here.
     with open(storagebroker.get_readme_key(), "rb") as fh:
-        raw = fh.read()
-    assert raw.replace(b"\r\n", b"\n") == NON_ASCII_README.encode("utf-8")
+        assert fh.read() == NON_ASCII_README.encode("utf-8")
 
     assert storagebroker.get_readme_content() == NON_ASCII_README
 
@@ -111,3 +128,40 @@ def test_windows_path_helpers_strip_leading_slash_before_drive(monkeypatch):
 
     assert dtoolcore.utils.windows_to_unix_path("/C:/data") == "C:/data"
     assert dtoolcore.utils.unix_to_windows_path("/C:/data") == "C:\\data"
+
+
+def test_text_is_written_with_lf_on_windows(tmp_dir_fixture, windows_newlines):  # NOQA
+    """Datasets must be byte-identical across platforms.
+
+    Previously text mode wrote "\r\n" line endings on Windows, so README,
+    admin metadata and manifest files differed from those written on Linux
+    or to object storage.
+    """
+    storagebroker = _create_broker(tmp_dir_fixture)
+    storagebroker.put_readme("---\nkey: value\n")
+    storagebroker.put_manifest({"items": {}})
+
+    with open(storagebroker.get_readme_key(), "rb") as fh:
+        assert fh.read() == b"---\nkey: value\n"
+    with open(storagebroker.get_manifest_key(), "rb") as fh:
+        assert b"\r" not in fh.read()
+
+
+def test_crlf_in_text_is_normalised_to_lf(tmp_dir_fixture):  # NOQA
+    """CRLF line endings in content (e.g. a README edited on Windows) are
+    stored as LF on every platform."""
+    storagebroker = _create_broker(tmp_dir_fixture)
+    storagebroker.put_readme("---\r\nkey: value\r\n")
+
+    with open(storagebroker.get_readme_key(), "rb") as fh:
+        assert fh.read() == b"---\nkey: value\n"
+    assert storagebroker.get_readme_content() == "---\nkey: value\n"
+
+
+def test_legacy_crlf_file_is_read_with_lf(tmp_dir_fixture):  # NOQA
+    """Files written with CRLF by older versions on Windows read as LF."""
+    storagebroker = _create_broker(tmp_dir_fixture)
+    with open(storagebroker.get_readme_key(), "wb") as fh:
+        fh.write(b"---\r\nkey: value\r\n")
+
+    assert storagebroker.get_readme_content() == "---\nkey: value\n"

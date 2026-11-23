@@ -43,6 +43,9 @@ Fixed
   instead of the locale encoding, which broke non-ASCII READMEs on Windows.
   Files that are not valid UTF-8 are read using the locale encoding, so
   datasets written by older versions on Windows remain readable
+- ``DiskStorageBroker`` now writes text with ``\n`` line endings on all
+  platforms (previously ``\r\n`` on Windows), and converts ``\r\n`` in the
+  content to ``\n``, so datasets are byte-identical across platforms
 - ``utils.windows_to_unix_path`` and ``utils.unix_to_windows_path`` raised
   ``IndexError`` on Windows for two-character paths starting with ``/``
 
