@@ -1,14 +1,16 @@
 name: publish
 
-# Pushes to main publish a development build to TestPyPI.
 # Pushing a version tag (e.g. 3.20.0) runs the test suite, then publishes the
-# release to PyPI. Both uploads use PyPI trusted publishing (OIDC), so no API
-# tokens are stored in the repository.
+# release to PyPI using trusted publishing (OIDC), so no API tokens are stored
+# in the repository.
+#
+# Publishing development builds to TestPyPI on pushes to main is disabled
+# because we have lost access to the TestPyPI project. To re-enable it, add
+# "branches: [main]" back under "push" below; the publish-testpypi job only
+# runs for main.
 
 on:
   push:
-    branches:
-      - main
     tags:
       - '[0-9]+.[0-9]+.[0-9]+*'
 
