@@ -14,6 +14,52 @@ from . import (
 )
 
 
+def _put_items(proto_dataset, relpaths):
+    """Put small items with the given relpaths into the proto dataset."""
+    import tempfile
+
+    for relpath in relpaths:
+        with tempfile.NamedTemporaryFile(
+            mode='w', delete=False, suffix='.txt'
+        ) as f:
+            f.write(f"content for {relpath}")
+        try:
+            proto_dataset.put_item(f.name, relpath)
+        finally:
+            os.unlink(f.name)
+
+
+def _manifest_item(relpath):
+    return {
+        "relpath": relpath,
+        "size_in_bytes": 100,
+        "hash": "abc123",
+        "utc_timestamp": 1234567890.0,
+    }
+
+
+def _manifest(items):
+    import dtoolcore
+
+    return {
+        "dtoolcore_version": dtoolcore.__version__,
+        "hash_function": "md5sum_hexdigest",
+        "items": items,
+    }
+
+
+def _assert_still_proto_dataset(uri):
+    """A rejected freeze must leave the proto dataset untouched."""
+    import dtoolcore
+
+    proto_dataset = dtoolcore.ProtoDataSet.from_uri(uri)
+    assert proto_dataset.admin_metadata["type"] == "protodataset"
+    assert "frozen_at" not in proto_dataset.admin_metadata
+    assert not os.path.exists(
+        proto_dataset._storage_broker.get_manifest_key()
+    )
+
+
 def test_freeze_with_manifest_basic(tmp_dir_fixture):  # NOQA
     """Test basic freezing of a proto dataset with provided manifest."""
     import dtoolcore
@@ -311,7 +357,12 @@ def test_freeze_with_manifest_full(tmp_dir_fixture):  # NOQA
 
 
 def test_freeze_with_manifest_different_hash_function(tmp_dir_fixture):  # NOQA
-    """Test that hash_function in manifest is preserved."""
+    """Test that a hash_function not matching the storage broker is rejected.
+
+    The hashes in the manifest are not recomputed, so a manifest claiming a
+    different hash function than the one the storage broker uses would
+    produce a dataset whose hashes cannot be verified.
+    """
     import dtoolcore
 
     base_uri = sanitise_base_uri(tmp_dir_fixture)
@@ -328,12 +379,32 @@ def test_freeze_with_manifest_different_hash_function(tmp_dir_fixture):  # NOQA
         base_uri=base_uri,
     )
 
-    proto_dataset.freeze_with_manifest(manifest, frozen_at=1234567890.0)
+    with pytest.raises(dtoolcore.DtoolCoreValueError) as excinfo:
+        proto_dataset.freeze_with_manifest(manifest, frozen_at=1234567890.0)
 
-    # Load and verify hash function is preserved
-    dataset = dtoolcore.DataSet.from_uri(proto_dataset.uri)
-    loaded_manifest = dataset._storage_broker.get_manifest()
-    assert loaded_manifest["hash_function"] == "sha256sum_hexdigest"
+    assert "sha256sum_hexdigest" in str(excinfo.value)
+    _assert_still_proto_dataset(proto_dataset.uri)
+
+
+def test_freeze_with_manifest_missing_hash_function(tmp_dir_fixture):  # NOQA
+    """Test that a manifest without hash_function is rejected."""
+    import dtoolcore
+
+    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    manifest = {
+        "dtoolcore_version": dtoolcore.__version__,
+        "items": {},
+    }
+    proto_dataset = dtoolcore.create_proto_dataset(
+        name="test-no-hash-function",
+        base_uri=base_uri,
+    )
+
+    with pytest.raises(dtoolcore.DtoolCoreValueError) as excinfo:
+        proto_dataset.freeze_with_manifest(manifest, frozen_at=1234567890.0)
+
+    assert "hash_function" in str(excinfo.value)
+    _assert_still_proto_dataset(proto_dataset.uri)
 
 
 def test_proto_dataset_type_before_freeze(tmp_dir_fixture):  # NOQA
@@ -577,3 +648,128 @@ def test_freeze_with_manifest_items_exist(tmp_dir_fixture):  # NOQA
     dataset = dtoolcore.DataSet.from_uri(proto_dataset.uri)
     assert dataset.admin_metadata["type"] == "dataset"
     assert set(dataset.identifiers) == set(items.keys())
+
+
+def test_freeze_with_manifest_identifier_relpath_mismatch(tmp_dir_fixture):  # NOQA
+    """Test that an identifier not derived from its relpath is rejected.
+
+    Otherwise the frozen dataset records a relpath for which no item exists.
+    """
+    import dtoolcore
+
+    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    proto_dataset = dtoolcore.create_proto_dataset(
+        name="test-identifier-mismatch",
+        base_uri=base_uri,
+    )
+    _put_items(proto_dataset, ["data/file1.txt"])
+
+    manifest = _manifest({
+        generate_identifier("data/file1.txt"): _manifest_item("wrong.txt"),
+    })
+
+    with pytest.raises(dtoolcore.DtoolCoreValueError) as excinfo:
+        proto_dataset.freeze_with_manifest(manifest, frozen_at=1234567890.0)
+
+    assert "wrong.txt" in str(excinfo.value)
+    _assert_still_proto_dataset(proto_dataset.uri)
+
+
+def test_freeze_with_manifest_item_without_relpath(tmp_dir_fixture):  # NOQA
+    """Test that a manifest item without relpath is rejected."""
+    import dtoolcore
+
+    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    proto_dataset = dtoolcore.create_proto_dataset(
+        name="test-no-relpath",
+        base_uri=base_uri,
+    )
+    _put_items(proto_dataset, ["data/file1.txt"])
+
+    item = _manifest_item("data/file1.txt")
+    del item["relpath"]
+    manifest = _manifest({generate_identifier("data/file1.txt"): item})
+
+    with pytest.raises(dtoolcore.DtoolCoreValueError) as excinfo:
+        proto_dataset.freeze_with_manifest(manifest, frozen_at=1234567890.0)
+
+    assert "relpath" in str(excinfo.value)
+    _assert_still_proto_dataset(proto_dataset.uri)
+
+
+def test_freeze_with_manifest_extra_items_in_storage(tmp_dir_fixture):  # NOQA
+    """Test that items in storage but not in the manifest are rejected."""
+    import dtoolcore
+
+    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    proto_dataset = dtoolcore.create_proto_dataset(
+        name="test-extra-items",
+        base_uri=base_uri,
+    )
+    _put_items(proto_dataset, ["data/file1.txt", "data/extra.txt"])
+
+    manifest = _manifest({
+        generate_identifier("data/file1.txt"): _manifest_item(
+            "data/file1.txt"
+        ),
+    })
+
+    with pytest.raises(dtoolcore.DtoolCoreValueError) as excinfo:
+        proto_dataset.freeze_with_manifest(manifest, frozen_at=1234567890.0)
+
+    assert "extra.txt" in str(excinfo.value)
+    _assert_still_proto_dataset(proto_dataset.uri)
+
+
+def test_freeze_with_manifest_extra_items_empty_manifest(tmp_dir_fixture):  # NOQA
+    """Test that items in storage are rejected when the manifest is empty."""
+    import dtoolcore
+
+    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    proto_dataset = dtoolcore.create_proto_dataset(
+        name="test-extra-items-empty",
+        base_uri=base_uri,
+    )
+    _put_items(proto_dataset, ["data/extra.txt"])
+
+    with pytest.raises(dtoolcore.DtoolCoreValueError) as excinfo:
+        proto_dataset.freeze_with_manifest(
+            _manifest({}), frozen_at=1234567890.0
+        )
+
+    assert "extra.txt" in str(excinfo.value)
+    _assert_still_proto_dataset(proto_dataset.uri)
+
+
+def test_freeze_with_manifest_does_not_hash_items(tmp_dir_fixture, monkeypatch):  # NOQA
+    """Test that freezing with a manifest never computes item hashes.
+
+    freeze_with_manifest runs inside synchronous web requests in dserver and
+    must not do work proportional to the size of the data.
+    """
+    import dtoolcore
+    from dtoolcore.storagebroker import DiskStorageBroker
+
+    base_uri = _sanitise_base_uri(tmp_dir_fixture)
+    proto_dataset = dtoolcore.create_proto_dataset(
+        name="test-no-hashing",
+        base_uri=base_uri,
+    )
+    _put_items(proto_dataset, ["data/file1.txt"])
+
+    def fail(*args, **kwargs):
+        raise AssertionError("item content must not be read")
+
+    monkeypatch.setattr(DiskStorageBroker, "get_hash", fail)
+    monkeypatch.setattr(DiskStorageBroker, "item_properties", fail)
+
+    proto_dataset.freeze_with_manifest(
+        _manifest({
+            generate_identifier("data/file1.txt"): _manifest_item(
+                "data/file1.txt"
+            ),
+        }),
+        frozen_at=1234567890.0,
+    )
+    dataset = dtoolcore.DataSet.from_uri(proto_dataset.uri)
+    assert dataset.admin_metadata["type"] == "dataset"
