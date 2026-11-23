@@ -38,7 +38,7 @@ def windows_to_unix_path(win_path):
 
     # Deal with Windows path defect where path has incorrect starting /, e.g.
     # /C:/some/path.
-    if IS_WINDOWS and len(unix_path) >=2  and unix_path[0] == "/" and unix_path[2] == ":":  # NOQA
+    if IS_WINDOWS and unix_path.startswith("/") and unix_path[2:3] == ":":
         unix_path = unix_path[1:]
 
     logger.debug("windows_to_unix_path.return: {}".format(unix_path))
@@ -52,7 +52,7 @@ def unix_to_windows_path(unix_path):
 
     # Deal with Windows path defect where path has incorrect starting /, e.g.
     # /C:/some/path.
-    if IS_WINDOWS  and len(unix_path) >= 2  and unix_path[0] == "/" and unix_path[2] == ":":  # NOQA
+    if IS_WINDOWS and unix_path.startswith("/") and unix_path[2:3] == ":":
         unix_path = unix_path[1:]
 
     win_path = unix_path.replace("/", "\\")

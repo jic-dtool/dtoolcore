@@ -14,6 +14,7 @@ Added
 
 - ``ruff`` linting (replacing ``flake8``), configured in ``pyproject.toml``,
   with a ``.pre-commit-config.yaml`` and a ``lint`` optional-dependency group
+- Windows CI job (``windows-latest``, Python 3.14)
 
 Changed
 ^^^^^^^
@@ -39,6 +40,12 @@ Fixed
   offsetting the backup timestamp by the local UTC offset
 - ``raise(Error())`` rewritten to ``raise Error()`` throughout (statement, not
   call), resolving the corresponding lint warnings
+- ``DiskStorageBroker`` now reads and writes text (README, metadata) as UTF-8
+  instead of the locale encoding, which broke non-ASCII READMEs on Windows.
+  Files that are not valid UTF-8 are read using the locale encoding, so
+  datasets written by older versions on Windows remain readable
+- ``utils.windows_to_unix_path`` and ``utils.unix_to_windows_path`` raised
+  ``IndexError`` on Windows for two-character paths starting with ``/``
 
 
 [3.20.0] - 2025-12-08
